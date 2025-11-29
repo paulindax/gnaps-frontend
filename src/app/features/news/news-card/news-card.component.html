@@ -1,0 +1,97 @@
+<article class="group relative overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+  <!-- Featured Badge -->
+  @if (news().featured) {
+    <div class="absolute top-4 right-4 z-10 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-lg">
+      Featured
+    </div>
+  }
+
+  <!-- Image -->
+  <div class="relative h-48 overflow-hidden bg-muted">
+    <img
+      [src]="getImageUrl()"
+      [alt]="news().title"
+      class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+      onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&auto=format&fit=crop&q=60'"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+  </div>
+
+  <!-- Content -->
+  <div class="p-6">
+    <!-- Category Badge -->
+    @if (news().category) {
+      <span class="inline-block rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground mb-3">
+        {{ news().category }}
+      </span>
+    }
+
+    <!-- Title -->
+    <h3 class="mb-3 text-xl font-bold leading-tight text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+      <a [routerLink]="['/news', news().id]" class="hover:underline">
+        {{ news().title }}
+      </a>
+    </h3>
+
+    <!-- Excerpt -->
+    <p class="mb-4 text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+      {{ getExcerpt() }}
+    </p>
+
+    <!-- Meta Information -->
+    <div class="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-4">
+      <div class="flex items-center gap-2">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
+        <time>{{ news().created_at | date:'MMM d, yyyy' }}</time>
+      </div>
+
+      <!-- Status Badge (Draft/Published) -->
+      @if (showAdminControls()) {
+        <span
+          class="rounded-full px-2 py-1 text-xs font-medium"
+          [class.bg-green-100]="news().status === 'published'"
+          [class.text-green-800]="news().status === 'published'"
+          [class.dark:bg-green-900]="news().status === 'published'"
+          [class.dark:text-green-300]="news().status === 'published'"
+          [class.bg-yellow-100]="news().status === 'draft'"
+          [class.text-yellow-800]="news().status === 'draft'"
+          [class.dark:bg-yellow-900]="news().status === 'draft'"
+          [class.dark:text-yellow-300]="news().status === 'draft'"
+        >
+          {{ news().status | titlecase }}
+        </span>
+      }
+    </div>
+
+    <!-- Admin Controls -->
+    @if (showAdminControls()) {
+      <div class="mt-4 flex gap-2 border-t border-border pt-4">
+        <button
+          (click)="onEdit()"
+          class="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+        >
+          Edit
+        </button>
+        <button
+          (click)="onDelete()"
+          class="flex-1 rounded-lg bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground transition-colors hover:bg-destructive/90"
+        >
+          Delete
+        </button>
+      </div>
+    } @else {
+      <!-- Read More Button for non-admin users -->
+      <a
+        [routerLink]="['/news', news().id]"
+        class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+      >
+        Read More
+        <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    }
+  </div>
+</article>

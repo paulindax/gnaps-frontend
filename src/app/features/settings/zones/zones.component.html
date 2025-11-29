@@ -1,0 +1,89 @@
+<div>
+  <!-- Header with Create Button -->
+  <div class="mb-6 flex items-center justify-between">
+    <h2 class="text-xl font-semibold sm:text-2xl">Zones Management</h2>
+    @if (canEdit()) {
+      <app-button-helm (click)="openCreateModal()" [disabled]="loading()">
+        + Create Zone
+      </app-button-helm>
+    }
+  </div>
+
+  <!-- Reusable Data Table -->
+  <app-data-table
+    [data]="zones()"
+    [columns]="tableColumns"
+    [loading]="loading()"
+    [pagination]="paginationData()"
+    [showSearch]="true"
+    [searchQuery]="searchQuery()"
+    searchPlaceholder="Search zones by name or code..."
+    [actions]="canEdit() ? tableActions : []"
+    [showActions]="canEdit()"
+    emptyMessage="No zones found. Click 'Create Zone' to add one."
+    (pageChange)="onPageChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <!-- Reusable Form Modal -->
+  <app-form-modal
+    [show]="showModal()"
+    [title]="isEditing() ? 'Edit Zone' : 'Create Zone'"
+    [loading]="loading()"
+    [submitLabel]="isEditing() ? 'Update' : 'Create'"
+    (close)="closeModal()"
+    (submit)="onSubmit()"
+  >
+    <div class="mb-4">
+      <label class="mb-2 block text-sm font-medium">Name *</label>
+      <input
+        type="text"
+        [value]="formData().name"
+        (input)="updateFormField('name', $any($event.target).value)"
+        class="w-full rounded-md border border-border bg-background px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+        placeholder="Enter zone name"
+        required
+      />
+    </div>
+
+    <div class="mb-4">
+      <label class="mb-2 block text-sm font-medium">Code *</label>
+      <input
+        type="text"
+        [value]="formData().code"
+        (input)="updateFormField('code', $any($event.target).value)"
+        class="w-full rounded-md border border-border bg-background px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+        placeholder="Enter zone code"
+        required
+      />
+    </div>
+
+    <div class="mb-6">
+      <label class="mb-2 block text-sm font-medium">Region *</label>
+      <ng-select
+        [ngModel]="formData().region_id"
+        (ngModelChange)="updateFormField('region_id', $event)"
+        [items]="regions()"
+        bindLabel="name"
+        bindValue="id"
+        [clearable]="false"
+        placeholder="Select a region"
+        class="custom-ng-select"
+        required
+      />
+    </div>
+  </app-form-modal>
+
+  <!-- Confirm Delete Dialog -->
+  @if (showDeleteDialog() && zoneToDelete()) {
+    <app-confirm-dialog
+      [show]="showDeleteDialog()"
+      title="Delete Zone"
+      [message]="'Are you sure you want to delete the zone ' + zoneToDelete()!.name + '? This action cannot be undone.'"
+      confirmLabel="Delete"
+      confirmClass="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+      (confirm)="confirmDelete()"
+      (cancel)="showDeleteDialog.set(false)"
+    />
+  }
+</div>

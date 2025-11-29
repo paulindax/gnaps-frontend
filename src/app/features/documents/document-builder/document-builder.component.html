@@ -1,0 +1,415 @@
+<div class="w-full min-h-screen bg-background">
+  <div class="mx-auto max-w-7xl px-4 py-6">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold tracking-tight">
+        {{ isEditing() ? 'Edit Document' : 'Create Document' }}
+      </h1>
+      <p class="mt-2 text-sm text-muted-foreground">
+        Build your document template with custom fields
+      </p>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-3">
+      <!-- Left Panel - Document Settings & Fields -->
+      <div class="lg:col-span-1 space-y-6">
+        <!-- Document Settings -->
+        <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
+          <h2 class="mb-4 text-lg font-semibold">Document Settings</h2>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">Title *</label>
+              <input
+                type="text"
+                [value]="documentData().title"
+                (input)="updateDocumentField('title', $any($event.target).value)"
+                class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                placeholder="e.g., School Registration Form"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Description</label>
+              <textarea
+                [value]="documentData().description"
+                (input)="updateDocumentField('description', $any($event.target).value)"
+                rows="3"
+                class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                placeholder="Brief description of this document"
+              ></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Category</label>
+              <select
+                [value]="documentData().category"
+                (change)="updateDocumentField('category', $any($event.target).value)"
+                class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Select category</option>
+                @for (cat of categories; track cat) {
+                  <option [value]="cat">{{ cat }}</option>
+                }
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Status</label>
+              <select
+                [value]="documentData().status"
+                (change)="updateDocumentField('status', $any($event.target).value)"
+                class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="required"
+                [checked]="documentData().is_required"
+                (change)="updateDocumentField('is_required', $any($event.target).checked)"
+                class="h-4 w-4 rounded border-input"
+              />
+              <label for="required" class="text-sm font-medium">Required document</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fields List -->
+        <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
+          <div class="mb-4 flex items-center justify-between">
+            <h2 class="text-lg font-semibold">Fields ({{ fields().length }})</h2>
+            <button
+              (click)="addField()"
+              class="rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              Add Field
+            </button>
+          </div>
+
+          <div class="space-y-2">
+            @for (field of fields(); track field.id; let i = $index) {
+              <div class="group rounded-lg border border-border bg-background p-3 hover:border-primary transition-colors">
+                <div class="flex items-start justify-between">
+                  <div class="flex-1">
+                    <p class="font-medium text-sm">{{ field.label }}</p>
+                    <p class="text-xs text-muted-foreground mt-1">
+                      {{ getFieldTypeLabel(field.type) }}
+                      @if (field.required) {
+                        <span class="text-destructive">*</span>
+                      }
+                    </p>
+                  </div>
+                  <div class="flex gap-1">
+                    <button
+                      (click)="moveFieldUp(i)"
+                      [disabled]="i === 0"
+                      class="p-1 rounded hover:bg-accent disabled:opacity-50"
+                      title="Move up"
+                    >
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                      </svg>
+                    </button>
+                    <button
+                      (click)="moveFieldDown(i)"
+                      [disabled]="i === fields().length - 1"
+                      class="p-1 rounded hover:bg-accent disabled:opacity-50"
+                      title="Move down"
+                    >
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      (click)="editField(field)"
+                      class="p-1 rounded hover:bg-accent"
+                      title="Edit"
+                    >
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+                    <button
+                      (click)="deleteField(field)"
+                      class="p-1 rounded hover:bg-destructive hover:text-destructive-foreground"
+                      title="Delete"
+                    >
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            } @empty {
+              <p class="text-center text-sm text-muted-foreground py-8">
+                No fields added yet. Click "Add Field" to get started.
+              </p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel - Field Editor or Preview -->
+      <div class="lg:col-span-2">
+        @if (showFieldEditor()) {
+          <!-- Field Editor -->
+          <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
+            <div class="mb-6 flex items-center justify-between">
+              <h2 class="text-lg font-semibold">
+                {{ selectedField() ? 'Edit Field' : 'Add New Field' }}
+              </h2>
+              <button
+                (click)="closeFieldEditor()"
+                class="rounded-lg p-2 hover:bg-accent"
+              >
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium mb-2">Field Type *</label>
+                <select
+                  [value]="fieldForm().type"
+                  (change)="updateFieldType($any($event.target).value)"
+                  class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                >
+                  @for (type of fieldTypes; track type.value) {
+                    <option [value]="type.value">{{ type.label }}</option>
+                  }
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-2">Label *</label>
+                <input
+                  type="text"
+                  [value]="fieldForm().label"
+                  (input)="updateFieldLabel($any($event.target).value)"
+                  class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                  placeholder="e.g., School Name"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-2">Placeholder</label>
+                <input
+                  type="text"
+                  [value]="fieldForm().placeholder"
+                  (input)="updateFieldPlaceholder($any($event.target).value)"
+                  class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                  placeholder="e.g., Enter school name"
+                />
+              </div>
+
+              @if (fieldForm().type === 'dropdown') {
+                <div>
+                  <label class="block text-sm font-medium mb-2">Options (comma-separated)</label>
+                  <textarea
+                    [value]="fieldForm().options?.join(', ')"
+                    (input)="updateFieldOptions($any($event.target).value)"
+                    rows="3"
+                    class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                    placeholder="Option 1, Option 2, Option 3"
+                  ></textarea>
+                </div>
+              }
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium mb-2">Width (px)</label>
+                  <input
+                    type="number"
+                    [value]="fieldForm().width"
+                    (input)="updateFieldWidth(+$any($event.target).value)"
+                    class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                    min="100"
+                    max="800"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-2">Height (px)</label>
+                  <input
+                    type="number"
+                    [value]="fieldForm().height"
+                    (input)="updateFieldHeight(+$any($event.target).value)"
+                    class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                    min="30"
+                    max="400"
+                  />
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="field-required"
+                  [checked]="fieldForm().required"
+                  (change)="updateFieldRequired($any($event.target).checked)"
+                  class="h-4 w-4 rounded border-input"
+                />
+                <label for="field-required" class="text-sm font-medium">Required field</label>
+              </div>
+
+              <div class="flex gap-3 pt-4">
+                <button
+                  (click)="saveField()"
+                  class="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  Save Field
+                </button>
+                <button
+                  (click)="closeFieldEditor()"
+                  class="flex-1 rounded-lg border border-border bg-background px-4 py-2 text-sm font-semibold hover:bg-accent"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <!-- Preview -->
+          <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
+            <h2 class="mb-6 text-lg font-semibold">Document Preview</h2>
+
+            @if (fields().length > 0) {
+              <div class="space-y-4 bg-white p-8 rounded-lg border border-border min-h-[600px]">
+                <div class="mb-6">
+                  <h3 class="text-xl font-bold">{{ documentData().title || 'Untitled Document' }}</h3>
+                  @if (documentData().description) {
+                    <p class="mt-2 text-sm text-muted-foreground">{{ documentData().description }}</p>
+                  }
+                </div>
+
+                @for (field of fields(); track field.id) {
+                  <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">
+                      {{ field.label }}
+                      @if (field.required) {
+                        <span class="text-destructive">*</span>
+                      }
+                    </label>
+                    @switch (field.type) {
+                      @case ('text') {
+                        <input
+                          type="text"
+                          [placeholder]="field.placeholder || ''"
+                          [style.width.px]="field.width"
+                          class="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                          disabled
+                        />
+                      }
+                      @case ('textarea') {
+                        <textarea
+                          [placeholder]="field.placeholder || ''"
+                          [style.width.px]="field.width"
+                          [style.height.px]="field.height"
+                          class="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                          disabled
+                        ></textarea>
+                      }
+                      @case ('number') {
+                        <input
+                          type="number"
+                          [placeholder]="field.placeholder || ''"
+                          [style.width.px]="field.width"
+                          class="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                          disabled
+                        />
+                      }
+                      @case ('date') {
+                        <input
+                          type="date"
+                          [style.width.px]="field.width"
+                          class="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                          disabled
+                        />
+                      }
+                      @case ('checkbox') {
+                        <input
+                          type="checkbox"
+                          class="h-4 w-4 rounded border-input"
+                          disabled
+                        />
+                      }
+                      @case ('dropdown') {
+                        <select
+                          [style.width.px]="field.width"
+                          class="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                          disabled
+                        >
+                          <option>Select an option</option>
+                          @for (option of field.options; track option) {
+                            <option>{{ option }}</option>
+                          }
+                        </select>
+                      }
+                      @case ('file') {
+                        <div class="border-2 border-dashed border-border rounded-lg p-4 text-center text-sm text-muted-foreground"
+                             [style.width.px]="field.width">
+                          Click to upload or drag and drop
+                        </div>
+                      }
+                      @case ('signature') {
+                        <div class="border-2 border-border rounded-lg p-4 text-center text-sm text-muted-foreground"
+                             [style.width.px]="field.width"
+                             [style.height.px]="field.height || 100">
+                          Signature area
+                        </div>
+                      }
+                    }
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="flex flex-col items-center justify-center py-16 text-center">
+                <svg class="w-16 h-16 text-muted-foreground mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <p class="text-lg font-medium text-muted-foreground">No fields to preview</p>
+                <p class="text-sm text-muted-foreground mt-1">Add fields to see them here</p>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-6 flex gap-4 border-t border-border pt-6">
+      <button
+        (click)="saveDocument()"
+        [disabled]="isSaving()"
+        class="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+      >
+        @if (isSaving()) {
+          <span class="flex items-center gap-2">
+            <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            {{ isEditing() ? 'Updating...' : 'Creating...' }}
+          </span>
+        } @else {
+          <span>{{ isEditing() ? 'Update Document' : 'Create Document' }}</span>
+        }
+      </button>
+      <button
+        (click)="cancel()"
+        [disabled]="isSaving()"
+        class="rounded-lg border border-border bg-background px-6 py-3 text-sm font-semibold hover:bg-accent disabled:opacity-50"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>

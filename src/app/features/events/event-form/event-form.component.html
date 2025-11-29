@@ -1,0 +1,252 @@
+<div class="min-h-screen bg-linear-to-br from-background via-background to-muted/30">
+  <div class="w-full px-4 py-6 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+    <!-- Page Header -->
+    <div class="mb-6 lg:mb-8">
+      <div class="flex items-center gap-4">
+        <button
+          (click)="cancel()"
+          class="rounded-lg p-2 hover:bg-muted transition-colors"
+        >
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div>
+          <h1 class="text-3xl font-bold tracking-tight lg:text-4xl bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            {{ isEditing() ? 'Edit Event' : 'Create New Event' }}
+          </h1>
+          <p class="mt-2 text-sm text-muted-foreground lg:text-base">
+            {{ isEditing() ? 'Update event details and settings' : 'Fill in the details to create a new event' }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Basic Information Card -->
+      <div class="rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm">
+        <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+          <span class="text-2xl">📝</span>
+          Basic Information
+        </h2>
+
+        <div class="space-y-5">
+          <!-- Title -->
+          <div>
+            <label class="text-sm font-medium">Event Title <span class="text-destructive">*</span></label>
+            <app-input-helm
+              [ngModel]="eventData().title"
+              (ngModelChange)="updateField('title', $event)"
+              name="title"
+              placeholder="Enter event title"
+              required
+              class="mt-2"
+            />
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label class="text-sm font-medium">Description <span class="text-destructive">*</span></label>
+            <textarea
+              [ngModel]="eventData().description"
+              (ngModelChange)="updateField('description', $event)"
+              name="description"
+              placeholder="Enter event description"
+              required
+              rows="4"
+              class="mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            ></textarea>
+          </div>
+
+          <!-- Status -->
+          <app-select-helm
+            [ngModel]="eventData().status"
+            (ngModelChange)="updateField('status', $event)"
+            [options]="statusOptions"
+            label="Status"
+            placeholder="Select status"
+            class="w-full"
+          />
+        </div>
+      </div>
+
+      <!-- Date & Time Card -->
+      <div class="rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm">
+        <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+          <span class="text-2xl">📅</span>
+          Date & Time
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- Start Date -->
+          <div>
+            <label class="text-sm font-medium">Start Date & Time <span class="text-destructive">*</span></label>
+            <app-input-helm
+              [ngModel]="eventData().start_date"
+              (ngModelChange)="updateField('start_date', $event)"
+              name="start_date"
+              type="datetime-local"
+              required
+              class="mt-2"
+            />
+          </div>
+
+          <!-- End Date -->
+          <div>
+            <label class="text-sm font-medium">End Date & Time</label>
+            <app-input-helm
+              [ngModel]="eventData().end_date"
+              (ngModelChange)="updateField('end_date', $event)"
+              name="end_date"
+              type="datetime-local"
+              class="mt-2"
+            />
+          </div>
+
+          <!-- Registration Deadline -->
+          <div class="md:col-span-2">
+            <label class="text-sm font-medium">Registration Deadline</label>
+            <app-input-helm
+              [ngModel]="eventData().registration_deadline"
+              (ngModelChange)="updateField('registration_deadline', $event)"
+              name="registration_deadline"
+              type="datetime-local"
+              class="mt-2"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Location Card -->
+      <div class="rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm">
+        <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+          <span class="text-2xl">📍</span>
+          Location Details
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- Venue -->
+          <div>
+            <label class="text-sm font-medium">Venue Name</label>
+            <app-input-helm
+              [ngModel]="eventData().venue"
+              (ngModelChange)="updateField('venue', $event)"
+              name="venue"
+              placeholder="Enter venue name"
+              class="mt-2"
+            />
+          </div>
+
+          <!-- Location -->
+          <div>
+            <label class="text-sm font-medium">Location/Address</label>
+            <app-input-helm
+              [ngModel]="eventData().location"
+              (ngModelChange)="updateField('location', $event)"
+              name="location"
+              placeholder="Enter location"
+              class="mt-2"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Registration & Pricing Card -->
+      <div class="rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm">
+        <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+          <span class="text-2xl">💳</span>
+          Registration & Pricing
+        </h2>
+
+        <div class="space-y-5">
+          <!-- Max Attendees -->
+          <div>
+            <label class="text-sm font-medium">Maximum Attendees</label>
+            <app-input-helm
+              [ngModel]="eventData().max_attendees"
+              (ngModelChange)="updateField('max_attendees', $event)"
+              name="max_attendees"
+              type="number"
+              placeholder="Enter max attendees (0 for unlimited)"
+              class="mt-2"
+            />
+          </div>
+ 
+          <!-- Paid Event Toggle -->
+          <div class="flex items-center justify-between p-4 rounded-lg border-2 border-border/50">
+            <div>
+              <p class="font-semibold">Paid Event</p>
+              <p class="text-sm text-muted-foreground">Attendees will need to pay to register</p>
+            </div>
+            <button
+              type="button"
+              (click)="togglePaidEvent()"
+              class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+              [class.bg-primary]="eventData().is_paid"
+              [class.bg-muted]="!eventData().is_paid"
+            >
+              <span
+                class="inline-block h-4 w-4 transform rounded-full bg-background transition-transform"
+                [class.translate-x-6]="eventData().is_paid"
+                [class.translate-x-1]="!eventData().is_paid"
+              ></span>
+            </button>
+          </div>
+
+          <!-- Price (if paid) -->
+          @if (eventData().is_paid) {
+            <div class="animate-in fade-in slide-in-from-top-2 duration-300">
+              <label class="text-sm font-medium">Event Price ($)</label>
+              <app-input-helm
+                [ngModel]="eventData().price"
+                (ngModelChange)="updateField('price', $event)"
+                name="price"
+                type="number"
+                placeholder="Enter price"
+                class="mt-2"
+              />
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Event Image Card -->
+      <div class="rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm">
+        <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+          <span class="text-2xl">🖼️</span>
+          Event Image
+        </h2>
+
+        <app-image-upload
+          [imageUrl]="eventData().image_url || ''"
+          (imageUrlChange)="updateField('image_url', $event)"
+        />
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex gap-3 pt-4">
+        <app-button-helm
+          type="button"
+          variant="outline"
+          (click)="cancel()"
+          class="flex-1"
+          [disabled]="isSaving()"
+        >
+          Cancel
+        </app-button-helm>
+        <app-button-helm
+          type="submit"
+          class="flex-1"
+          [disabled]="isSaving()"
+        >
+          @if (isSaving()) {
+            <span>Saving...</span>
+          } @else {
+            <span>{{ isEditing() ? '💾 Update Event' : '➕ Create Event' }}</span>
+          }
+        </app-button-helm>
+      </div>
+    </form>
+  </div>
+</div>

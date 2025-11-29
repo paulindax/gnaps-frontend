@@ -1,0 +1,29 @@
+@if (open) {
+  <div class="fixed inset-0 z-50">
+    <!-- Overlay -->
+    <div
+      [class]="overlayClass"
+      (click)="close.emit()"
+    ></div>
+
+    <!-- Panel -->
+    <div [class]="sheetClass">
+      <div class="flex h-full flex-col">
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-border p-4">
+          <h2 class="text-lg font-semibold">{{ title }}</h2>
+          <app-button-helm variant="ghost" size="icon" (click)="close.emit()">
+            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </app-button-helm>
+        </div>
+
+        <!-- Content -->
+        <div class="flex-1 overflow-y-auto p-6">
+          <ng-content></ng-content>
+        </div>
+      </div>
+    </div>
+  </div>
+}

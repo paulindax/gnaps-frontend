@@ -1,0 +1,56 @@
+import { Component, Input, signal, contentChildren, AfterContentInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { cn } from '../../../../lib/utils';
+
+@Component({
+  selector: 'app-tab',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    @if (isActive()) {
+      <div class="animate-in fade-in slide-in-from-bottom-3 duration-500 ease-out">
+        <ng-content></ng-content>
+      </div>
+    }
+  `
+})
+export class TabComponent {
+  @Input() label = '';
+  @Input() value = '';
+  @Input() icon = '';
+
+  isActive = signal(false);
+}
+
+@Component({
+  selector: 'app-tabs-helm',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './tabs-helm.component.html'
+})
+export class TabsHelmComponent implements AfterContentInit {
+  @Input() defaultValue = '';
+  @Input() class = '';
+
+  tabs = contentChildren(TabComponent);
+  activeTab = signal('');
+
+  ngAfterContentInit(): void {
+    const tabsList = this.tabs();
+    if (tabsList.length > 0) {
+      const initialTab = this.defaultValue || tabsList[0].value;
+      this.selectTab(initialTab);
+    }
+  }
+
+  selectTab(value: string): void {
+    this.activeTab.set(value);
+    this.tabs().forEach(tab => {
+      tab.isActive.set(tab.value === value);
+    });
+  }
+
+  get computedClass(): string {
+    return cn('w-full', this.class);
+  }
+}

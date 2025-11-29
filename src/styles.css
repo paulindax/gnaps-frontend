@@ -1,1 +1,443 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Base colors - Clean White & Black */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.09 0 0);
+
+  /* Card colors - Pure White */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.09 0 0);
+
+  /* Popover colors */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.09 0 0);
+
+  /* Primary - Red Rose (More vibrant for better visibility) */
+  --primary: oklch(0.50 0.28 12);
+  --primary-foreground: oklch(1 0 0);
+
+  /* Secondary - Light Gray */
+  --secondary: oklch(0.96 0 0);
+  --secondary-foreground: oklch(0.09 0 0);
+
+  /* Muted - Neutral Gray (Higher contrast for 30+ users) */
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.35 0.01 0);
+
+  /* Accent - Darker Rose */
+  --accent: oklch(0.96 0 0);
+  --accent-foreground: oklch(0.09 0 0);
+
+  /* Destructive - Deep Red */
+  --destructive: oklch(0.50 0.27 15);
+  --destructive-foreground: oklch(0.98 0 0);
+
+  /* Borders and inputs (Higher contrast for 30+ users) */
+  --border: oklch(0.60 0 0); /* Darker borders for better visibility */
+  --input: oklch(0.90 0 0);
+
+  /* Focus ring - Rose */
+  --ring: oklch(0.55 0.26 12);
+
+  /* Chart colors - Rose tones */
+  --chart-1: oklch(0.55 0.26 12);
+  --chart-2: oklch(0.60 0.22 25);
+  --chart-3: oklch(0.50 0.20 5);
+  --chart-4: oklch(0.65 0.24 350);
+  --chart-5: oklch(0.45 0.22 18);
+
+  --radius: 0.5rem;
+
+  /* Sidebar colors */
+  --sidebar: oklch(0.98 0 0);
+  --sidebar-foreground: oklch(0.09 0 0);
+  --sidebar-primary: oklch(0.55 0.26 12);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.96 0 0);
+  --sidebar-accent-foreground: oklch(0.09 0 0);
+  --sidebar-border: oklch(0.60 0 0); /* Darker borders for better visibility */
+  --sidebar-ring: oklch(0.55 0.26 12);
+}
+
+.dark {
+  /* Base colors - Near Black & White */
+  --background: oklch(0.09 0 0);
+  --foreground: oklch(0.98 0 0);
+
+  /* Card colors - Slightly lighter black */
+  --card: oklch(0.09 0 0);
+  --card-foreground: oklch(0.98 0 0);
+
+  /* Popover colors */
+  --popover: oklch(0.09 0 0);
+  --popover-foreground: oklch(0.98 0 0);
+
+  /* Primary - Brighter Red Rose in dark mode */
+  --primary: oklch(0.65 0.28 12);
+  --primary-foreground: oklch(1 0 0);
+
+  /* Secondary - Dark Gray */
+  --secondary: oklch(0.17 0 0);
+  --secondary-foreground: oklch(0.98 0 0);
+
+  /* Muted - Medium Gray (Higher contrast for 30+ users) */
+  --muted: oklch(0.17 0 0);
+  --muted-foreground: oklch(0.72 0.01 0);
+
+  /* Accent - Light Gray */
+  --accent: oklch(0.17 0 0);
+  --accent-foreground: oklch(0.98 0 0);
+
+  /* Destructive - Bright Red */
+  --destructive: oklch(0.60 0.28 15);
+  --destructive-foreground: oklch(0.98 0 0);
+
+  /* Borders and inputs */
+  --border: oklch(0.52 0 0); /* Gray-500 borders in dark mode */
+  --input: oklch(0.27 0 0);
+
+  /* Focus ring - Rose */
+  --ring: oklch(0.65 0.28 12); /* Brighter red rose */
+
+  /* Chart colors - Dimmer rose tones */
+  --chart-1: oklch(0.50 0.24 12);
+  --chart-2: oklch(0.52 0.20 25);
+  --chart-3: oklch(0.48 0.18 5);
+  --chart-4: oklch(0.54 0.22 350);
+  --chart-5: oklch(0.46 0.20 18);
+
+  /* Sidebar colors */
+  --sidebar: oklch(0.09 0 0);
+  --sidebar-foreground: oklch(0.98 0 0);
+  --sidebar-primary: oklch(0.65 0.28 12); /* Brighter red rose */
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.17 0 0);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(0.52 0 0); /* Gray-500 borders in dark mode */
+  --sidebar-ring: oklch(0.65 0.28 12); /* Brighter red rose */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-size: 18px; /* Larger base font for 30-70 year users */
+    line-height: 1.75; /* Increased line-height for better readability */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+
+  /* Larger tap targets for buttons and interactive elements (30-70 year users) */
+  button, a, input, select, textarea {
+    min-height: 52px; /* Larger for easier interaction, especially for 50+ users */
+  }
+
+  /* Improve text contrast and readability (30-70 year users) */
+  h1 {
+    font-size: 2.5rem; /* 40px */
+    line-height: 1.3;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: 2rem; /* 32px */
+    line-height: 1.35;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    margin-bottom: 0.875rem;
+  }
+
+  h3 {
+    font-size: 1.5rem; /* 24px */
+    line-height: 1.4;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.75rem;
+  }
+
+  h4 {
+    font-size: 1.25rem; /* 20px */
+    line-height: 1.45;
+    font-weight: 600;
+    margin-bottom: 0.625rem;
+  }
+
+  h5, h6 {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.5;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Improved paragraph spacing for better readability */
+  p {
+    margin-bottom: 1.25em;
+    line-height: 1.8;
+  }
+
+  /* Better focus visibility for accessibility (30-70 year users) */
+  *:focus-visible {
+    outline: 5px solid hsl(var(--ring)); /* Extra thick outline for better visibility */
+    outline-offset: 4px; /* More spacing for clarity */
+  }
+
+  /* Ensure sufficient contrast for all text */
+  small, .text-sm {
+    font-size: 1rem; /* 16px - increased from 15px for better readability */
+  }
+
+  .text-xs {
+    font-size: 0.9375rem; /* 15px - never go below this for 30-70 year users */
+  }
+
+  /* Better button styling for 30-70 year users */
+  button {
+    font-weight: 600; /* Bolder text for better readability */
+    letter-spacing: 0.02em;
+  }
+
+  /* Links in content should be clearly identifiable (not navigation) */
+  main a:not([class*="nav"]):not([class*="button"]):not([routerLink]) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 2px;
+  }
+
+  main a:not([class*="nav"]):not([class*="button"]):not([routerLink]):hover {
+    text-decoration-thickness: 3px;
+  }
+
+  /* Form labels should be clear and readable */
+  label {
+    font-size: 1.125rem; /* 18px */
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  /* Input fields with better visibility */
+  input, select, textarea {
+    font-size: 1.125rem; /* 18px - larger for easier reading */
+    padding: 0.875rem 1rem; /* More generous padding */
+    border-width: 2px; /* Thicker borders for better visibility */
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: hsl(var(--muted-foreground));
+    opacity: 0.7;
+  }
+
+  /* Tables should have more spacing */
+  table {
+    border-spacing: 0;
+  }
+
+  th, td {
+    padding: 1rem 1.25rem; /* More generous cell padding */
+    font-size: 1rem;
+  }
+
+  th {
+    font-weight: 700;
+    font-size: 1.125rem;
+  }
+
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Custom ng-select styles to match design system */
+.ng-select {
+  min-height: 52px;
+}
+
+.ng-select .ng-select-container {
+  min-height: 52px;
+  border: 2px solid hsl(var(--border));
+  border-radius: calc(var(--radius) - 2px);
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-size: 1.125rem;
+}
+
+.ng-select .ng-select-container:hover {
+  border-color: hsl(var(--primary));
+}
+
+.ng-select.ng-select-focused .ng-select-container {
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.2);
+  outline: none;
+}
+
+.ng-select .ng-value-container {
+  padding: 0.875rem 1rem;
+}
+
+.ng-select .ng-value-container .ng-placeholder {
+  color: hsl(var(--muted-foreground));
+  opacity: 0.7;
+}
+
+.ng-select .ng-value-container .ng-value {
+  color: hsl(var(--foreground));
+}
+
+.ng-select .ng-arrow-wrapper {
+  padding-right: 1rem;
+}
+
+.ng-select .ng-arrow {
+  border-color: hsl(var(--foreground)) transparent transparent;
+  border-style: solid;
+  border-width: 6px 6px 2.5px;
+}
+
+.ng-select.ng-select-opened .ng-arrow {
+  border-color: transparent transparent hsl(var(--foreground));
+  border-width: 0 6px 6px;
+}
+
+.ng-dropdown-panel {
+  background-color: hsl(var(--popover));
+  border: 2px solid hsl(var(--border));
+  border-radius: calc(var(--radius) - 2px);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  margin-top: 4px;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items {
+  max-height: 300px;
+}
+
+.ng-dropdown-panel .ng-option {
+  padding: 0.875rem 1rem;
+  font-size: 1.125rem;
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--popover));
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+}
+
+.ng-dropdown-panel .ng-option:hover {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.ng-dropdown-panel .ng-option.ng-option-selected {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.ng-dropdown-panel .ng-option.ng-option-selected:hover {
+  background-color: hsl(var(--primary) / 0.9);
+}
+
+.ng-dropdown-panel .ng-option.ng-option-marked {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.ng-dropdown-panel .ng-option.ng-option-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Clear button styling */
+.ng-select .ng-clear-wrapper {
+  padding-right: 0.5rem;
+}
+
+.ng-select .ng-clear-wrapper .ng-clear {
+  color: hsl(var(--muted-foreground));
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.ng-select .ng-clear-wrapper:hover .ng-clear {
+  color: hsl(var(--destructive));
+}
+
+/* Dark mode adjustments */
+.dark .ng-select .ng-select-container {
+  background-color: hsl(var(--background));
+  border-color: hsl(var(--border));
+}
+
+.dark .ng-dropdown-panel {
+  background-color: hsl(var(--popover));
+  border-color: hsl(var(--border));
+}
+
+.dark .ng-dropdown-panel .ng-option {
+  background-color: hsl(var(--popover));
+  color: hsl(var(--popover-foreground));
+}
+
+.dark .ng-dropdown-panel .ng-option:hover {
+  background-color: hsl(var(--accent));
+}
+
+/* Loading spinner */
+.ng-select .ng-spinner-loader {
+  border-color: hsl(var(--primary)) transparent transparent;
+  border-style: solid;
+  border-width: 2px;
+}

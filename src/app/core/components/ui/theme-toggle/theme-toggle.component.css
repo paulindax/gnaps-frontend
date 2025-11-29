@@ -1,0 +1,16 @@
+:host {
+  display: inline-block;
+}
+
+/* Smooth icon transitions */
+svg {
+  transition: transform 0.2s ease-in-out;
+}
+
+button:hover svg {
+  transform: scale(1.1);
+}
+
+button:active svg {
+  transform: scale(0.95);
+}

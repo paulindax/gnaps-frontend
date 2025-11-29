@@ -1,12 +1,16 @@
-import { Component } from '@angular/core';
+// src/app/app.component.ts (simplified)
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ThemeService } from './core/services/theme.service';
+import { FlashMessageComponent } from './shared/ui/flash-message/flash-message.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  standalone: true,
+  imports: [RouterOutlet, FlashMessageComponent],
+  templateUrl: './app.component.html'
 })
 export class AppComponent {
-  title = 'gnaps-frontend';
+  // Initialize theme service on app startup
+  private themeService = inject(ThemeService);
 }

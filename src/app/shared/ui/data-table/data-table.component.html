@@ -1,0 +1,148 @@
+<div class="data-table-container">
+  <!-- Search Bar -->
+  @if (showSearch()) {
+    <div class="mb-4 flex items-center gap-2">
+      <div class="relative flex-1">
+        <input
+          type="text"
+          [(ngModel)]="localSearchValue"
+          (ngModelChange)="onSearchInput()"
+          [placeholder]="searchPlaceholder()"
+          class="w-full rounded-md border border-border bg-background px-3 py-2 pl-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+        <svg
+          class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </svg>
+      </div>
+      @if (localSearchValue()) {
+        <button
+          (click)="clearSearch()"
+          class="rounded-md border border-border px-3 py-2 text-sm hover:bg-muted"
+          [disabled]="loading()"
+        >
+          Clear
+        </button>
+      }
+    </div>
+  }
+
+  <!-- Loading State -->
+  @if (loading() && data().length === 0) {
+    <div class="flex justify-center py-12">
+      <div class="text-muted-foreground">Loading...</div>
+    </div>
+  }
+
+  <!-- Table -->
+  @if (!loading() || data().length > 0) {
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="border-b border-border bg-muted/50">
+            @for (column of columns(); track column.field) {
+              <th
+                class="px-4 py-3 text-left text-sm font-semibold"
+                [style.width]="column.width"
+              >
+                {{ column.header }}
+              </th>
+            }
+            @if (hasActions()) {
+              <th class="px-4 py-3 text-right text-sm font-semibold">Actions</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of data(); track $index) {
+            <tr class="border-b border-border hover:bg-muted/30">
+              @for (column of columns(); track column.field) {
+                <td class="px-4 py-3">
+                  {{ getCellValue(item, column) }}
+                </td>
+              }
+              @if (hasActions()) {
+                <td class="px-4 py-3 text-right">
+                  @for (action of actions(); track action.label) {
+                    @if (shouldShowAction(action, item)) {
+                      <button
+                        (click)="handleAction(action, item)"
+                        [class]="action.class || 'mr-2 text-primary hover:underline'"
+                        [disabled]="loading()"
+                      >
+                        {{ action.label }}
+                      </button>
+                    }
+                  }
+                </td>
+              }
+            </tr>
+          } @empty {
+            <tr>
+              <td [attr.colspan]="totalColumns()" class="px-4 py-8 text-center text-muted-foreground">
+                {{ emptyMessage() }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    @if (pagination() && pagination()!.totalPages > 1) {
+      <div class="mt-4 flex items-center justify-between border-t border-border pt-4">
+        <div class="text-sm text-muted-foreground">
+          Showing
+          {{ (pagination()!.currentPage - 1) * pagination()!.pageSize + 1 }}
+          to
+          {{ Math.min(pagination()!.currentPage * pagination()!.pageSize, pagination()!.totalItems) }}
+          of
+          {{ pagination()!.totalItems }}
+          results
+        </div>
+        <div class="flex gap-2">
+          <button
+            (click)="prevPage()"
+            [disabled]="pagination()!.currentPage === 1 || loading()"
+            class="rounded-md border border-border px-3 py-1 text-sm hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Previous
+          </button>
+
+          @for (page of getPageNumbers(); track $index) {
+            @if (page === -1) {
+              <span class="px-2 py-1 text-sm">...</span>
+            } @else {
+              <button
+                (click)="goToPage(page)"
+                [disabled]="loading()"
+                [class]="page === pagination()!.currentPage
+                  ? 'rounded-md bg-primary px-3 py-1 text-sm text-primary-foreground'
+                  : 'rounded-md border border-border px-3 py-1 text-sm hover:bg-muted'"
+              >
+                {{ page }}
+              </button>
+            }
+          }
+
+          <button
+            (click)="nextPage()"
+            [disabled]="pagination()!.currentPage === pagination()!.totalPages || loading()"
+            class="rounded-md border border-border px-3 py-1 text-sm hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    }
+  }
+</div>

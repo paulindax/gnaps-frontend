@@ -1,0 +1,255 @@
+<div class="w-full min-h-screen bg-background">
+  <div class="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl">
+        {{ isEditing() ? 'Edit News Article' : 'Create News Article' }}
+      </h1>
+      <p class="mt-2 text-sm text-muted-foreground">
+        {{ isEditing() ? 'Update the news article information' : 'Create a new news article for your audience' }}
+      </p>
+    </div>
+
+    <!-- Form -->
+    <form (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Title -->
+      <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
+        <div class="mb-2 flex items-center justify-between">
+          <label class="block text-sm font-semibold text-foreground">
+            Title <span class="text-destructive">*</span>
+          </label>
+          <span class="text-xs text-muted-foreground">
+            {{ getTitleCharCount() }}/{{ TITLE_MAX_LENGTH }}
+          </span>
+        </div>
+        <input
+          type="text"
+          [value]="formData().title"
+          (input)="updateField('title', $any($event.target).value)"
+          [attr.maxlength]="TITLE_MAX_LENGTH"
+          class="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          placeholder="Enter news title"
+          required
+        />
+      </div>
+
+      <!-- Category and Status -->
+      <div class="grid gap-6 sm:grid-cols-2">
+        <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
+          <label class="mb-2 block text-sm font-semibold text-foreground">Category</label>
+          <ng-select
+            [ngModel]="formData().category"
+            (ngModelChange)="updateField('category', $event)"
+            [items]="categoryOptions"
+            bindLabel="label"
+            bindValue="value"
+            [clearable]="true"
+            placeholder="Select a category"
+            class="custom-ng-select"
+          />
+        </div>
+
+        <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
+          <label class="mb-2 block text-sm font-semibold text-foreground">Status</label>
+          <ng-select
+            [ngModel]="formData().status"
+            (ngModelChange)="updateField('status', $event)"
+            [items]="statusOptions"
+            bindLabel="label"
+            bindValue="value"
+            [clearable]="false"
+            placeholder="Select status"
+            class="custom-ng-select"
+          />
+        </div>
+      </div>
+
+      <!-- Featured Image -->
+      <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
+        <label class="mb-4 block text-sm font-semibold text-foreground">Featured Image</label>
+        <app-image-upload
+          [imageUrl]="formData().image_url"
+          (imageUrlChange)="updateField('image_url', $event)"
+        />
+      </div>
+
+      <!-- Excerpt -->
+      <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
+        <div class="mb-2 flex items-center justify-between">
+          <label class="block text-sm font-semibold text-foreground">Excerpt</label>
+          <span class="text-xs text-muted-foreground">
+            {{ getExcerptCharCount() }}/{{ EXCERPT_MAX_LENGTH }}
+          </span>
+        </div>
+        <textarea
+          [value]="formData().excerpt"
+          (input)="updateField('excerpt', $any($event.target).value)"
+          [attr.maxlength]="EXCERPT_MAX_LENGTH"
+          rows="3"
+          class="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          placeholder="Brief summary of the news article (optional)"
+        ></textarea>
+        <p class="mt-1 text-xs text-muted-foreground">A short summary that will appear in news previews</p>
+      </div>
+
+      <!-- Content -->
+      <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
+        <div class="mb-2 flex items-center justify-between">
+          <label class="block text-sm font-semibold text-foreground">
+            Content <span class="text-destructive">*</span>
+          </label>
+          <span class="text-xs text-muted-foreground">
+            {{ getContentCharCount() }}/{{ CONTENT_MAX_LENGTH }}
+          </span>
+        </div>
+        <textarea
+          [value]="formData().content"
+          (input)="updateField('content', $any($event.target).value)"
+          [attr.maxlength]="CONTENT_MAX_LENGTH"
+          rows="12"
+          class="w-full rounded-lg border border-input bg-background px-4 py-2 font-mono text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          placeholder="Write your news content here..."
+          required
+        ></textarea>
+        <p class="mt-1 text-xs text-muted-foreground">The main content of your news article</p>
+      </div>
+
+      <!-- Featured Toggle -->
+      <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            [checked]="formData().featured"
+            (change)="updateField('featured', $any($event.target).checked)"
+            class="h-5 w-5 rounded border-input text-primary focus:ring-2 focus:ring-primary/20"
+          />
+          <div>
+            <span class="text-sm font-semibold text-foreground">Featured Article</span>
+            <p class="text-xs text-muted-foreground">Display this article prominently on the news page</p>
+          </div>
+        </label>
+      </div>
+
+      <!-- Targeting Section -->
+      <div class="rounded-lg border-2 border-primary/20 bg-card p-6 shadow-sm">
+        <h2 class="mb-4 text-lg font-bold text-foreground">Target Audience</h2>
+        <p class="mb-6 text-sm text-muted-foreground">
+          Select who should see this news article. Leave all unselected to show to everyone.
+        </p>
+
+        <div class="space-y-6">
+          <!-- Regions -->
+          @if (canSelectRegions()) {
+            <div>
+              <h3 class="mb-3 text-sm font-semibold text-foreground">Regions</h3>
+              <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                @for (region of regions(); track region.id) {
+                  <label class="flex items-center gap-2 rounded-lg border border-border bg-background p-3 cursor-pointer hover:bg-accent transition-colors">
+                    <input
+                      type="checkbox"
+                      [checked]="isRegionSelected(+region.id)"
+                      (change)="onRegionToggle(+region.id)"
+                      class="h-4 w-4 rounded border-input text-primary focus:ring-2 focus:ring-primary/20"
+                    />
+                    <span class="text-sm text-foreground">{{ region.name }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Zones -->
+          @if (canSelectZones()) {
+            <div>
+              <h3 class="mb-3 text-sm font-semibold text-foreground">Zones</h3>
+              <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                @for (zone of zones(); track zone.id) {
+                  <label class="flex items-center gap-2 rounded-lg border border-border bg-background p-3 cursor-pointer hover:bg-accent transition-colors">
+                    <input
+                      type="checkbox"
+                      [checked]="isZoneSelected(+zone.id)"
+                      (change)="onZoneToggle(+zone.id)"
+                      class="h-4 w-4 rounded border-input text-primary focus:ring-2 focus:ring-primary/20"
+                    />
+                    <span class="text-sm text-foreground">{{ zone.name }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Groups -->
+          @if (canSelectGroups()) {
+            <div>
+              <h3 class="mb-3 text-sm font-semibold text-foreground">Groups</h3>
+              <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                @for (group of groups(); track group.id) {
+                  <label class="flex items-center gap-2 rounded-lg border border-border bg-background p-3 cursor-pointer hover:bg-accent transition-colors">
+                    <input
+                      type="checkbox"
+                      [checked]="isGroupSelected(+group.id)"
+                      (change)="onGroupToggle(+group.id)"
+                      class="h-4 w-4 rounded border-input text-primary focus:ring-2 focus:ring-primary/20"
+                    />
+                    <span class="text-sm text-foreground">{{ group.name }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Schools -->
+          @if (canSelectSchools()) {
+            <div>
+              <h3 class="mb-3 text-sm font-semibold text-foreground">Schools</h3>
+              <div class="max-h-64 overflow-y-auto rounded-lg border border-border">
+                <div class="grid gap-2 p-3 sm:grid-cols-2">
+                  @for (school of schools(); track school.id) {
+                    <label class="flex items-center gap-2 rounded-lg border border-border bg-background p-3 cursor-pointer hover:bg-accent transition-colors">
+                      <input
+                        type="checkbox"
+                        [checked]="isSchoolSelected(+school.id)"
+                        (change)="onSchoolToggle(+school.id)"
+                        class="h-4 w-4 rounded border-input text-primary focus:ring-2 focus:ring-primary/20"
+                      />
+                      <span class="text-sm text-foreground">{{ school.name }}</span>
+                    </label>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-4 border-t border-border pt-6">
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="flex-1 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed sm:flex-none sm:px-8"
+        >
+          @if (loading()) {
+            <span class="flex items-center gap-2">
+              <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              {{ isEditing() ? 'Updating...' : 'Creating...' }}
+            </span>
+          } @else {
+            <span>{{ isEditing() ? 'Update News' : 'Create News' }}</span>
+          }
+        </button>
+        <button
+          type="button"
+          (click)="cancel()"
+          [disabled]="loading()"
+          class="flex-1 rounded-lg border border-border bg-background px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed sm:flex-none sm:px-8"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

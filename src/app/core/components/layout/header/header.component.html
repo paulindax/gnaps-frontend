@@ -1,0 +1,72 @@
+<!-- <app-loading-bar /> -->
+
+<header class="fixed inset-x-0 top-0 z-40 flex h-20 items-center border-b-2 border-gray-300 bg-white dark:border-gray-600 dark:bg-card px-6 sm:h-20 sm:px-8 lg:h-24 lg:px-10 shadow-sm">
+
+  <!-- Mobile Menu Toggle -->
+  <div class="flex items-center lg:hidden">
+    <app-button-helm
+      variant="ghost"
+      size="icon"
+      (click)="layoutService.toggleMobileMenu()"
+      aria-label="Toggle menu"
+    >
+      <svg class="h-6 w-6 sm:h-7 sm:w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </app-button-helm>
+  </div>
+
+  <!-- Logo -->
+  <div class="ml-4 flex items-center sm:ml-6 lg:ml-0">
+    <div class="shrink-0">
+      <span class="text-2xl font-bold text-primary sm:text-3xl lg:text-4xl tracking-tight">GNAPS {{ roleDisplay().split(' ')[0] }}</span>
+    </div>
+  </div>
+
+  <!-- Spacer -->
+  <div class="flex-1"></div>
+
+  <!-- User Profile & Actions -->
+  <div class="flex items-center gap-4 sm:gap-5">
+    <!-- Theme Toggle -->
+    <app-theme-toggle />
+
+    <!-- User Profile Dropdown -->
+    <app-dropdown-menu [items]="userMenuItems">
+      <div trigger class="flex cursor-pointer items-center gap-3 sm:gap-4 rounded-lg px-3 py-2 hover:bg-accent/50 transition-colors">
+        <div class="hidden text-right md:block">
+          <p class="text-base font-semibold sm:text-lg leading-tight">{{ user()?.first_name }} {{ user()?.last_name }}</p>
+          <p class="text-sm text-muted-foreground sm:text-base mt-1">{{ roleDisplay() }}</p>
+        </div>
+
+        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/15 ring-2 ring-primary/20 sm:h-14 sm:w-14">
+          <span class="text-lg font-bold text-primary sm:text-xl">
+            {{ user()?.first_name?.[0] }}{{ user()?.last_name?.[0] }}
+          </span>
+        </div>
+      </div>
+    </app-dropdown-menu>
+  </div>
+</header>
+
+<!-- Mobile Menu Sheet -->
+<app-sheet
+  [open]="layoutService.mobileMenuOpen()"
+  title="Navigation"
+  (close)="layoutService.closeMobileMenu()"
+>
+  <div class="space-y-4 py-2">
+    <!-- Theme Toggle for Mobile -->
+    <div class="flex items-center justify-between border-b border-border px-2 pb-4">
+      <span class="text-base font-medium">Theme</span>
+      <app-theme-toggle />
+    </div>
+
+    <!-- Navigation -->
+    <nav class="space-y-1">
+      @for (item of navItems(); track item.route) {
+        <app-nav-item [item]="item" (navigate)="layoutService.closeMobileMenu()"/>
+      }
+    </nav>
+  </div>
+</app-sheet>

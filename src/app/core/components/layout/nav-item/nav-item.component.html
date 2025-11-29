@@ -1,0 +1,42 @@
+<a [routerLink]="item.route"
+   routerLinkActive="bg-secondary text-secondary-foreground font-bold"
+   [routerLinkActiveOptions]="{ exact: false }"
+   [class]="linkClass"
+   (click)="onClick()">
+
+  <!-- Icon -->
+  <div class="mr-4 h-9 w-9 shrink-0 sm:mr-5 sm:h-10 sm:w-10 flex items-center justify-center">
+    @if (iconIsEmoji()) {
+      <span class="text-2xl sm:text-3xl">{{ item.icon }}</span>
+    } @else {
+      <svg class="h-9 w-9 sm:h-10 sm:w-10" fill="currentColor" viewBox="0 0 24 24">
+        <path [attr.d]="item.icon"/>
+      </svg>
+    }
+  </div>
+
+  <!-- Label -->
+  @if (!layoutService.sidebarCollapsed()) {
+    <span class="flex-1 text-lg font-semibold transition-opacity sm:text-xl">
+      {{ item.label }}
+    </span>
+  }
+
+  <!-- Collapse indicator -->
+  @if (item.children && !layoutService.sidebarCollapsed()) {
+    <svg class="h-6 w-6 transition-transform"
+         [class.rotate-90]="expanded()"
+         fill="currentColor" viewBox="0 0 24 24">
+      <path d="M9 5l7 7-7 7"/>
+    </svg>
+  }
+</a>
+
+<!-- Child items -->
+@if (item.children && expanded() && !layoutService.sidebarCollapsed()) {
+  <div class="ml-8 mt-2 space-y-2">
+    @for (child of item.children; track child.route) {
+      <app-nav-item [item]="child" (navigate)="onChildNavigate()"/>
+    }
+  </div>
+}

@@ -1,0 +1,779 @@
+<div class="min-h-screen bg-linear-to-br from-background via-background to-muted/30">
+  <div class="w-full px-4 py-6 sm:px-6 lg:px-8">
+    <!-- Page Header -->
+    <div class="mb-6 lg:mb-8">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="text-3xl font-bold tracking-tight lg:text-4xl bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            School Management
+          </h1>
+          <p class="mt-2 text-sm text-muted-foreground lg:text-base">
+            Manage and view school information across all regions and zones
+          </p>
+        </div>
+        <app-button-helm
+          (click)="showAdmitForm.set(true)"
+          class="shadow-lg hover:shadow-xl transition-shadow"
+        >
+          <span class="mr-2">➕</span>
+          Admit New School
+        </app-button-helm>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
+      <!-- Left Sidebar - Filters -->
+      <div class="lg:col-span-12">
+        <div class="sticky top-6 space-y-6">
+          <!-- Filters Card -->
+          <div class="rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm backdrop-blur-sm">
+            <div class="flex items-center justify-between">
+
+            
+              <div class="mb-4 flex items-center gap-2">
+                <span class="text-xl">🔍</span>
+                <h2 class="text-lg font-semibold">Filter Schools</h2>
+              </div>
+              <div class="rounded-lg bg-muted/50 px-3 py-2 text-center">
+                  <p class="text-sm font-medium text-muted-foreground pt-1">
+                    <span class="text-2xl font-bold text-primary">{{ totalSchools() }}</span> 
+                    <span class="text-xl ml-3">schools</span> 
+                  </p>
+                </div>
+            </div>
+
+            <div class="space-y-4 space-x-6 flex item-center justify-between">
+              <!-- Search Field -->
+              <div class="w-full">
+                <label class="mb-2 block text-sm font-medium">Search</label>
+                <app-input-helm
+                  [(ngModel)]="searchQuery"
+                  (ngModelChange)="onSearchChange($event)"
+                  placeholder="Search by name or ID..."
+                  class="transition-all focus:scale-[1.02]"
+                />
+              </div>
+
+              <!-- Region Select -->
+              <app-select-helm
+                [(ngModel)]="selectedRegion"
+                (ngModelChange)="onRegionChange($event)"
+                [options]="regions()"
+                
+                label="Region"
+                placeholder="Select region"
+                class="transition-all w-full"
+              />
+
+              <!-- Zone Select -->
+              <app-select-helm
+                [(ngModel)]="selectedZone"
+                (ngModelChange)="onZoneChange($event)"
+                [options]="zones()"
+                label="Zone"
+                placeholder="Select zone"
+                class="transition-all w-full"
+              />
+
+              <!-- Group Select -->
+              <app-select-helm
+                [(ngModel)]="selectedGroup"
+                (ngModelChange)="onGroupChange($event)"
+                [options]="groups()"
+                label="Group"
+                placeholder="Select group"
+                class="transition-all w-full"
+              />
+
+              <!-- Results Count -->
+             
+            </div>
+            
+          </div>
+
+          <!-- Quick Stats -->
+          <!-- <div class="rounded-xl border-2 border-border/50 bg-card p-6 shadow-lg">
+            <h3 class="mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Quick Stats</h3>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-sm">Total Schools</span>
+                <span class="rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary">
+                  {{ schools().length }}
+                </span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm">Active Filters</span>
+                <span class="rounded-full bg-accent px-3 py-1 text-sm font-bold">
+                  {{ (selectedRegion() && selectedRegion() !== '' ? 1 : 0) + (selectedZone() && selectedZone() !== '' ? 1 : 0) + (selectedGroup() && selectedGroup() !== '' ? 1 : 0) }}
+                </span>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </div>
+
+      <!-- Right Content - Two Column Grid -->
+      <div class="lg:col-span-12">
+        <div class="grid grid-cols-1 gap-6 xl:grid-cols-3 xl:gap-8">
+          <!-- Grid 1: Schools List -->
+          <div class="flex flex-col">
+            <div class="rounded-xl border-2 border-border/50 bg-card shadow-xl backdrop-blur-sm overflow-hidden flex flex-col h-full">
+              <div class="border-b-2 border-border/50 bg-linear-to-r from-primary/2 to-primary/8 px-6 py-4">
+                <div class="flex items-center gap-2">
+                  <span class="text-2xl">🏫</span>
+                  <h2 class="text-xl font-bold">Schools</h2>
+                </div>
+              </div>
+
+              <div class="flex-1 overflow-auto p-6">
+                @if (schools().length > 0) {
+                  <div class="space-y-2">
+                    @for (school of schools(); track school.id) {
+                      <div
+                        class="group cursor-pointer rounded-lg border-2 p-4 transition-all duration-200 hover:shadow-md"
+                        [class.border-primary]="selectedSchool()?.id === school.id"
+                        [class.bg-primary/5]="selectedSchool()?.id === school.id"
+                        [class.border-border/50]="selectedSchool()?.id !== school.id"
+                        [class.hover:border-primary/50]="selectedSchool()?.id !== school.id"
+                        (click)="onSchoolClick(school)"
+                      >
+                        <div class="flex items-start justify-between gap-3">
+                          <div class="flex-1 min-w-0">
+                            <h3 class="font-semibold text-base truncate group-hover:text-primary transition-colors">
+                              {{ school.name }}
+                            </h3>
+                            <p class="mt-1 text-sm text-muted-foreground">
+                              ID: {{ school.id }}
+                            </p>
+                          </div>
+                          @if (selectedSchool()?.id === school.id) {
+                            <div class="shrink-0">
+                              <div class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                } @else {
+                  <div class="flex h-64 items-center justify-center">
+                    <div class="text-center">
+                      <span class="text-6xl opacity-20">🏫</span>
+                      <p class="mt-4 text-muted-foreground">No schools found</p>
+                      <p class="mt-2 text-sm text-muted-foreground">Try adjusting your filters</p>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Grid 2: School Profile -->
+          <div class="flex flex-col lg:col-span-2">
+            <div class="rounded-xl border-2 border-border/50 bg-card shadow-xl backdrop-blur-sm overflow-hidden flex flex-col h-full">
+              @if (selectedSchool(); as school) {
+                <div class="border-b-2 border-border/50 bg-linear-to-r from-primary/2 to-primary/7 px-6 py-4">
+                  <div class="flex items-center gap-2">
+                    <span class="text-2xl">📋</span>
+                    <h2 class="text-xl font-bold">School Profile</h2>
+                  </div>
+                </div>
+
+                <div class="flex-1 overflow-auto p-6">
+                  <app-tabs-helm defaultValue="info">
+                    <!-- Tab 1: School Information -->
+                    <app-tab label="Information" value="info" icon="ℹ️">
+                      <div class="space-y-6">
+                        <!-- School Name Header -->
+                        <div class="rounded-xl bg-linear-to-r from-primary/2 via-primary/6 to-transparent p-6 border-l-4 border-primary shadow-sm">
+                          <h3 class="text-2xl font-bold text-primary">{{ school.name }}</h3>
+                          <div class="mt-3 flex items-center gap-4 flex-wrap">
+                            <!-- <div class="flex items-center gap-2">
+                              <span class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">ID:</span>
+                              <span class="rounded-md bg-primary/10 px-2 py-1 text-sm font-mono font-semibold text-primary">{{ school.id }}</span>
+                            </div> -->
+                            @if (school.member_no) {
+                              <div class="flex items-center gap-2">
+                                <span class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Member ID:</span>
+                                <span class="rounded-md bg-primary/10 px-2 py-1 text-sm font-mono font-semibold text-primary">{{ school.member_no }}</span>
+                              </div>
+                            }
+                          </div>
+                        </div>
+
+                        <!-- School Details Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <!-- Zone -->
+                          <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4 hover:shadow-md transition-shadow">
+                            <div class="flex items-center gap-2 mb-2">
+                              <span class="text-lg">🗺️</span>
+                              <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Zone</label>
+                            </div>
+                            <p class="text-base font-medium">{{ school.zone_name || school.zone_id }}</p>
+                          </div>
+
+                          <!-- Status -->
+                          <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4 hover:shadow-md transition-shadow">
+                            <div class="flex items-center gap-2 mb-2">
+                              <span class="text-lg">📊</span>
+                              <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Status</label>
+                            </div>
+                            <app-badge [variant]="school.status === 'active' ? 'success' : 'destructive'">
+                              {{ school.status || 'active' }}
+                            </app-badge>
+                          </div>
+
+                          <!-- Address -->
+                          @if (school.address) {
+                            <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4 hover:shadow-md transition-shadow md:col-span-2">
+                              <div class="flex items-center gap-2 mb-2">
+                                <span class="text-lg">📍</span>
+                                <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Physical Address</label>
+                              </div>
+                              <p class="text-base">{{ school.address }}</p>
+                            </div>
+                          }
+
+                          <!-- Email -->
+                          @if (school.email) {
+                            <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4 hover:shadow-md transition-shadow">
+                              <div class="flex items-center gap-2 mb-2">
+                                <span class="text-lg">📧</span>
+                                <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Email</label>
+                              </div>
+                              <a href="mailto:{{ school.email }}" class="text-base text-primary hover:underline">
+                                {{ school.email }}
+                              </a>
+                            </div>
+                          }
+
+                          <!-- Mobile -->
+                          @if (school.mobile_no) {
+                            <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4 hover:shadow-md transition-shadow">
+                              <div class="flex items-center gap-2 mb-2">
+                                <span class="text-lg">📱</span>
+                                <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Mobile</label>
+                              </div>
+                              <a href="tel:{{ school.mobile_no }}" class="text-base text-primary hover:underline">
+                                {{ school.mobile_no }}
+                              </a>
+                            </div>
+                          }
+
+                          <!-- GPS Address -->
+                          @if (school.gps_address) {
+                            <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4 hover:shadow-md transition-shadow">
+                              <div class="flex items-center gap-2 mb-2">
+                                <span class="text-lg">🧭</span>
+                                <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">GPS Address</label>
+                              </div>
+                              <p class="text-sm font-mono">{{ school.gps_address }}</p>
+                            </div>
+                          }
+
+                          <!-- Joining Date -->
+                          @if (school.joining_date) {
+                            <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4 hover:shadow-md transition-shadow">
+                              <div class="flex items-center gap-2 mb-2">
+                                <span class="text-lg">📅</span>
+                                <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Joining Date</label>
+                              </div>
+                              <p class="text-base">{{ school.joining_date | date }}</p>
+                            </div>
+                          }
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex flex-wrap gap-3 pt-4 border-t-2 border-border/50">
+                          <app-button-helm
+                            (click)="openEditSchoolModal(school)"
+                            variant="outline"
+                            class="flex-1 shadow-sm hover:shadow-md transition-shadow"
+                          >
+                            <span class="mr-2">✏️</span>
+                            Edit School
+                          </app-button-helm>
+                          <app-button-helm
+                            (click)="billSchool(school.id)"
+                            class="flex-1 shadow-sm hover:shadow-md transition-shadow"
+                          >
+                            <span class="mr-2">💳</span>
+                            Create Bill
+                          </app-button-helm>
+                        </div>
+                      </div>
+                    </app-tab>
+
+                    <!-- Tab 2: Contact Persons -->
+                    <app-tab label="Contacts" value="contacts" icon="👤">
+                      <div class="space-y-6">
+                        <!-- Contact Person Card -->
+                        <div class="rounded-xl border-2 border-border/50 bg-linear-to-br from-card via-background to-muted/30 p-6 shadow-sm hover:shadow-md transition-shadow">
+                          <div class="mb-6 flex items-center gap-4">
+                            <div class="flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-primary/20 to-primary/10 text-primary shadow-inner">
+                              <span class="text-3xl">👤</span>
+                            </div>
+                            <div>
+                              <h4 class="font-bold text-xl">Primary Contact</h4>
+                              <p class="text-sm text-muted-foreground mt-1">Main point of contact for {{ school.name }}</p>
+                            </div>
+                          </div>
+
+                          <div class="grid grid-cols-1 gap-4">
+                            <!-- Full Name -->
+                            <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4 hover:shadow-md transition-shadow">
+                              <div class="flex items-center gap-2 mb-2">
+                                <span class="text-lg">🏷️</span>
+                                <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Full Name</label>
+                              </div>
+                              <p class="text-base font-semibold">{{ school.contact_person_name || 'Not provided' }}</p>
+                            </div>
+
+                            <!-- Email Address -->
+                            <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4 hover:shadow-md transition-shadow">
+                              <div class="flex items-center gap-2 mb-2">
+                                <span class="text-lg">📧</span>
+                                <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Email Address</label>
+                              </div>
+                              @if (school.contact_person_email) {
+                                <a
+                                  href="mailto:{{ school.contact_person_email }}"
+                                  class="text-base text-primary hover:underline font-medium flex items-center gap-2 group"
+                                >
+                                  {{ school.contact_person_email }}
+                                  <svg class="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                  </svg>
+                                </a>
+                              } @else {
+                                <p class="text-base text-muted-foreground">Not provided</p>
+                              }
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4 hover:shadow-md transition-shadow">
+                              <div class="flex items-center gap-2 mb-2">
+                                <span class="text-lg">📱</span>
+                                <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Phone Number</label>
+                              </div>
+                              @if (school.contact_person_phone) {
+                                <a
+                                  href="tel:{{ school.contact_person_phone }}"
+                                  class="text-base text-primary hover:underline font-medium flex items-center gap-2 group"
+                                >
+                                  {{ school.contact_person_phone }}
+                                  <svg class="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                  </svg>
+                                </a>
+                              } @else {
+                                <p class="text-base text-muted-foreground">Not provided</p>
+                              }
+                            </div>
+                          </div>
+
+                          <!-- Quick Actions -->
+                          <div class="mt-6 grid grid-cols-2 gap-3 pt-4 border-t-2 border-border/50">
+                            <app-button-helm
+                              variant="outline"
+                              size="sm"
+                              (click)="openEditContactModal(school)"
+                              class="shadow-sm hover:shadow-md transition-shadow"
+                            >
+                              <span class="mr-2">✏️</span>
+                              Edit Contact
+                            </app-button-helm>
+                            <app-button-helm
+                              variant="outline"
+                              size="sm"
+                              class="shadow-sm hover:shadow-md transition-shadow"
+                            >
+                              <span class="mr-2">📧</span>
+                              Send Email
+                            </app-button-helm>
+                          </div>
+                        </div>
+
+                        <!-- Additional Info Card -->
+                        <div class="rounded-xl border-2 border-dashed border-border/50/50 bg-muted/30 p-6 text-center">
+                          <div class="flex flex-col items-center gap-3">
+                            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                              <span class="text-2xl">💡</span>
+                            </div>
+                            <div>
+                              <h5 class="font-semibold text-sm">Need to update contact details?</h5>
+                              <p class="text-sm text-muted-foreground mt-1">
+                                Click the "Edit Contact" button above to modify contact information
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </app-tab>
+                  </app-tabs-helm>
+                </div>
+              } @else {
+                <div class="flex h-full items-center justify-center p-6">
+                  <div class="text-center">
+                    <span class="text-6xl opacity-20">📋</span>
+                    <p class="mt-4 text-lg font-medium text-muted-foreground">Select a school</p>
+                    <p class="mt-2 text-sm text-muted-foreground">
+                      Click on a school from the list to view details
+                    </p>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admit School Modal -->
+    @if (showAdmitForm()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+        <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border-2 border-border/50 bg-card p-6 shadow-2xl sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <span class="text-2xl">➕</span>
+            </div>
+            <h2 class="text-2xl font-bold">Admit New School</h2>
+          </div>
+
+          <form (ngSubmit)="admitSchool()" class="space-y-5">
+            <div class="space-y-2">
+              <label class="text-sm font-medium">School Name</label>
+              <app-input-helm
+                [(ngModel)]="newSchool.name"
+                name="name"
+                placeholder="Enter school name"
+                required
+              />
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-sm font-medium">Zone ID</label>
+              <app-input-helm
+                [(ngModel)]="newSchool.zone_id"
+                name="zone_id"
+                placeholder="Enter zone ID"
+                required
+              />
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-sm font-medium">Contact Person Name</label>
+              <app-input-helm
+                [(ngModel)]="newSchool.contact_person_name"
+                name="contact_person_name"
+                placeholder="Enter contact person name"
+                required
+              />
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-sm font-medium">Contact Email</label>
+              <app-input-helm
+                [(ngModel)]="newSchool.contact_person_email"
+                name="contact_person_email"
+                type="email"
+                placeholder="contact@school.com"
+                required
+              />
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-sm font-medium">Contact Phone</label>
+              <app-input-helm
+                [(ngModel)]="newSchool.contact_person_phone"
+                name="contact_person_phone"
+                placeholder="Enter phone number"
+                required
+              />
+            </div>
+
+            <div class="flex gap-3 pt-4 border-t">
+              <app-button-helm
+                type="button"
+                variant="outline"
+                (click)="showAdmitForm.set(false)"
+                class="flex-1"
+              >
+                Cancel
+              </app-button-helm>
+              <app-button-helm type="submit" class="flex-1">
+                Admit School
+              </app-button-helm>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
+
+    <!-- Edit School Modal -->
+    @if (showEditSchoolModal()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+        <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl border-2 border-border/50 bg-card p-6 shadow-2xl sm:p-8">
+          <div class="mb-6 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <span class="text-2xl">✏️</span>
+              </div>
+              <h2 class="text-2xl font-bold">Edit School Information</h2>
+            </div>
+            <button
+              type="button"
+              (click)="closeEditSchoolModal()"
+              class="rounded-lg p-2 hover:bg-muted transition-colors"
+            >
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <form (ngSubmit)="saveSchoolEdit()" class="space-y-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <!-- School Name -->
+              <div class="space-y-2 md:col-span-2">
+                <label class="text-sm font-medium">School Name <span class="text-destructive">*</span></label>
+                <app-input-helm
+                  [ngModel]="editSchoolData().name"
+                  (ngModelChange)="updateEditSchoolField('name', $event)"
+                  name="name"
+                  placeholder="Enter school name"
+                  required
+                />
+              </div>
+
+              <!-- Member Number -->
+              <div class="space-y-2">
+                <label class="text-sm font-medium">Member Number</label>
+                <app-input-helm
+                  [ngModel]="editSchoolData().member_no"
+                  (ngModelChange)="updateEditSchoolField('member_no', $event)"
+                  name="member_no"
+                  placeholder="Enter member number"
+                />
+              </div>
+
+              <!-- Zone -->
+              <div class="space-y-2">
+                <label class="text-sm font-medium">Zone <span class="text-destructive">*</span></label>
+                <app-select-helm
+                  [ngModel]="editSchoolData().zone_id"
+                  (ngModelChange)="updateEditSchoolField('zone_id', $event)"
+                  [options]="zones()"
+                  placeholder="Select zone"
+                  class="w-full"
+                />
+              </div>
+
+              <!-- Joining Date -->
+              <div class="space-y-2">
+                <label class="text-sm font-medium">Joining Date</label>
+                <app-input-helm
+                  [ngModel]="editSchoolData().joining_date"
+                  (ngModelChange)="updateEditSchoolField('joining_date', $event)"
+                  name="joining_date"
+                  type="date"
+                />
+              </div>
+
+              <!-- Date of Establishment -->
+              <div class="space-y-2">
+                <label class="text-sm font-medium">Date of Establishment</label>
+                <app-input-helm
+                  [ngModel]="editSchoolData().date_of_establishment"
+                  (ngModelChange)="updateEditSchoolField('date_of_establishment', $event)"
+                  name="date_of_establishment"
+                  type="date"
+                />
+              </div>
+
+              <!-- Email -->
+              <div class="space-y-2 md:col-span-2">
+                <label class="text-sm font-medium">Email Address</label>
+                <app-input-helm
+                  [ngModel]="editSchoolData().email"
+                  (ngModelChange)="updateEditSchoolField('email', $event)"
+                  name="email"
+                  type="email"
+                  placeholder="school@example.com"
+                />
+              </div>
+
+              <!-- Mobile Number -->
+              <div class="space-y-2">
+                <label class="text-sm font-medium">Mobile Number</label>
+                <app-input-helm
+                  [ngModel]="editSchoolData().mobile_no"
+                  (ngModelChange)="updateEditSchoolField('mobile_no', $event)"
+                  name="mobile_no"
+                  placeholder="Enter mobile number"
+                />
+              </div>
+
+              <!-- GPS Address -->
+              <div class="space-y-2">
+                <label class="text-sm font-medium">GPS Address</label>
+                <app-input-helm
+                  [ngModel]="editSchoolData().gps_address"
+                  (ngModelChange)="updateEditSchoolField('gps_address', $event)"
+                  name="gps_address"
+                  placeholder="Enter GPS address"
+                />
+              </div>
+
+              <!-- Address -->
+              <div class="space-y-2 md:col-span-2">
+                <label class="text-sm font-medium">Physical Address</label>
+                <app-input-helm
+                  [ngModel]="editSchoolData().address"
+                  (ngModelChange)="updateEditSchoolField('address', $event)"
+                  name="address"
+                  placeholder="Enter physical address"
+                />
+              </div>
+
+              <!-- Location -->
+              <div class="space-y-2 md:col-span-2">
+                <label class="text-sm font-medium">Location</label>
+                <app-input-helm
+                  [ngModel]="editSchoolData().location"
+                  (ngModelChange)="updateEditSchoolField('location', $event)"
+                  name="location"
+                  placeholder="Enter location"
+                />
+              </div>
+            </div>
+
+            <div class="flex gap-3 pt-4 border-t">
+              <app-button-helm
+                type="button"
+                variant="outline"
+                (click)="closeEditSchoolModal()"
+                class="flex-1"
+                [disabled]="isSaving()"
+              >
+                Cancel
+              </app-button-helm>
+              <app-button-helm
+                type="submit"
+                class="flex-1"
+                [disabled]="isSaving()"
+              >
+                @if (isSaving()) {
+                  <span>Saving...</span>
+                } @else {
+                  <span>💾 Save Changes</span>
+                }
+              </app-button-helm>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
+
+    <!-- Edit Contact Person Modal -->
+    @if (showEditContactModal()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+        <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border-2 border-border/50 bg-card p-6 shadow-2xl sm:p-8">
+          <div class="mb-6 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <span class="text-2xl">👤</span>
+              </div>
+              <h2 class="text-2xl font-bold">Edit Contact Person</h2>
+            </div>
+            <button
+              type="button"
+              (click)="closeEditContactModal()"
+              class="rounded-lg p-2 hover:bg-muted transition-colors"
+            >
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <form (ngSubmit)="saveContactEdit()" class="space-y-5">
+            <!-- Contact Person Name -->
+            <div class="space-y-2">
+              <label class="text-sm font-medium">Full Name <span class="text-destructive">*</span></label>
+              <app-input-helm
+                [ngModel]="editContactData().contact_person_name"
+                (ngModelChange)="updateEditContactField('contact_person_name', $event)"
+                name="contact_person_name"
+                placeholder="Enter full name"
+                required
+              />
+            </div>
+
+            <!-- Email Address -->
+            <div class="space-y-2">
+              <label class="text-sm font-medium">Email Address <span class="text-destructive">*</span></label>
+              <app-input-helm
+                [ngModel]="editContactData().contact_person_email"
+                (ngModelChange)="updateEditContactField('contact_person_email', $event)"
+                name="contact_person_email"
+                type="email"
+                placeholder="contact@school.com"
+                required
+              />
+            </div>
+
+            <!-- Phone Number -->
+            <div class="space-y-2">
+              <label class="text-sm font-medium">Phone Number <span class="text-destructive">*</span></label>
+              <app-input-helm
+                [ngModel]="editContactData().contact_person_phone"
+                (ngModelChange)="updateEditContactField('contact_person_phone', $event)"
+                name="contact_person_phone"
+                placeholder="Enter phone number"
+                required
+              />
+            </div>
+
+            <!-- Info Box -->
+            <div class="rounded-lg bg-muted/50 p-4 text-sm text-muted-foreground">
+              <div class="flex items-start gap-2">
+                <span class="text-lg">💡</span>
+                <p>This is the primary contact person for the school. Make sure all information is accurate.</p>
+              </div>
+            </div>
+
+            <div class="flex gap-3 pt-4 border-t">
+              <app-button-helm
+                type="button"
+                variant="outline"
+                (click)="closeEditContactModal()"
+                class="flex-1"
+                [disabled]="isSaving()"
+              >
+                Cancel
+              </app-button-helm>
+              <app-button-helm
+                type="submit"
+                class="flex-1"
+                [disabled]="isSaving()"
+              >
+                @if (isSaving()) {
+                  <span>Saving...</span>
+                } @else {
+                  <span>💾 Save Changes</span>
+                }
+              </app-button-helm>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+

@@ -1,0 +1,253 @@
+<div class="min-h-screen bg-linear-to-br from-background via-background to-muted/30">
+  <div class="w-full px-4 py-6 sm:px-6 lg:px-8">
+    <!-- Page Header -->
+    <div class="mb-6 lg:mb-8">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="text-3xl font-bold tracking-tight lg:text-4xl bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Events & Calendar
+          </h1>
+          <p class="mt-2 text-sm text-muted-foreground lg:text-base">
+            Manage and view upcoming events across the organization
+          </p>
+        </div>
+        <div class="flex gap-3">
+          <app-button-helm
+            (click)="toggleViewMode()"
+            variant="outline"
+            class="shadow-sm hover:shadow-md transition-shadow"
+          >
+            <span class="mr-2">{{ viewMode() === 'calendar' ? '📋' : '📅' }}</span>
+            {{ viewMode() === 'calendar' ? 'List View' : 'Calendar View' }}
+          </app-button-helm>
+          @if (canManageEvents()) {
+            <app-button-helm
+              (click)="createEvent()"
+              class="shadow-lg hover:shadow-xl transition-shadow"
+            >
+              <span class="mr-2">➕</span>
+              Create Event
+            </app-button-helm>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="mb-6 rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <!-- Search -->
+        <div>
+          <label class="mb-2 block text-sm font-medium">Search Events</label>
+          <app-input-helm
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="onSearchChange($event)"
+            placeholder="Search by title..."
+          />
+        </div>
+
+        <!-- Status Filter -->
+        <app-select-helm
+          [(ngModel)]="selectedStatus"
+          (ngModelChange)="onStatusChange($event)"
+          [options]="statusOptions"
+          label="Status"
+          placeholder="All Status"
+          class="w-full"
+        />
+
+        <!-- Type Filter -->
+        <app-select-helm
+          [(ngModel)]="selectedType"
+          (ngModelChange)="onTypeChange($event)"
+          [options]="typeOptions"
+          label="Event Type"
+          placeholder="All Events"
+          class="w-full"
+        />
+
+        <!-- Total Events -->
+        <div class="flex items-end">
+          <div class="w-full rounded-lg bg-primary/10 px-4 py-3 text-center">
+            <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Total Events</p>
+            <p class="text-2xl font-bold text-primary">{{ totalEvents() }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendar View -->
+    @if (viewMode() === 'calendar') {
+      <div class="rounded-xl border-2 border-border/50 bg-card shadow-xl p-6">
+        <!-- Calendar Header -->
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold">{{ currentMonthName() }} {{ selectedYear() }}</h2>
+          <div class="flex gap-2">
+            <app-button-helm
+              (click)="previousMonth()"
+              variant="outline"
+              size="sm"
+            >
+              ← Previous
+            </app-button-helm>
+            <app-button-helm
+              (click)="nextMonth()"
+              variant="outline"
+              size="sm"
+            >
+              Next →
+            </app-button-helm>
+          </div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div class="grid grid-cols-7 gap-2">
+          <!-- Day headers -->
+          @for (day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track day) {
+            <div class="text-center text-sm font-semibold text-muted-foreground py-2">
+              {{ day }}
+            </div>
+          }
+
+          <!-- Calendar days -->
+          @for (dayData of calendarDays(); track dayData.date) {
+            <div
+              class="min-h-24 rounded-lg border-2 p-2 transition-all hover:shadow-md cursor-pointer"
+              [class.border-border/30]="!dayData.isCurrentMonth"
+              [class.border-border/50]="dayData.isCurrentMonth"
+              [class.bg-muted/20]="!dayData.isCurrentMonth"
+              [class.bg-primary/5]="dayData.events.length > 0 && dayData.isCurrentMonth"
+              [class.border-primary/30]="dayData.events.length > 0"
+            >
+              <div class="flex items-center justify-between mb-1">
+                <span
+                  class="text-sm font-semibold"
+                  [class.text-muted-foreground]="!dayData.isCurrentMonth"
+                  [class.text-primary]="dayData.events.length > 0 && dayData.isCurrentMonth"
+                >
+                  {{ dayData.date.getDate() }}
+                </span>
+                @if (dayData.events.length > 0) {
+                  <span class="text-xs bg-primary text-primary-foreground rounded-full px-1.5 py-0.5">
+                    {{ dayData.events.length }}
+                  </span>
+                }
+              </div>
+
+              <!-- Event indicators -->
+              <div class="space-y-1">
+                @for (event of dayData.events.slice(0, 2); track event.id) {
+                  <div
+                    class="text-xs truncate rounded px-1.5 py-1 bg-primary/20 hover:bg-primary/30 transition-colors"
+                    (click)="viewEventDetails(event)"
+                  >
+                    {{ event.title }}
+                  </div>
+                }
+                @if (dayData.events.length > 2) {
+                  <div class="text-xs text-muted-foreground pl-1.5">
+                    +{{ dayData.events.length - 2 }} more
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- List View -->
+    @if (viewMode() === 'list') {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @if (events().length > 0) {
+          @for (event of events(); track event.id) {
+            <div class="rounded-xl border-2 border-border/50 bg-card shadow-lg hover:shadow-xl transition-all overflow-hidden group cursor-pointer"
+                 (click)="viewEventDetails(event)">
+              <!-- Event Image -->
+              @if (event.image_url) {
+                <div class="h-48 bg-linear-to-br from-primary/20 to-primary/5 overflow-hidden">
+                  <img [src]="event.image_url" [alt]="event.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                </div>
+              } @else {
+                <div class="h-48 bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                  <span class="text-6xl opacity-50">📅</span>
+                </div>
+              }
+
+              <!-- Event Content -->
+              <div class="p-6">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                  <h3 class="text-lg font-bold group-hover:text-primary transition-colors line-clamp-2">
+                    {{ event.title }}
+                  </h3>
+                  @if (event.is_paid) {
+                    <span class="shrink-0 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                      ${{ event.price }}
+                    </span>
+                  } @else {
+                    <span class="shrink-0 rounded-full bg-green-500/10 px-3 py-1 text-xs font-semibold text-green-600">
+                      FREE
+                    </span>
+                  }
+                </div>
+
+                <p class="text-sm text-muted-foreground line-clamp-2 mb-4">
+                  {{ event.description }}
+                </p>
+
+                <!-- Event Details -->
+                <div class="space-y-2 mb-4">
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class="text-lg">📅</span>
+                    <span>{{ event.start_date | date:'MMM d, y' }}</span>
+                  </div>
+                  @if (event.venue) {
+                    <div class="flex items-center gap-2 text-sm">
+                      <span class="text-lg">📍</span>
+                      <span>{{ event.venue }}</span>
+                    </div>
+                  }
+                  @if (event.max_attendees) {
+                    <div class="flex items-center gap-2 text-sm">
+                      <span class="text-lg">👥</span>
+                      <span>{{ event.registered_count || 0 }}/{{ event.max_attendees }} registered</span>
+                    </div>
+                  }
+                </div>
+
+                <!-- Status Badge -->
+                <div class="flex items-center justify-between">
+                  <app-badge [variant]="getStatusVariant(event.status)">
+                    {{ event.status || 'published' }}
+                  </app-badge>
+
+                  @if (canManageEvents()) {
+                    <button
+                      (click)="editEvent(event); $event.stopPropagation()"
+                      class="text-sm text-primary hover:underline"
+                    >
+                      Edit
+                    </button>
+                  } @else {
+                    <button
+                      (click)="registerForEvent(event); $event.stopPropagation()"
+                      class="text-sm text-primary hover:underline"
+                    >
+                      Register →
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        } @else {
+          <div class="col-span-full flex flex-col items-center justify-center py-16">
+            <span class="text-6xl opacity-20 mb-4">📅</span>
+            <p class="text-lg font-medium text-muted-foreground">No events found</p>
+            <p class="text-sm text-muted-foreground mt-2">Try adjusting your filters</p>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

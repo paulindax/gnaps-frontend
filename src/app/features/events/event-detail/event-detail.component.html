@@ -1,0 +1,317 @@
+<div class="min-h-screen bg-linear-to-br from-background via-background to-muted/30">
+  <div class="w-full px-4 py-6 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+    @if (event(); as event) {
+      <!-- Page Header -->
+      <div class="mb-6">
+        <button
+          (click)="goBack()"
+          class="mb-4 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Events
+        </button>
+      </div>
+
+      <!-- Event Hero Section -->
+      <div class="rounded-xl border-2 border-border/50 bg-card shadow-xl overflow-hidden mb-6">
+        @if (event.image_url) {
+          <div class="h-96 bg-linear-to-br from-primary/20 to-primary/5 overflow-hidden">
+            <img [src]="event.image_url" [alt]="event.title" class="w-full h-full object-cover" />
+          </div>
+        } @else {
+          <div class="h-96 bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+            <span class="text-9xl opacity-50">📅</span>
+          </div>
+        } 
+
+        <div class="p-8">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <div class="flex-1">
+              <h1 class="text-4xl font-bold mb-2">{{ event.title }}</h1>
+              <app-badge [variant]="getStatusVariant(event.status)" class="inline-block">
+                {{ event.status || 'published' }}
+              </app-badge>
+            </div>
+
+            @if (event.is_paid) {
+              <div class="shrink-0 rounded-xl bg-primary/10 border-2 border-primary/20 px-6 py-4 text-center">
+                <p class="text-sm font-semibold text-muted-foreground">Price</p>
+                <p class="text-3xl font-bold text-primary">${{ event.price }}</p>
+              </div>
+            } @else {
+              <div class="shrink-0 rounded-xl bg-green-500/10 border-2 border-green-500/20 px-6 py-4">
+                <p class="text-2xl font-bold text-green-600">FREE</p>
+              </div>
+            }
+          </div>
+
+          <p class="text-lg text-muted-foreground">{{ event.description }}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Event Details Column -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Event Information -->
+          <div class="rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+              <span class="text-2xl">ℹ️</span>
+              Event Information
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Date & Time -->
+              <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-lg">📅</span>
+                  <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Date & Time</label>
+                </div>
+                <p class="font-semibold">{{ event.start_date | date:'medium' }}</p>
+                @if (event.end_date) {
+                  <p class="text-sm text-muted-foreground mt-1">to {{ event.end_date | date:'medium' }}</p>
+                }
+              </div>
+
+              <!-- Venue -->
+              @if (event.venue) {
+                <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-lg">🏢</span>
+                    <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Venue</label>
+                  </div>
+                  <p class="font-semibold">{{ event.venue }}</p>
+                </div>
+              }
+
+              <!-- Location -->
+              @if (event.location) {
+                <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-lg">📍</span>
+                    <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Location</label>
+                  </div>
+                  <p class="font-semibold">{{ event.location }}</p>
+                </div>
+              }
+
+              <!-- Registration Deadline -->
+              @if (event.registration_deadline) {
+                <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-lg">⏰</span>
+                    <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Registration Deadline</label>
+                  </div>
+                  <p class="font-semibold">{{ event.registration_deadline | date:'medium' }}</p>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Registrations (Admin Only) -->
+          @if (canManageEvents() && registrations().length > 0) {
+            <div class="rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm">
+              <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <span class="text-2xl">👥</span>
+                Registrations ({{ registrations().length }})
+              </h2>
+
+              <div class="space-y-3">
+                @for (registration of registrations(); track registration.id) {
+                  <div class="rounded-lg border-2 border-border/50 p-4 hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                      <div>
+                        <p class="font-semibold">{{ registration.school_name }}</p>
+                        <p class="text-sm text-muted-foreground">
+                          {{ registration.number_of_attendees }} attendee(s) •
+                          Registered on {{ registration.registration_date | date:'short' }}
+                        </p>
+                      </div>
+                      <app-badge
+                        [variant]="registration.payment_status === 'paid' ? 'success' : registration.payment_status === 'pending' ? 'outline' : 'destructive'"
+                      >
+                        {{ registration.payment_status }}
+                      </app-badge>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Actions Column -->
+        <div class="space-y-6">
+          <!-- Quick Stats -->
+          <div class="rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm">
+            <h3 class="text-lg font-bold mb-4">Quick Stats</h3>
+
+            <div class="space-y-4">
+              @if (event.max_attendees) {
+                <div>
+                  <p class="text-sm text-muted-foreground mb-1">Attendance</p>
+                  <div class="flex items-center gap-2">
+                    <div class="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                      <div
+                        class="h-full bg-primary transition-all"
+                        [style.width.%]="((event.registered_count || 0) / event.max_attendees) * 100"
+                      ></div>
+                    </div>
+                    <span class="text-sm font-semibold">{{ event.registered_count || 0 }}/{{ event.max_attendees }}</span>
+                  </div>
+                </div>
+              }
+
+              <div>
+                <p class="text-sm text-muted-foreground">Event Type</p>
+                <p class="font-semibold">{{ event.is_paid ? 'Paid Event' : 'Free Event' }}</p>
+              </div>
+
+              <div>
+                <p class="text-sm text-muted-foreground">Status</p>
+                <p class="font-semibold capitalize">{{ event.status || 'published' }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm space-y-3">
+            <h3 class="text-lg font-bold mb-4">Actions</h3>
+
+            @if (canManageEvents()) {
+              <app-button-helm
+                (click)="editEvent()"
+                variant="outline"
+                class="w-full"
+              >
+                <span class="mr-2">✏️</span>
+                Edit Event
+              </app-button-helm>
+            }
+
+            @if (canRegister() && event.status === 'published') {
+              <app-button-helm
+                (click)="openRegistrationForm()"
+                class="w-full"
+              >
+                <span class="mr-2">✅</span>
+                Register for Event
+              </app-button-helm>
+            }
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="flex items-center justify-center min-h-96">
+        <div class="text-center">
+          <span class="text-6xl opacity-20">⏳</span>
+          <p class="mt-4 text-lg font-medium text-muted-foreground">Loading event...</p>
+        </div>
+      </div>
+    }
+
+    <!-- Registration Modal -->
+    @if (showRegistrationForm()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+        <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border-2 border-border/50 bg-card p-6 shadow-2xl sm:p-8">
+          <div class="mb-6 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <span class="text-2xl">✅</span>
+              </div>
+              <h2 class="text-2xl font-bold">Register for Event</h2>
+            </div>
+            <button
+              type="button"
+              (click)="closeRegistrationForm()"
+              class="rounded-lg p-2 hover:bg-muted transition-colors"
+            >
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <form (ngSubmit)="submitRegistration()" class="space-y-5">
+            <!-- Event Info -->
+            @if (event(); as event) {
+              <div class="rounded-lg bg-muted/50 p-4">
+                <p class="font-semibold">{{ event.title }}</p>
+                <p class="text-sm text-muted-foreground mt-1">{{ event.start_date | date:'medium' }}</p>
+                @if (event.is_paid) {
+                  <p class="text-lg font-bold text-primary mt-2">${{ event.price }} per person</p>
+                }
+              </div>
+            }
+
+            <!-- Number of Attendees -->
+            <div>
+              <label class="text-sm font-medium">Number of Attendees <span class="text-destructive">*</span></label>
+              <app-input-helm
+                [ngModel]="registrationData().number_of_attendees"
+                (ngModelChange)="updateRegistrationField('number_of_attendees', $event)"
+                name="number_of_attendees"
+                type="number"
+                placeholder="Enter number of attendees"
+                required
+                class="mt-2"
+              />
+            </div>
+
+            <!-- Total Cost (if paid) -->
+            @if (event(); as event) {
+              @if (event.is_paid) {
+                <div class="rounded-lg bg-primary/10 border-2 border-primary/20 p-4">
+                  <p class="text-sm font-semibold text-muted-foreground">Total Cost</p>
+                  <p class="text-3xl font-bold text-primary">
+                    ${{ (event.price || 0) * (registrationData().number_of_attendees || 1) }}
+                  </p>
+                </div>
+              }
+            }
+
+            <!-- Info Box -->
+            <div class="rounded-lg bg-muted/50 p-4 text-sm text-muted-foreground">
+              <div class="flex items-start gap-2">
+                <span class="text-lg">💡</span>
+                <p>
+                  @if (event(); as event) {
+                    @if (event.is_paid) {
+                      After registration, you will receive payment instructions to complete your registration.
+                    } @else {
+                      You will receive a confirmation email after registration.
+                    }
+                  }
+                </p>
+              </div>
+            </div>
+
+            <div class="flex gap-3 pt-4 border-t">
+              <app-button-helm
+                type="button"
+                variant="outline"
+                (click)="closeRegistrationForm()"
+                class="flex-1"
+                [disabled]="isRegistering()"
+              >
+                Cancel
+              </app-button-helm>
+              <app-button-helm
+                type="submit"
+                class="flex-1"
+                [disabled]="isRegistering()"
+              >
+                @if (isRegistering()) {
+                  <span>Registering...</span>
+                } @else {
+                  <span>✅ Confirm Registration</span>
+                }
+              </app-button-helm>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
+  </div>
+</div>

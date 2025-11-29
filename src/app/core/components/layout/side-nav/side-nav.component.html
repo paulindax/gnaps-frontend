@@ -1,0 +1,24 @@
+<nav [class]="baseClass()">
+  <div class="mt-4 flex-1 space-y-2 px-4 sm:mt-6 sm:px-5">
+    @for (item of filteredNavItems(); track item.route) {
+      <app-nav-item [item]="item" (navigate)="onNavigate()" />
+    }
+  </div>
+
+  <!-- Collapse Toggle -->
+  <div class="border-t-2 border-gray-200 dark:border-gray-600 p-5 sm:p-6">
+    <app-button-helm
+      variant="ghost"
+      size="icon"
+      class="w-full justify-center"
+      (click)="layoutService.toggleSidebar()"
+      [title]="layoutService.sidebarCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'"
+    >
+      <svg class="h-7 w-7 transition-transform duration-200"
+           [class.rotate-180]="layoutService.sidebarCollapsed()"
+           viewBox="0 0 24 24">
+        <path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+      </svg>
+    </app-button-helm>
+  </div>
+</nav>

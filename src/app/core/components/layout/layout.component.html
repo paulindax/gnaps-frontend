@@ -1,0 +1,14 @@
+<div class="relative min-h-screen bg-white dark:bg-background">
+  <!-- Fixed Header -->
+  <app-header />
+
+  <!-- Fixed Side Nav (Desktop Only) -->
+  @if (isAuthenticated()) {
+    <app-side-nav class="hidden lg:block" />
+  }
+
+  <!-- Main Content -->
+  <main [class]="mainContentClass()">
+    <router-outlet />
+  </main>
+</div>

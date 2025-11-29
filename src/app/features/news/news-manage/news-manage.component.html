@@ -1,0 +1,75 @@
+<div>
+  <!-- Header with Actions -->
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h2 class="text-xl font-semibold sm:text-2xl">Manage News</h2>
+      <p class="mt-1 text-sm text-muted-foreground">Create, edit, and manage news articles</p>
+    </div>
+    <div class="flex gap-3">
+      <app-button-helm (click)="goBack()" variant="outline">
+        ← Back to Portal
+      </app-button-helm>
+      <app-button-helm (click)="createNews()">
+        + Create News
+      </app-button-helm>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="mb-6 flex flex-wrap gap-3">
+    <!-- Status Filter -->
+    <div style="min-width: 200px;">
+      <ng-select
+        [ngModel]="selectedStatus()"
+        (ngModelChange)="onStatusFilter($any($event))"
+        [items]="statusOptions"
+        bindLabel="label"
+        bindValue="value"
+        [clearable]="false"
+        placeholder="All Status"
+        class="custom-ng-select"
+      />
+    </div>
+
+    <!-- Category Filter -->
+    <div style="min-width: 200px;">
+      <ng-select
+        [ngModel]="selectedCategory()"
+        (ngModelChange)="onCategoryFilter($any($event))"
+        [items]="categoryOptions"
+        bindLabel="label"
+        bindValue="value"
+        [clearable]="false"
+        placeholder="All Categories"
+        class="custom-ng-select"
+      />
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <app-data-table
+    [data]="news()"
+    [columns]="tableColumns"
+    [loading]="loading()"
+    [pagination]="paginationData()"
+    [showSearch]="true"
+    [searchQuery]="searchQuery()"
+    searchPlaceholder="Search news by title..."
+    [actions]="tableActions"
+    [showActions]="true"
+    emptyMessage="No news articles found. Click 'Create News' to add one."
+    (pageChange)="onPageChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  @if (showDeleteDialog() && newsToDelete()) {
+    <app-confirm-dialog
+      [show]="showDeleteDialog()"
+      title="Delete News Article"
+      [message]="'Are you sure you want to delete ' + newsToDelete()!.title + '? This action cannot be undone.'"
+      confirmLabel="Delete"
+      confirmClass="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+      (confirm)="confirmDelete()"
+      (cancel)="showDeleteDialog.set(false)" />
+  }
+</div>

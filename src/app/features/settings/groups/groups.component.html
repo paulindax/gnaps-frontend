@@ -1,0 +1,73 @@
+<div>
+  <!-- Header with Create Button -->
+  <div class="mb-6 flex items-center justify-between">
+    <h2 class="text-xl font-semibold sm:text-2xl">Manage Groups</h2>
+    @if (canEdit()) {
+      <app-button-helm (click)="openCreateModal()" [disabled]="loading()">
+        + Create Group
+      </app-button-helm>
+    }
+  </div>
+
+  <!-- Reusable Data Table -->
+  <app-data-table
+    [data]="groups()"
+    [columns]="tableColumns"
+    [loading]="loading()"
+    [pagination]="paginationData()"
+    [showSearch]="true"
+    [searchQuery]="searchQuery()"
+    searchPlaceholder="Search groups by name or description..."
+    [actions]="canEdit() ? tableActions : []"
+    [showActions]="canEdit()"
+    emptyMessage="No groups found. Click 'Create Group' to add one."
+    (pageChange)="onPageChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <!-- Reusable Form Modal -->
+  <app-form-modal
+    [show]="showModal()"
+    [title]="isEditing() ? 'Edit Group' : 'Create Group'"
+    [loading]="loading()"
+    [submitLabel]="isEditing() ? 'Update' : 'Create'"
+    (close)="closeModal()"
+    (submit)="onSubmit()"
+  >
+    <div class="mb-4">
+      <label class="mb-2 block text-sm font-medium">Name *</label>
+      <input
+        type="text"
+        [value]="formData().name"
+        (input)="updateFormField('name', $any($event.target).value)"
+        class="w-full rounded-md border border-border bg-background px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+        placeholder="Enter group name"
+        required
+      />
+    </div>
+
+    <div class="mb-6">
+      <label class="mb-2 block text-sm font-medium">Description</label>
+      <textarea
+        [value]="formData().description"
+        (input)="updateFormField('description', $any($event.target).value)"
+        class="w-full rounded-md border border-border bg-background px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+        placeholder="Enter group description (optional)"
+        rows="3"
+      ></textarea>
+    </div>
+  </app-form-modal>
+
+  <!-- Confirm Delete Dialog -->
+  @if (showDeleteDialog() && groupToDelete()) {
+    <app-confirm-dialog
+      [show]="showDeleteDialog()"
+      title="Delete Group"
+      [message]="'Are you sure you want to delete the group ' + groupToDelete()!.name + '? This action cannot be undone.'"
+      confirmLabel="Delete"
+      confirmClass="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+      (confirm)="confirmDelete()"
+      (cancel)="showDeleteDialog.set(false)"
+    />
+  }
+</div>
