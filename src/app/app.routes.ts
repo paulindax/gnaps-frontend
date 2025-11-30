@@ -15,6 +15,7 @@ import { NewsManageComponent } from './features/news/news-manage/news-manage.com
 import { EventsListComponent } from './features/events/events-list/events-list.component';
 import { EventDetailComponent } from './features/events/event-detail/event-detail.component';
 import { EventFormComponent } from './features/events/event-form/event-form.component';
+import { EventRegisterPublicComponent } from './features/events/event-register-public/event-register-public.component';
 import { DocumentVaultComponent } from './features/documents/document-vault/document-vault.component';
 import { DocumentBuilderComponent } from './features/documents/document-builder/document-builder.component';
 import { DocumentFillComponent } from './features/documents/document-fill/document-fill.component';
@@ -22,6 +23,7 @@ import { SettingsComponent } from './features/settings/settings.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [loginGuard] },
+  { path: 'event-register/:code', component: EventRegisterPublicComponent }, // Public route, no auth required
   {
     path: '',
     component: LayoutComponent,

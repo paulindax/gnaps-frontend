@@ -55,6 +55,7 @@ export interface Event {
   registration_deadline?: string;
   status?: 'draft' | 'published' | 'cancelled' | 'completed';
   image_url?: string;
+  registration_code?: string;
   created_at?: string;
   updated_at?: string;
   registered_count?: number;
@@ -64,9 +65,11 @@ export interface EventRegistration {
   id: number;
   event_id: number;
   school_id: number;
-  registered_by: number;
-  payment_status: 'pending' | 'paid' | 'failed';
+  registered_by?: number;
+  payment_status: 'pending' | 'paid' | 'confirmed' | 'failed';
   payment_reference?: string;
+  payment_method?: 'MTN' | 'TELECEL' | 'AIRTELTIGO';
+  payment_phone?: string;
   registration_date: string;
   number_of_attendees?: number;
   school_name?: string;

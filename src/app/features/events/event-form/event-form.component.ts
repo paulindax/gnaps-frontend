@@ -143,4 +143,18 @@ export class EventFormComponent implements OnInit {
   cancel(): void {
     this.router.navigate(['/events']);
   }
+
+  // Get registration link
+  getRegistrationLink(): string {
+    const code = this.eventData().registration_code;
+    if (!code) return '';
+    return `${window.location.origin}/event-register/${code}`;
+  }
+
+  // Copy link to clipboard
+  copyLink(input: HTMLInputElement): void {
+    input.select();
+    document.execCommand('copy');
+    alert('Registration link copied to clipboard!');
+  }
 }

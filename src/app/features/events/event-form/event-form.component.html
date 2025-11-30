@@ -22,6 +22,50 @@
       </div>
     </div>
 
+    <!-- Registration Link (shown when editing) -->
+    @if (isEditing() && eventData().registration_code) {
+      <div class="rounded-xl border-2 border-green-500/50 bg-green-50/50 p-6 shadow-sm mb-6">
+        <h2 class="text-lg font-bold mb-4 flex items-center gap-2 text-green-800">
+          <span class="text-2xl">🔗</span>
+          Public Registration Link
+        </h2>
+
+        <div class="bg-white rounded-lg p-4 border border-green-200">
+          <div class="flex items-center gap-3">
+            <div class="flex-1">
+              <p class="text-sm text-gray-600 mb-1">Share this link to allow schools to register:</p>
+              <div class="flex items-center gap-2 bg-gray-50 p-3 rounded border border-gray-200">
+                <input
+                  #linkInput
+                  type="text"
+                  [value]="getRegistrationLink()"
+                  readonly
+                  class="flex-1 bg-transparent border-0 text-sm font-mono focus:outline-none"
+                />
+                <button
+                  type="button"
+                  (click)="copyLink(linkInput)"
+                  class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm font-medium flex items-center gap-2"
+                >
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  Copy
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 flex items-center gap-2 text-sm text-gray-600">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Registration Code: <strong>{{ eventData().registration_code }}</strong></span>
+          </div>
+        </div>
+      </div>
+    }
+
     <!-- Form -->
     <form (ngSubmit)="onSubmit()" class="space-y-6">
       <!-- Basic Information Card -->
