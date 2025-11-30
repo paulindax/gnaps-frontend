@@ -74,8 +74,8 @@
             <div class="relative">
               <input
                 type="text"
-                [(ngModel)]="schoolSearchKeyword"
-                (input)="searchSchools()"
+                [ngModel]="schoolSearchKeyword()"
+                (ngModelChange)="schoolSearchKeyword.set($event); searchSchools()"
                 [placeholder]="selectedSchool() ? selectedSchool()!.name : 'Type to search for your school...'"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
@@ -131,7 +131,8 @@
             </label>
             <input
               type="number"
-              [(ngModel)]="registrationData().number_of_attendees"
+              [ngModel]="registrationData().number_of_attendees"
+              (ngModelChange)="updateField('number_of_attendees', $event)"
               min="1"
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
@@ -149,7 +150,8 @@
                     Mobile Money Provider *
                   </label>
                   <select
-                    [(ngModel)]="registrationData().payment_method"
+                    [ngModel]="registrationData().payment_method"
+                    (ngModelChange)="updateField('payment_method', $event)"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   >
                     <option value="">Select provider</option>
@@ -166,7 +168,8 @@
                   </label>
                   <input
                     type="tel"
-                    [(ngModel)]="registrationData().payment_phone"
+                    [ngModel]="registrationData().payment_phone"
+                    (ngModelChange)="updateField('payment_phone', $event)"
                     placeholder="0XX XXX XXXX"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   />
