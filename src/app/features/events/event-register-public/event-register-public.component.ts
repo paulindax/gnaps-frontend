@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PublicEventService } from '../../../core/services/public-event.service';
+import { FlashMessageService } from '../../../core/services/flash-message.service';
 import { Event, EventRegistration, School } from '../../../core/models';
 
 @Component({
@@ -14,6 +15,7 @@ import { Event, EventRegistration, School } from '../../../core/models';
 })
 export class EventRegisterPublicComponent implements OnInit {
   private publicEventService = inject(PublicEventService);
+  private flashMessageService = inject(FlashMessageService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
@@ -49,7 +51,7 @@ export class EventRegisterPublicComponent implements OnInit {
       this.registrationCode.set(code);
       this.loadEvent(code);
     } else {
-      alert('Invalid registration link');
+      this.flashMessageService.error('Invalid registration link');
       this.router.navigate(['/']);
     }
   }
@@ -63,8 +65,9 @@ export class EventRegisterPublicComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading event:', err);
-        alert('Event not found or registration link is invalid');
+        this.flashMessageService.error('Event not found or registration link is invalid');
         this.loading.set(false);
+        this.router.navigate(['/']);
       }
     });
   }
@@ -102,7 +105,7 @@ export class EventRegisterPublicComponent implements OnInit {
 
   validateForm(): boolean {
     if (!this.selectedSchool()) {
-      alert('Please select your school');
+      this.flashMessageService.warning('Please select your school');
       return false;
     }
 
@@ -110,11 +113,11 @@ export class EventRegisterPublicComponent implements OnInit {
     if (event?.is_paid) {
       const data = this.registrationData();
       if (!data.payment_method) {
-        alert('Please select a payment method');
+        this.flashMessageService.warning('Please select a payment method');
         return false;
       }
       if (!data.payment_phone || data.payment_phone.length < 10) {
-        alert('Please enter a valid phone number');
+        this.flashMessageService.warning('Please enter a valid phone number');
         return false;
       }
     }
@@ -136,18 +139,18 @@ export class EventRegisterPublicComponent implements OnInit {
     ).subscribe({
       next: (registration) => {
         this.isSubmitting.set(false);
-        if (event.is_paid) {
-          alert('Registration submitted! Please complete payment using the provided mobile money number.');
-        } else {
-          alert('Registration successful! We look forward to seeing you at the event.');
-        }
+        // Flash message is automatically handled by the interceptor from backend response
         this.router.navigate(['/']);
       },
       error: (err) => {
         console.error('Error submitting registration:', err);
         this.isSubmitting.set(false);
-        const errorMsg = err.error?.error || 'Failed to submit registration';
-        alert(errorMsg);
+        // Flash message is automatically handled by the interceptor from backend error response
+        // But show a generic error if no flash message was provided
+        if (!err.error?.flash_message) {
+          const errorMsg = err.error?.error || 'Failed to submit registration';
+          this.flashMessageService.error(errorMsg);
+        }
       }
     });
   }
