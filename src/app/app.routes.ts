@@ -20,11 +20,12 @@ import { DocumentVaultComponent } from './features/documents/document-vault/docu
 import { DocumentBuilderComponent } from './features/documents/document-builder/document-builder.component';
 import { DocumentFillComponent } from './features/documents/document-fill/document-fill.component';
 import { SettingsComponent } from './features/settings/settings.component';
+import { FinanceComponent } from './features/finance/finance.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [loginGuard] },
   { path: 'event-register/:code', component: EventRegisterPublicComponent }, // Public route, no auth required
-  {
+  { 
     path: '',
     component: LayoutComponent,
     canActivate: [authGuard],
@@ -73,6 +74,21 @@ export const routes: Routes = [
         path: 'settings',
         component: SettingsComponent,
         canActivate: [roleGuard(['system_admin', 'national_admin', 'regional_admin', 'zone_admin'])]
+      },
+      {
+        path: 'finance',
+        component: FinanceComponent,
+        canActivate: [roleGuard(['system_admin', 'national_admin'])],
+        children: [
+          {
+            path: 'bills',
+            loadComponent: () => import('./features/finance/manage-bill/manage-bill.component').then(m => m.ManageBillComponent)
+          },
+          {
+            path: 'bills/:id/items',
+            loadComponent: () => import('./features/finance/bill-items/bill-items.component').then(m => m.BillItemsComponent)
+          }
+        ]
       },
       { path: '', redirectTo: '/dashboard', pathMatch: 'full' }
     ]

@@ -1,72 +1,220 @@
-<!-- <app-loading-bar /> -->
-
-<header class="fixed inset-x-0 top-0 z-40 flex h-20 items-center border-b-2 border-gray-300 bg-white dark:border-gray-600 dark:bg-card px-6 sm:h-20 sm:px-8 lg:h-24 lg:px-10 shadow-sm">
-
-  <!-- Mobile Menu Toggle -->
-  <div class="flex items-center lg:hidden">
-    <app-button-helm
-      variant="ghost"
-      size="icon"
-      (click)="layoutService.toggleMobileMenu()"
-      aria-label="Toggle menu"
-    >
-      <svg class="h-6 w-6 sm:h-7 sm:w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    </app-button-helm>
-  </div>
-
-  <!-- Logo -->
-  <div class="ml-4 flex items-center sm:ml-6 lg:ml-0">
-    <div class="shrink-0">
-      <span class="text-2xl font-bold text-primary sm:text-3xl lg:text-4xl tracking-tight">GNAPS {{ roleDisplay().split(' ')[0] }}</span>
+<!-- Enhanced Professional Header with Gradient Background -->
+<header class="fixed inset-x-0 top-0 z-40 border-b-2 border-gray-200 bg-linear-to-r from-white via-white to-gray-50 dark:border-gray-600 dark:from-card dark:via-card dark:to-card/95 shadow-sm">
+  <!-- Main Header Bar -->
+  <div class="flex h-20 items-center px-6 sm:h-20 sm:px-8 lg:h-24 lg:px-10">
+    <!-- Mobile Menu Toggle -->
+    <div class="flex items-center lg:hidden">
+      <app-button-helm
+        variant="ghost"
+        size="icon"
+        (click)="layoutService.toggleMobileMenu()"
+        aria-label="Toggle menu"
+        class="hover:bg-primary/10"
+      >
+        <svg class="h-7 w-7 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </app-button-helm>
     </div>
-  </div>
 
-  <!-- Spacer -->
-  <div class="flex-1"></div>
-
-  <!-- User Profile & Actions -->
-  <div class="flex items-center gap-4 sm:gap-5">
-    <!-- Theme Toggle -->
-    <app-theme-toggle />
-
-    <!-- User Profile Dropdown -->
-    <app-dropdown-menu [items]="userMenuItems">
-      <div trigger class="flex cursor-pointer items-center gap-3 sm:gap-4 rounded-lg px-3 py-2 hover:bg-accent/50 transition-colors">
-        <div class="hidden text-right md:block">
-          <p class="text-base font-semibold sm:text-lg leading-tight">{{ user()?.first_name }} {{ user()?.last_name }}</p>
-          <p class="text-sm text-muted-foreground sm:text-base mt-1">{{ roleDisplay() }}</p>
-        </div>
-
-        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/15 ring-2 ring-primary/20 sm:h-14 sm:w-14">
-          <span class="text-lg font-bold text-primary sm:text-xl">
-            {{ user()?.first_name?.[0] }}{{ user()?.last_name?.[0] }}
-          </span>
-        </div>
+    <!-- Enhanced Logo -->
+    <a [routerLink]="['/dashboard']" class="ml-4 flex items-center gap-3 sm:ml-6 lg:ml-0 group cursor-pointer">
+      <!-- Logo Image -->
+      <div class="shrink-0 transition-transform group-hover:scale-105">
+        <img
+          src="/gnaps_logo.png"
+          alt="GNAPS Logo"
+          class="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 object-contain rounded-lg shadow-sm"
+        />
       </div>
-    </app-dropdown-menu>
+
+      <!-- Logo Text -->
+      <div class="shrink-0 transition-transform group-hover:scale-105">
+        <h1 class="bg-linear-to-r from-primary via-primary/90 to-primary/70 bg-clip-text text-transparent text-2xl font-bold sm:text-3xl lg:text-4xl tracking-tight">
+          GNAPS
+        </h1>
+        <!-- <p class="hidden sm:block text-xs text-gray-600 dark:text-gray-400 mt-0.5 tracking-wide">
+          {{ roleDisplay() }}
+        </p>  -->
+      </div>
+    </a>
+
+    <!-- Breadcrumbs (Desktop Only) -->
+    @if (breadcrumbs().length > 1) {
+      <nav class="hidden lg:flex items-center ml-24 mt-5 space-x-2" aria-label="Breadcrumb">
+        @for (crumb of breadcrumbs(); track crumb.url; let isLast = $last; let idx = $index) {
+          @if (!isLast) {
+            <a
+              [routerLink]="crumb.url"
+              class="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-primary transition-colors dark:text-gray-400 dark:hover:text-primary"
+            >
+              @if (crumb.icon) {
+                <span class="text-base">{{ crumb.icon }}</span>
+              }
+              <span>{{ crumb.label }}</span>
+            </a>
+            <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          } @else {
+            <span class="flex items-center gap-1.5 text-sm font-semibold text-gray-900 dark:text-gray-100">
+              @if (crumb.icon) {
+                <span class="text-base">{{ crumb.icon }}</span>
+              }
+              <span>{{ crumb.label }}</span>
+            </span>
+          }
+        }
+      </nav>
+    }
+
+    <!-- Spacer -->
+    <div class="flex-1"></div>
+
+    <!-- User Profile & Actions -->
+    <div class="flex items-center gap-3 sm:gap-4">
+      <!-- Notification Bell (Future-Ready) -->
+      <button
+        class="hidden md:flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative"
+        aria-label="Notifications"
+        title="Notifications (Coming Soon)"
+      >
+        <!-- <svg class="h-5 w-5 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg> -->
+        <!-- Future: Notification badge -->
+        <!-- <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-gray-900"></span> -->
+      </button>
+
+      <!-- Theme Toggle -->
+      <app-theme-toggle />
+
+      <!-- User Profile Dropdown -->
+      <div class="relative">
+        <div
+          (click)="toggleProfileDropdown($event)"
+          class="flex cursor-pointer items-center gap-3 sm:gap-4 rounded-xl px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+        >
+          <div class="hidden text-right md:block">
+            <p class="text-base font-semibold sm:text-lg leading-tight text-gray-900 dark:text-gray-100">
+              {{ user()?.first_name }} {{ user()?.last_name }}
+            </p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 sm:text-base mt-0.5">
+              {{ roleDisplay() }}
+            </p>
+          </div>
+
+          <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 ring-2 ring-primary/20 sm:h-14 sm:w-14 shadow-sm">
+            <span class="text-lg font-bold text-white sm:text-xl">
+              {{ user()?.first_name?.[0] }}{{ user()?.last_name?.[0] }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Reusable Dropdown Menu Component -->
+        <app-dropdown-menu
+          [isOpen]="profileDropdownOpen()"
+          [items]="getUserMenuItems()"
+          [triggerElement]="dropdownTrigger()"
+          (close)="closeProfileDropdown()"
+          (itemClick)="handleProfileMenuAction($event)"
+        />
+      </div>
+    </div>
   </div>
 </header>
 
-<!-- Mobile Menu Sheet -->
+<!-- Enhanced Mobile Menu Sheet -->
 <app-sheet
   [open]="layoutService.mobileMenuOpen()"
-  title="Navigation"
+  title="Navigation Menu"
   (close)="layoutService.closeMobileMenu()"
 >
-  <div class="space-y-4 py-2">
-    <!-- Theme Toggle for Mobile -->
-    <div class="flex items-center justify-between border-b border-border px-2 pb-4">
-      <span class="text-base font-medium">Theme</span>
+  <div class="space-y-6 py-4">
+    <!-- User Profile Card (Mobile) -->
+    <div class="flex items-center gap-4 border-b border-gray-200 dark:border-gray-700 pb-6 px-2">
+      <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 shadow-md">
+        <span class="text-2xl font-bold text-white">
+          {{ user()?.first_name?.[0] }}{{ user()?.last_name?.[0] }}
+        </span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-lg font-bold text-gray-900 dark:text-gray-100 truncate">
+          {{ user()?.first_name }} {{ user()?.last_name }}
+        </p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 truncate">
+          {{ roleDisplay() }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 px-2 pb-4">
+      <div class="flex items-center gap-2">
+        <svg class="h-5 w-5 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+        <span class="text-base font-medium text-gray-900 dark:text-gray-100">Theme</span>
+      </div>
       <app-theme-toggle />
     </div>
 
-    <!-- Navigation -->
-    <nav class="space-y-1">
-      @for (item of navItems(); track item.route) {
-        <app-nav-item [item]="item" (navigate)="layoutService.closeMobileMenu()"/>
-      }
+    <!-- Navigation by Category -->
+    <nav class="space-y-6">
+      <!-- Main Navigation -->
+      <div>
+        <h3 class="px-2 mb-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+          Main
+        </h3>
+        <div class="space-y-1">
+          @for (item of navItems(); track item.route) {
+            @if (item.label === 'Dashboard' || item.label === 'Schools' || item.label === 'Payments') {
+              <app-nav-item [item]="item" (navigate)="layoutService.closeMobileMenu()"/>
+            }
+          }
+        </div>
+      </div>
+
+      <!-- Content Navigation -->
+      <div>
+        <h3 class="px-2 mb-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+          Content
+        </h3>
+        <div class="space-y-1">
+          @for (item of navItems(); track item.route) {
+            @if (item.label === 'News' || item.label === 'Events' || item.label === 'Documents') {
+              <app-nav-item [item]="item" (navigate)="layoutService.closeMobileMenu()"/>
+            }
+          }
+        </div>
+      </div>
+
+      <!-- System Navigation -->
+      <div>
+        <h3 class="px-2 mb-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+          System
+        </h3>
+        <div class="space-y-1">
+          @for (item of navItems(); track item.route) {
+            @if (item.label === 'Finance' || item.label === 'Settings') {
+              <app-nav-item [item]="item" (navigate)="layoutService.closeMobileMenu()"/>
+            }
+          }
+        </div>
+      </div>
     </nav>
+
+    <!-- Quick Logout Button -->
+    <div class="border-t border-gray-200 dark:border-gray-700 pt-4 px-2">
+      <button
+        (click)="logout(); layoutService.closeMobileMenu()"
+        class="flex w-full items-center gap-3 rounded-lg bg-red-50 dark:bg-red-900/20 px-4 py-3 text-left text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+      >
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        <span class="font-semibold">Logout</span>
+      </button>
+    </div>
   </div>
 </app-sheet>

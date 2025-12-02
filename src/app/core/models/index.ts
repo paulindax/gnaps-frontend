@@ -87,6 +87,12 @@ export interface Payment {
   paid_at?: string;
 }
 
+export interface SchoolBalance {
+  balance: number;
+  has_balance: boolean;
+  bill_id?: number;
+}
+
 export interface News {
   id: number;
   title: string;
@@ -216,4 +222,62 @@ export interface DocumentSubmission {
   document_title?: string;
   school_name?: string;
   submitter_name?: string;
+}
+
+export interface FinanceAccount {
+  id: number;
+  name: string;
+  code: string;
+  description?: string;
+  account_type: string;
+  is_income: boolean;
+  is_deleted: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BillParticular {
+  id: number;
+  name: string;
+  priority?: number;
+  finance_account_id?: number;
+  finance_account_name?: string;
+  is_arrears: boolean;
+  is_deleted: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Bill {
+  id: number;
+  name: string;
+  description?: string;
+  is_deleted?: boolean;
+  is_approved?: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BillItem {
+  id: number;
+  bill_id: number;
+  bill_particular_id: number;
+  amount: number;
+  is_deleted?: boolean;
+  created_at: string;
+  updated_at: string;
+  bill_particular?: BillParticular;
+  region_ids?: number[];
+  zone_ids?: number[];
+  school_group_ids?: number[];
+  school_ids?: number[];
+}
+
+export interface BillAssignment {
+  id: number;
+  bill_item_id: number;
+  entity_type: 'region' | 'zone' | 'group' | 'school';
+  entity_id: number;
+  created_at: string;
+  updated_at: string;
 }
