@@ -1,14 +1,32 @@
-<div class="w-full min-h-screen bg-background">
-  <div class="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
-    <!-- Header -->
-    <!-- <div class="mb-8 sm:mb-10 lg:mb-12">
-      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-        <h1 class="text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl">Dashboard</h1>
-        <app-button-helm variant="secondary" (click)="logout()" class="w-full sm:w-auto">
-          Logout
-        </app-button-helm>
+<!-- Enhanced Professional Dashboard --><div class="min-h-screen bg-linear-to-br from-background via-background to-muted/30">
+  <div class="w-full px-4 py-6 sm:px-6 lg:px-8">
+
+    <!-- Enhanced Welcome Banner with Rose Gradient -->
+    <!-- @if (role(); as userRole) {
+      <div class="mb-6 lg:mb-8">
+        <div class="overflow-hidden rounded-2xl border-2 border-rose-200/50 dark:border-rose-900/30 bg-linear-to-br from-rose-50 via-rose-100/50 to-rose-50 dark:from-rose-950/40 dark:via-rose-900/20 dark:to-rose-950/40 shadow-xl">
+          <div class="px-6 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-muted">
+                <span class="text-3xl">👋</span>
+              </div>
+              <div>
+                <h1 class="text-3xl font-bold text-foreground lg:text-4xl tracking-tight">Welcome Back!</h1>
+                <p class="mt-1 text-lg text-muted-foreground lg:text-xl font-medium">
+                  {{ getRoleDisplayName(userRole) }}
+                </p>
+              </div>
+            </div>
+            <p class="text-base text-rose-600 dark:text-rose-400 flex items-center gap-2">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              {{ getCurrentDate() }}
+            </p>
+          </div>
+        </div>
       </div>
-    </div> -->
+    } -->
 
     <!-- Dynamic Dashboard Based on Role -->
     @if (role(); as userRole) {
@@ -33,114 +51,387 @@
       </div>
     }
 
-    <!-- Association News Alerts -->
-    <!-- @if (recentNews().length > 0) { -->
-      <div class="mt-8 rounded-lg border-2 border-border bg-card p-5 shadow-sm sm:mt-10 sm:p-6 lg:p-8">
-        <div class="mb-4 flex items-center justify-between sm:mb-5">
-          <h3 class="text-lg font-semibold sm:text-xl lg:text-2xl">📰 Association News</h3>
-          <app-button-helm routerLink="/news" variant="ghost" size="sm">
-            View All
-          </app-button-helm>
+    <!-- Enhanced Association News -->
+    <div class="mt-8">
+      <div class="mb-6 flex items-center justify-between">
+        <h2 class="text-2xl font-bold tracking-tight lg:text-3xl bg-linear-to-r from-foreground to-foreground/70 bg-clip-text">
+          <span class="mr-2">📰</span>Latest News
+        </h2>
+        <app-button-helm routerLink="/news" variant="outline" size="sm" class="shadow-sm hover:shadow-md transition-shadow">
+          View All →
+        </app-button-helm>
+      </div>
+
+      @if (newsLoading()) {
+        <div class="flex items-center justify-center py-16 rounded-2xl border-2 border-border/50 bg-card">
+          <div class="text-center">
+            <div class="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+            <p class="mt-4 text-muted-foreground">Loading news...</p>
+          </div>
         </div>
-        <div class="space-y-4 sm:space-y-5">
+      } @else if (newsError()) {
+        <div class="rounded-2xl border-2 border-red-200 dark:border-red-900/30 bg-red-50 dark:bg-red-900/10 p-8 text-center">
+          <div class="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20 mx-auto mb-4">
+            <span class="text-4xl">⚠️</span>
+          </div>
+          <p class="text-red-600 dark:text-red-400 font-medium">Failed to load news. Please try again later.</p>
+        </div>
+      } @else if (recentNews().length > 0) {
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           @for (item of recentNews(); track item.id) {
-            <article class="rounded-lg border border-border bg-background p-4 transition-shadow hover:shadow-md sm:p-5">
-              <div class="flex items-start gap-3 sm:gap-4">
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 sm:h-12 sm:w-12">
-                  <span class="text-xl sm:text-2xl">📰</span>
+            <article class="group overflow-hidden rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 shadow-sm transition-all hover:shadow-md">
+              <div class="p-6">
+                <div class="mb-4 flex items-start gap-3">
+                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+                    <span class="text-2xl">📰</span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-lg font-bold line-clamp-2">
+                      {{ item.title }}
+                    </h3>
+                  </div>
                 </div>
-                <div class="flex-1">
-                  <h4 class="mb-2 text-base font-semibold sm:text-lg">{{ item.title }}</h4>
-                  <p class="mb-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                    {{ item.content }}
-                  </p>
-                  <time class="text-xs text-muted-foreground sm:text-sm">
-                    {{ item.created_at | date: 'medium' }}
+                <p class="mb-4 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+                  {{ item.content }}
+                </p>
+                <div class="flex items-center justify-between pt-4 border-t border-border/50">
+                  <time class="text-xs text-muted-foreground flex items-center gap-1">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    {{ item.created_at | date: 'MMM d, y' }}
                   </time>
+                  <a [routerLink]="['/news']" class="text-sm font-semibold text-primary hover:text-primary/80 transition-colors">
+                    Read more →
+                  </a>
                 </div>
               </div>
             </article>
           }
         </div>
-      </div>
-    <!-- } -->
+      } @else {
+        <div class="rounded-2xl border-2 border-border/50 bg-card p-12 text-center">
+          <div class="flex h-20 w-20 items-center justify-center rounded-full bg-muted/30 mx-auto mb-4">
+            <span class="text-5xl opacity-50">📰</span>
+          </div>
+          <p class="text-muted-foreground font-medium">No news available at the moment.</p>
+        </div>
+      }
+    </div>
 
-    <!-- Quick Actions -->
-    <div class="mt-8 rounded-lg border border-border bg-card p-5 shadow-sm sm:mt-10 sm:p-6 lg:p-8">
-      <h3 class="mb-4 text-lg font-semibold sm:mb-5 sm:text-xl lg:text-2xl">Quick Actions</h3>
-      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:flex lg:flex-wrap lg:gap-4">
+    <!-- Enhanced Quick Actions -->
+    <div class="mt-8">
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold tracking-tight lg:text-3xl bg-linear-to-r from-foreground to-foreground/70 bg-clip-text">
+          <span class="mr-2">⚡</span>Quick Actions
+        </h2>
+        <p class="mt-2 text-sm text-muted-foreground">Common tasks and shortcuts</p>
+      </div>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         @if (role() === 'system_admin' || role() === 'national_admin' || role() === 'regional_admin' || role() === 'zone_admin') {
-          <app-button-helm routerLink="/schools" class="w-full lg:w-auto">
-            Manage Schools
-          </app-button-helm>
+          <a routerLink="/schools" class="group flex items-center gap-4 rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-5 shadow-sm transition-all hover:shadow-md">
+            <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+              <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <span class="text-lg font-bold block">Manage Schools</span>
+              <span class="text-xs text-muted-foreground">View and edit schools</span>
+            </div>
+          </a>
         }
         @if (role() === 'school_user') {
-          <app-button-helm routerLink="/payments" class="w-full lg:w-auto">
-            View Payments
-          </app-button-helm>
+          <a routerLink="/payments" class="group flex items-center gap-4 rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-green-500/5 p-5 shadow-sm transition-all hover:shadow-md">
+            <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-colors">
+              <svg class="h-7 w-7 text-green-600 dark:text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <span class="text-lg font-bold block">View Payments</span>
+              <span class="text-xs text-muted-foreground">Track your payments</span>
+            </div>
+          </a>
         }
-        <app-button-helm routerLink="/news" class="w-full lg:w-auto">
-          View News
-        </app-button-helm>
+        <a routerLink="/news" class="group flex items-center gap-4 rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-5 shadow-sm transition-all hover:shadow-md">
+          <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <span class="text-lg font-bold block">View News</span>
+            <span class="text-xs text-muted-foreground">Latest updates</span>
+          </div>
+        </a>
+        <a routerLink="/events" class="group flex items-center gap-4 rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-5 shadow-sm transition-all hover:shadow-md">
+          <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <span class="text-lg font-bold block">Events</span>
+            <span class="text-xs text-muted-foreground">Upcoming events</span>
+          </div>
+        </a>
+        @if (role() === 'system_admin' || role() === 'national_admin') {
+          <a routerLink="/settings" class="group flex items-center gap-4 rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-5 shadow-sm transition-all hover:shadow-md">
+            <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+              <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <span class="text-lg font-bold block">Settings</span>
+              <span class="text-xs text-muted-foreground">Configure system</span>
+            </div>
+          </a>
+        }
       </div>
     </div>
   </div>
 </div>
 
-<!-- Role-Based Templates -->
+<!-- Role-Based Templates with Enhanced Professional Cards -->
 <ng-template #systemAdminView>
-  <div class="space-y-5 sm:space-y-6 lg:space-y-8">
-    <h2 class="text-xl font-semibold tracking-tight sm:text-2xl lg:text-3xl">System Administrator</h2>
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-6">
-      <app-card-helm title="Regions" [value]="stats()?.total_regions || 0" icon="🗺️" />
-      <app-card-helm title="Zones" [value]="stats()?.total_zones || 0" icon="📍" />
-      <app-card-helm title="Schools" [value]="stats()?.total_schools || 0" icon="🏫" />
-      <app-card-helm title="Executives" [value]="stats()?.total_executives || 0" icon="👥" />
-      
-      
+  <div class="space-y-6">
+    <h2 class="text-2xl font-bold tracking-tight lg:text-3xl bg-linear-to-r from-foreground to-foreground/70 bg-clip-text">
+      <span class="mr-2">📊</span>System Overview
+    </h2>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <!-- Regions Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Regions</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_regions || 0 }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <span class="text-3xl">🗺️</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zones Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Zones</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_zones || 0 }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <span class="text-3xl">📍</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schools Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Schools</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_schools || 0 }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <span class="text-3xl">🏫</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Executives Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Executives</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_executives || 0 }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <span class="text-3xl">👥</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </ng-template>
 
 <ng-template #nationalView>
-  <div class="space-y-5 sm:space-y-6 lg:space-y-8">
-    <h2 class="text-xl font-semibold tracking-tight sm:text-2xl lg:text-3xl">National Overview</h2>
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-6">
-      <app-card-helm title="Regions" [value]="stats()?.total_regions || 0" icon="🗺️" />
-      <app-card-helm title="Zones" [value]="stats()?.total_zones || 0" icon="📍" />
-      <app-card-helm title="Schools" [value]="stats()?.total_schools || 0" icon="🏫" />
-      <app-card-helm title="Payments" [value]="stats()?.recent_payments || 0" icon="💳" />
+  <div class="space-y-6">
+    <h2 class="text-2xl font-bold tracking-tight lg:text-3xl bg-linear-to-r from-foreground to-foreground/70 bg-clip-text">
+      <span class="mr-2">🇬🇭</span>National Overview
+    </h2>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <!-- Regions Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Regions</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_regions || 0 }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <span class="text-3xl">🗺️</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zones Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Zones</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_zones || 0 }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <span class="text-3xl">📍</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schools Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Schools</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_schools || 0 }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <span class="text-3xl">🏫</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payments Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-green-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Recent Payments</p>
+            <h3 class="mt-2 text-4xl font-bold text-green-600 dark:text-green-500">{{ stats()?.recent_payments || 0 }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-colors">
+            <span class="text-3xl">💳</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </ng-template>
 
 <ng-template #regionalView>
-  <div class="space-y-5 sm:space-y-6 lg:space-y-8">
-    <h2 class="text-xl font-semibold tracking-tight sm:text-2xl lg:text-3xl">Regional Overview</h2>
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
-      <app-card-helm title="Total Zones" [value]="stats()?.total_zones || 0" icon="📍" />
-      <app-card-helm title="Total Schools" [value]="stats()?.total_schools || 0" icon="🏫" />
-      <app-card-helm title="Pending Bills" [value]="stats()?.pending_bills || 0" icon="💰" />
+  <div class="space-y-6">
+    <h2 class="text-2xl font-bold tracking-tight lg:text-3xl bg-linear-to-r from-foreground to-foreground/70 bg-clip-text">
+      <span class="mr-2">🏛️</span>Regional Overview
+    </h2>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <!-- Total Zones Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Zones</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_zones || 0 }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <span class="text-3xl">📍</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Schools Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Schools</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_schools || 0 }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <span class="text-3xl">🏫</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Bills Card (Warning state) -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-amber-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Pending Bills</p>
+            <h3 class="mt-2 text-4xl font-bold text-amber-600 dark:text-amber-500">{{ stats()?.pending_bills || 0 }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/10 group-hover:bg-amber-500/20 transition-colors">
+            <span class="text-3xl">💰</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </ng-template>
 
 <ng-template #zoneView>
-  <div class="space-y-5 sm:space-y-6 lg:space-y-8">
-    <h2 class="text-xl font-semibold tracking-tight sm:text-2xl lg:text-3xl">Zone Overview</h2>
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
-      <app-card-helm title="Total Schools" [value]="stats()?.total_schools || 0" icon="🏫" />
-      <app-card-helm title="Active Schools" [value]="stats()?.pending_bills || 0" icon="✅" />
+  <div class="space-y-6">
+    <h2 class="text-2xl font-bold tracking-tight lg:text-3xl bg-linear-to-r from-foreground to-foreground/70 bg-clip-text">
+      <span class="mr-2">🎯</span>Zone Overview
+    </h2>
+    <div class="grid gap-4 sm:grid-cols-2 lg:gap-6">
+      <!-- Total Schools Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Schools</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_schools || 0 }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <span class="text-3xl">🏫</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Schools Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-green-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Active Schools</p>
+            <h3 class="mt-2 text-4xl font-bold text-green-600 dark:text-green-500">{{ stats()?.pending_bills || 0 }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-colors">
+            <span class="text-3xl">✅</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </ng-template>
 
 <ng-template #schoolView>
-  <div class="space-y-5 sm:space-y-6 lg:space-y-8">
-    <h2 class="text-xl font-semibold tracking-tight sm:text-2xl lg:text-3xl">School Overview</h2>
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
-      <app-card-helm title="Total Paid" [value]="(stats()?.total_payments || 0) | currency" icon="✅" />
-      <app-card-helm title="Outstanding" [value]="(stats()?.outstanding_amount || 0) | currency" icon="⚠️" />
+  <div class="space-y-6">
+    <h2 class="text-2xl font-bold tracking-tight lg:text-3xl bg-linear-to-r from-foreground to-foreground/70 bg-clip-text">
+      <span class="mr-2">🏫</span>School Overview
+    </h2>
+    <div class="grid gap-4 sm:grid-cols-2 lg:gap-6">
+      <!-- Total Paid Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-green-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Paid</p>
+            <h3 class="mt-2 text-4xl font-bold text-green-600 dark:text-green-500">{{ (stats()?.total_payments || 0) | currency }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-colors">
+            <span class="text-3xl">✅</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Outstanding Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-red-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Outstanding</p>
+            <h3 class="mt-2 text-4xl font-bold text-red-600 dark:text-red-500">{{ (stats()?.outstanding_amount || 0) | currency }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-colors">
+            <span class="text-3xl">⚠️</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </ng-template>

@@ -18,6 +18,8 @@ export class NewsListComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
 
+  protected readonly Math = Math;
+
   // Signals
   news = signal<News[]>([]);
   featuredNews = signal<News[]>([]);

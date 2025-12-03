@@ -1,88 +1,174 @@
-<div class="w-full min-h-screen bg-background p-6">
-  <div class="mx-auto max-w-7xl">
-    <!-- Header -->
-    <div class="mb-8 flex items-center justify-between">
-      <div>
-        <h1 class="text-3xl font-bold tracking-tight">Document Vault</h1>
-        <p class="mt-2 text-sm text-muted-foreground">
-          Manage and access official documents and forms
-        </p>
+<!-- Enhanced Document Vault with Rose Theme and Shadcn Styling -->
+<div class="min-h-screen bg-linear-to-br from-background via-background to-muted/30">
+  <div class="w-full px-4 py-6 sm:px-6 lg:px-8">
+    <!-- Page Header -->
+    <div class="mb-6 lg:mb-8">
+      <div class="overflow-hidden rounded-2xl border-2 border-border/50 bg-card shadow-md">
+        <div class="px-6 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex items-center gap-4">
+              <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-muted">
+                <span class="text-3xl">📁</span>
+              </div>
+              <div>
+                <h1 class="text-3xl font-bold text-foreground lg:text-4xl tracking-tight">
+                  Document Vault
+                </h1>
+                <p class="mt-2 text-base text-muted-foreground lg:text-lg">
+                  Manage and access official documents and forms
+                </p>
+              </div>
+            </div>
+            @if (canManageDocuments()) {
+              <button
+                (click)="createDocument()"
+                class="inline-flex items-center gap-2 rounded-xl border-2 border-rose-600 hover:border-rose-700 bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 px-6 py-3.5 text-base font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 shadow-sm hover:shadow-md transition-all"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                Create Document
+              </button>
+            }
+          </div>
+        </div>
       </div>
-      @if (canManageDocuments()) {
-        <button
-          (click)="createDocument()"
-          class="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-        >
-          <svg class="inline-block w-5 h-5 mr-2 -mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
-          Create Document
-        </button>
-      }
     </div>
 
-    <!-- Filters -->
-    <div class="mb-6 flex flex-wrap gap-4">
-      <!-- Category Filter -->
-      <div class="flex gap-2">
-        <button
-          (click)="filterByCategory('all')"
-          [class.bg-primary]="selectedCategory() === 'all'"
-          [class.text-primary-foreground]="selectedCategory() === 'all'"
-          [class.bg-muted]="selectedCategory() !== 'all'"
-          class="rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-primary/90"
-        >
-          All Categories
-        </button>
-        @for (category of categories; track category) {
-          <button
-            (click)="filterByCategory(category)"
-            [class.bg-primary]="selectedCategory() === category"
-            [class.text-primary-foreground]="selectedCategory() === category"
-            [class.bg-muted]="selectedCategory() !== category"
-            class="rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-primary/90"
-          >
-            {{ category }}
-          </button>
-        }
+    <!-- Statistics Cards Grid -->
+    <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:mb-8">
+      <!-- Total Documents Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Documents</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ documents().length }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+            <span class="text-3xl">📄</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Status Filter -->
-      <div class="flex gap-2 ml-auto">
-        <button
-          (click)="filterByStatus('all')"
-          [class.bg-primary]="selectedStatus() === 'all'"
-          [class.text-primary-foreground]="selectedStatus() === 'all'"
-          [class.bg-muted]="selectedStatus() !== 'all'"
-          class="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-        >
-          All
-        </button>
-        <button
-          (click)="filterByStatus('published')"
-          [class.bg-primary]="selectedStatus() === 'published'"
-          [class.text-primary-foreground]="selectedStatus() === 'published'"
-          [class.bg-muted]="selectedStatus() !== 'published'"
-          class="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-        >
-          Published
-        </button>
-        <button
-          (click)="filterByStatus('draft')"
-          [class.bg-primary]="selectedStatus() === 'draft'"
-          [class.text-primary-foreground]="selectedStatus() === 'draft'"
-          [class.bg-muted]="selectedStatus() !== 'draft'"
-          class="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-        >
-          Draft
-        </button>
+      <!-- Published Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Published</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ publishedCount() }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+            <span class="text-3xl">✅</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Draft Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Drafts</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ draftCount() }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+            <span class="text-3xl">📝</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Categories</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ categories.length }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+            <span class="text-3xl">🗂️</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="mb-6 rounded-2xl border-2 border-border/50 bg-card shadow-sm p-6">
+      <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+        <span class="text-xl">🔍</span>
+        Filter Documents
+      </h3>
+
+      <!-- Category Filters -->
+      <div class="mb-5">
+        <label class="text-sm font-semibold mb-3 block">Category</label>
+        <div class="flex flex-wrap gap-2">
+          <button
+            (click)="filterByCategory('all')"
+            [class]="selectedCategory() === 'all'
+              ? 'inline-flex items-center gap-1.5 rounded-lg bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-rose-600 transition-all duration-200 hover:bg-rose-700 hover:shadow-md'
+              : 'inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gray-900 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-md'"
+          >
+            All Categories
+          </button>
+          @for (category of categories; track category) {
+            <button
+              (click)="filterByCategory(category)"
+              [class]="selectedCategory() === category
+                ? 'inline-flex items-center gap-1.5 rounded-lg bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-rose-600 transition-all duration-200 hover:bg-rose-700 hover:shadow-md'
+                : 'inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gray-900 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-md'"
+            >
+              {{ category }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Status Filters -->
+      <div>
+        <label class="text-sm font-semibold mb-3 block">Status</label>
+        <div class="flex flex-wrap gap-2">
+          <button
+            (click)="filterByStatus('all')"
+            [class]="selectedStatus() === 'all'
+              ? 'inline-flex items-center gap-1.5 rounded-lg bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-rose-600 transition-all duration-200 hover:bg-rose-700 hover:shadow-md'
+              : 'inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gray-900 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-md'"
+          >
+            All Status
+          </button>
+          <button
+            (click)="filterByStatus('published')"
+            [class]="selectedStatus() === 'published'
+              ? 'inline-flex items-center gap-1.5 rounded-lg bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-rose-600 transition-all duration-200 hover:bg-rose-700 hover:shadow-md'
+              : 'inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gray-900 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-md'"
+          >
+            Published
+          </button>
+          <button
+            (click)="filterByStatus('draft')"
+            [class]="selectedStatus() === 'draft'
+              ? 'inline-flex items-center gap-1.5 rounded-lg bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-rose-600 transition-all duration-200 hover:bg-rose-700 hover:shadow-md'
+              : 'inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gray-900 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-md'"
+          >
+            Draft
+          </button>
+          <button
+            (click)="filterByStatus('archived')"
+            [class]="selectedStatus() === 'archived'
+              ? 'inline-flex items-center gap-1.5 rounded-lg bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-rose-600 transition-all duration-200 hover:bg-rose-700 hover:shadow-md'
+              : 'inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gray-900 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-md'"
+          >
+            Archived
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Loading State -->
     @if (loading()) {
-      <div class="flex justify-center items-center h-64">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div class="rounded-2xl border-2 border-border/50 bg-card shadow-sm p-12">
+        <div class="flex flex-col items-center justify-center">
+          <div class="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-rose-600 border-r-transparent"></div>
+          <p class="mt-4 text-muted-foreground">Loading documents...</p>
+        </div>
       </div>
     }
 
@@ -90,37 +176,51 @@
     @if (!loading()) {
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         @for (doc of documents(); track doc.id) {
-          <div class="group rounded-lg border border-border bg-card p-6 shadow-sm transition-all hover:shadow-md">
+          <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-all">
             <!-- Header -->
             <div class="mb-4 flex items-start justify-between">
-              <div class="flex-1">
-                <h3 class="font-semibold text-lg line-clamp-1">{{ doc.title }}</h3>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-bold text-lg line-clamp-2">{{ doc.title }}</h3>
                 @if (doc.category) {
-                  <p class="mt-1 text-xs text-muted-foreground">{{ doc.category }}</p>
+                  <p class="mt-1 text-sm text-rose-600 dark:text-rose-400 font-medium">{{ doc.category }}</p>
                 }
               </div>
-              <span [class]="getStatusBadgeClass(doc.status)" class="ml-2 rounded-full px-2 py-1 text-xs font-medium">
+              <span
+                [class.bg-green-100]="doc.status === 'published'"
+                [class.text-green-800]="doc.status === 'published'"
+                [class.dark:bg-green-900/30]="doc.status === 'published'"
+                [class.dark:text-green-300]="doc.status === 'published'"
+                [class.border-border]="doc.status === 'draft'"
+                [class.text-muted-foreground]="doc.status === 'draft'"
+                [class.bg-red-100]="doc.status === 'archived'"
+                [class.text-red-800]="doc.status === 'archived'"
+                [class.dark:bg-red-900/30]="doc.status === 'archived'"
+                [class.dark:text-red-300]="doc.status === 'archived'"
+                class="ml-3 shrink-0 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide"
+              >
                 {{ doc.status }}
               </span>
             </div>
 
             <!-- Description -->
             @if (doc.description) {
-              <p class="mb-4 text-sm text-muted-foreground line-clamp-2">
+              <p class="mb-5 text-sm text-muted-foreground line-clamp-3">
                 {{ doc.description }}
               </p>
             }
 
             <!-- Stats -->
-            <div class="mb-4 flex items-center gap-4 text-sm text-muted-foreground">
-              <div class="flex items-center gap-1">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <span>{{ doc.submission_count || 0 }} submissions</span>
+            <div class="mb-5 flex items-center gap-4 text-sm">
+              <div class="flex items-center gap-2 text-muted-foreground">
+                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40">
+                  <svg class="w-4 h-4 text-rose-600 dark:text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <span class="font-semibold">{{ doc.submission_count || 0 }} submissions</span>
               </div>
               @if (doc.is_required) {
-                <span class="rounded-full bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-800">
+                <span class="rounded-full bg-orange-100 dark:bg-orange-900/30 px-3 py-1 text-xs font-bold text-orange-800 dark:text-orange-300 uppercase tracking-wide">
                   Required
                 </span>
               }
@@ -131,44 +231,78 @@
               @if (canManageDocuments()) {
                 <button
                   (click)="editDocument(doc)"
-                  class="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium transition-colors hover:bg-accent"
+                  class="flex-1 rounded-xl border-2 border-border/50 bg-background hover:bg-muted px-3 py-2.5 text-sm font-semibold transition-all shadow-sm hover:shadow-md"
                 >
-                  Edit
+                  ✏️ Edit
                 </button>
                 <button
                   (click)="viewSubmissions(doc)"
-                  class="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium transition-colors hover:bg-accent"
+                  class="flex-1 rounded-xl border-2 border-border/50 bg-background hover:bg-muted px-3 py-2.5 text-sm font-semibold transition-all shadow-sm hover:shadow-md"
                 >
-                  Submissions
+                  📊 Submissions
                 </button>
                 <button
-                  (click)="deleteDocument(doc)"
-                  class="rounded-lg border border-destructive bg-background px-3 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground"
+                  (click)="openDeleteDialog(doc)"
+                  class="rounded-xl border-2 border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/20 hover:bg-red-100 dark:hover:bg-red-900/30 px-3 py-2.5 text-red-600 dark:text-red-400 transition-all shadow-sm hover:shadow-md"
                 >
-                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 </button>
               } @else {
                 <button
                   (click)="fillDocument(doc)"
-                  class="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                  class="flex-1 rounded-xl border-2 border-rose-600 hover:border-rose-700 bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 px-4 py-2.5 text-sm font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 transition-all shadow-sm hover:shadow-md"
                 >
-                  Fill Form
+                  📝 Fill Form
                 </button>
               }
             </div>
           </div>
         } @empty {
-          <div class="col-span-full flex flex-col items-center justify-center py-12">
-            <svg class="w-16 h-16 text-muted-foreground mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <p class="text-lg font-medium text-muted-foreground">No documents found</p>
-            <p class="text-sm text-muted-foreground mt-1">Create your first document to get started</p>
+          <!-- Empty State -->
+          <div class="col-span-full rounded-2xl border-2 border-border/50 bg-card p-12 shadow-sm">
+            <div class="flex flex-col items-center justify-center text-center">
+              <div class="flex h-20 w-20 items-center justify-center rounded-full bg-muted/30 mb-4">
+                <span class="text-5xl opacity-50">📁</span>
+              </div>
+              <h3 class="text-xl font-bold text-foreground mb-2">No documents found</h3>
+              <p class="text-base text-muted-foreground mb-6">
+                @if (selectedCategory() !== 'all' || selectedStatus() !== 'all') {
+                  Try adjusting your filters or create your first document
+                } @else {
+                  Create your first document to get started
+                }
+              </p>
+              @if (canManageDocuments()) {
+                <button
+                  (click)="createDocument()"
+                  class="inline-flex items-center gap-2 rounded-xl border-2 border-rose-600 hover:border-rose-700 bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 px-6 py-3 text-base font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 shadow-sm hover:shadow-md transition-all"
+                >
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                  </svg>
+                  Create First Document
+                </button>
+              }
+            </div>
           </div>
         }
       </div>
     }
   </div>
 </div>
+
+<!-- Confirm Delete Dialog -->
+@if (showDeleteDialog()) {
+  <app-confirm-dialog
+    [show]="true"
+    title="Delete Document"
+    [message]="'Are you sure you want to delete ' + (documentToDelete()?.title || 'this document') + '? This action cannot be undone.'"
+    confirmLabel="Delete"
+    cancelLabel="Cancel"
+    confirmClass="bg-red-600 text-white hover:bg-red-700"
+    (confirm)="confirmDelete()"
+    (cancel)="cancelDelete()"
+  />
+}

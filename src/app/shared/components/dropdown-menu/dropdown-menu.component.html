@@ -11,7 +11,15 @@
     class="dropdown-menu absolute right-0 top-full mt-2 w-56 rounded-lg border border-border/50 bg-card shadow-xl z-50"
   >
     <div class="py-1">
+      @if (title) {
+          <button [class]="getItemClasses()">
+
+            {{ title }}
+          </button>
+          <div class="border-t border-border/30 my-1"></div>
+        }
       @for (item of items; track item.action) {
+        
         @if (shouldShowItem(item)) {
           <!-- Divider -->
           @if (item.dividerBefore) {

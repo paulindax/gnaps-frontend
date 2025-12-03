@@ -174,7 +174,7 @@
   }
 
   /* Larger tap targets for buttons and interactive elements (30-70 year users) */
-  button, a, input, select, textarea {
+  button, a, input:not([type="checkbox"]):not([type="radio"]), select, textarea {
     min-height: 52px; /* Larger for easier interaction, especially for 50+ users */
   }
 
@@ -264,7 +264,7 @@
   }
 
   /* Input fields with better visibility */
-  input, select, textarea {
+  input:not([type="checkbox"]):not([type="radio"]), select, textarea {
     font-size: 1.125rem; /* 18px - larger for easier reading */
     padding: 0.875rem 1rem; /* More generous padding */
     border-width: 2px; /* Thicker borders for better visibility */
@@ -303,17 +303,25 @@
 }
 
 /* Custom ng-select styles to match design system */
+/* Reset ng-select default heights */
 .ng-select {
-  min-height: 52px;
+  min-height: auto !important;
+}
+
+.ng-select.ng-select-single .ng-select-container {
+  height: 52px !important;
+  min-height: 52px !important;
 }
 
 .ng-select .ng-select-container {
-  min-height: 52px;
+  min-height: 52px !important;
+  height: auto;
   border: 2px solid hsl(var(--border));
   border-radius: calc(var(--radius) - 2px);
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
   font-size: 1.125rem;
+  box-sizing: border-box;
 }
 
 .ng-select .ng-select-container:hover {
@@ -327,7 +335,32 @@
 }
 
 .ng-select .ng-value-container {
-  padding: 0.875rem 1rem;
+  padding: 0.75rem 1rem !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  border-top: 0 !important;
+  display: flex;
+  align-items: center;
+}
+
+.ng-select.ng-select-single .ng-value-container .ng-value {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.ng-select .ng-value-container .ng-input {
+  padding: 0 !important;
+  top: 0 !important;
+  height: auto;
+}
+
+.ng-select .ng-value-container .ng-input > input {
+  min-height: auto !important;
+  padding: 0 !important;
+  border: none !important;
+  height: auto !important;
+  font-size: 1.125rem;
+  box-sizing: border-box;
 }
 
 .ng-select .ng-value-container .ng-placeholder {
@@ -440,4 +473,146 @@
   border-color: hsl(var(--primary)) transparent transparent;
   border-style: solid;
   border-width: 2px;
+}
+
+/* Custom Checkbox Styles */
+/* Hide default checkbox */
+input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  max-width: 24px !important;
+  max-height: 24px !important;
+  border: 2px solid var(--border) !important;
+  border-radius: 6px !important;
+  background-color: var(--background) !important;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+  flex-shrink: 0;
+  display: inline-block !important;
+  vertical-align: middle;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Checkbox hover state */
+input[type="checkbox"]:hover {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 10%, transparent) !important;
+}
+
+/* Checkbox focus state */
+input[type="checkbox"]:focus {
+  outline: none !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent) !important;
+}
+
+/* Checkbox checked state */
+input[type="checkbox"]:checked {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+/* Checkmark */
+input[type="checkbox"]:checked::before {
+  content: '' !important;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 6px;
+  height: 12px;
+  border: solid var(--primary-foreground);
+  border-width: 0 2.5px 2.5px 0;
+  opacity: 1;
+  display: block;
+}
+
+/* Checkbox disabled state */
+input[type="checkbox"]:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  background-color: var(--muted) !important;
+  border-color: var(--border) !important;
+}
+
+input[type="checkbox"]:disabled:hover {
+  box-shadow: none !important;
+}
+
+/* Checkbox with label container */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-container:hover input[type="checkbox"]:not(:disabled) {
+  border-color: var(--primary) !important;
+}
+
+/* Checkbox label */
+.checkbox-label {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--foreground);
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.checkbox-label.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Dark mode adjustments */
+.dark input[type="checkbox"] {
+  background-color: var(--background) !important;
+  border-color: var(--border) !important;
+}
+
+.dark input[type="checkbox"]:checked {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+/* Large ng-select variant for 35+ users - extra accessibility */
+.ng-select.ng-select-lg .ng-select-container {
+  min-height: 56px !important;
+  height: 56px !important;
+}
+
+.ng-select.ng-select-lg.ng-select-single .ng-select-container {
+  height: 56px !important;
+  min-height: 56px !important;
+}
+
+.ng-select.ng-select-lg .ng-value-container {
+  padding: 1rem 1.25rem !important;
+}
+
+.ng-select.ng-select-lg .ng-value-container .ng-input > input {
+  font-size: 1.125rem;
+}
+
+.ng-select.ng-select-lg .ng-value-container .ng-placeholder {
+  font-size: 1.125rem;
+}
+
+.ng-select.ng-select-lg .ng-value-container .ng-value {
+  font-size: 1.125rem;
+}
+
+.ng-select.ng-select-lg + .ng-dropdown-panel .ng-option {
+  padding: 1rem 1.25rem;
+  min-height: 56px;
+  font-size: 1.125rem;
 }

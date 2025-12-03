@@ -8,6 +8,11 @@ import { NavItemComponent } from '../nav-item/nav-item.component';
 import { ButtonHelmComponent } from '../../../../shared/ui/button-helm/button-helm.component';
 import { cn } from '../../../../../lib/utils';
 
+interface NavSection {
+  title: string;
+  items: NavItem[];
+}
+
 @Component({
   selector: 'app-side-nav',
   standalone: true,
@@ -18,10 +23,36 @@ export class SideNavComponent {
   layoutService = inject(LayoutService);
   authService = inject(AuthService);
 
-  // Filtered navigation items based on role
-  filteredNavItems = computed(() => {
+  user = this.authService.currentUserSignal;
+
+  // Categorized navigation sections
+  navSections = computed<NavSection[]>(() => {
     const role = this.authService.userRole();
-    return this.navItems.filter(item => item.roles.includes(role || ''));
+    const allItems = this.navItems.filter(item => item.roles.includes(role || ''));
+
+    const sections: NavSection[] = [
+      {
+        title: 'Main',
+        items: allItems.filter(item =>
+          ['Dashboard', 'Schools', 'Payments', 'Executives'].includes(item.label)
+        )
+      },
+      {
+        title: 'Content',
+        items: allItems.filter(item =>
+          ['News', 'Events', 'Documents'].includes(item.label)
+        )
+      },
+      {
+        title: 'System',
+        items: allItems.filter(item =>
+          ['Finance', 'Settings'].includes(item.label)
+        )
+      }
+    ];
+
+    // Filter out empty sections
+    return sections.filter(section => section.items.length > 0);
   });
 
   // Base classes for fixed positioning and width - mobile-first
@@ -29,10 +60,23 @@ export class SideNavComponent {
     const collapsed = this.layoutService.sidebarCollapsed();
     const width = this.layoutService.sidebarWidth();
     return cn(
-      'fixed bottom-0 left-0 top-20 z-30 flex flex-col border-r-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-card transition-all duration-300 sm:top-20 lg:top-24 shadow-sm',
+      'fixed bottom-0 left-0 top-20 z-30 flex flex-col border-r-2 border-gray-200 dark:border-gray-600 bg-gradient-to-b from-white via-white to-gray-50/30 dark:from-card dark:via-card dark:to-card/95 transition-all duration-300 sm:top-20 lg:top-24 shadow-lg',
       width,
       collapsed && 'items-center'
     );
+  });
+
+  // Role display name
+  roleDisplay = computed(() => {
+    const role = this.authService.userRole();
+    const map: Record<string, string> = {
+      system_admin: 'System Admin',
+      national_admin: 'National Admin',
+      regional_admin: 'Regional Admin',
+      zone_admin: 'Zone Admin',
+      school_user: 'School User'
+    };
+    return map[role || ''] || 'User';
   });
 
   // Close mobile menu on navigation
@@ -40,14 +84,16 @@ export class SideNavComponent {
     this.layoutService.closeMobileMenu();
   }
 
-  // Navigation items (same as header but for desktop)
+  // Navigation items
   private navItems: NavItem[] = [
     { label: 'Dashboard', route: '/dashboard', icon: '📊', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin', 'school_user'] },
     { label: 'Schools', route: '/schools', icon: '🏫', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin'] },
     { label: 'Payments', route: '/payments', icon: '💳', roles: ['school_user'] },
+    { label: 'Executives', route: '/executives', icon: '👔', roles: ['system_admin', 'national_admin'] },
     { label: 'News', route: '/news', icon: '📰', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin', 'school_user'] },
     { label: 'Events', route: '/events', icon: '📅', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin', 'school_user'] },
     { label: 'Documents', route: '/documents', icon: '📄', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin', 'school_user'] },
+    { label: 'Finance', route: '/finance', icon: '💰', roles: ['system_admin', 'national_admin'] },
     { label: 'Settings', route: '/settings', icon: '⚙️', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin'] }
   ];
 }

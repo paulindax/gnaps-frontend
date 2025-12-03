@@ -1,73 +1,296 @@
-<div>
-  <!-- Header with Create Button -->
-  <div class="mb-6 flex items-center justify-between">
-    <h2 class="text-xl font-semibold sm:text-2xl">Manage Groups</h2>
+<!-- Groups Management Component -->
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h2 class="text-2xl font-bold text-foreground">Groups</h2>
+      <p class="mt-1 text-sm text-muted-foreground">Create and manage school groups for organization</p>
+    </div>
     @if (canEdit()) {
-      <app-button-helm (click)="openCreateModal()" [disabled]="loading()">
-        + Create Group
-      </app-button-helm>
+      <button
+        (click)="openCreateModal()"
+        [disabled]="loading()"
+        class="inline-flex items-center gap-2 rounded-xl border-2 border-rose-600 hover:border-rose-700 bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 px-6 py-3 text-base font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 shadow-sm hover:shadow-md transition-all whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Create Group
+      </button>
     }
   </div>
 
-  <!-- Reusable Data Table -->
-  <app-data-table
-    [data]="groups()"
-    [columns]="tableColumns"
-    [loading]="loading()"
-    [pagination]="paginationData()"
-    [showSearch]="true"
-    [searchQuery]="searchQuery()"
-    searchPlaceholder="Search groups by name or description..."
-    [actions]="canEdit() ? tableActions : []"
-    [showActions]="canEdit()"
-    emptyMessage="No groups found. Click 'Create Group' to add one."
-    (pageChange)="onPageChange($event)"
-    (searchChange)="onSearchChange($event)"
-  />
-
-  <!-- Reusable Form Modal -->
-  <app-form-modal
-    [show]="showModal()"
-    [title]="isEditing() ? 'Edit Group' : 'Create Group'"
-    [loading]="loading()"
-    [submitLabel]="isEditing() ? 'Update' : 'Create'"
-    (close)="closeModal()"
-    (submit)="onSubmit()"
-  >
-    <div class="mb-4">
-      <label class="mb-2 block text-sm font-medium">Name *</label>
+  <!-- Search Bar with Table Info -->
+  <div>
+    <div class="relative max-w-md">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <svg class="h-5 w-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </div>
       <input
         type="text"
-        [value]="formData().name"
-        (input)="updateFormField('name', $any($event.target).value)"
-        class="w-full rounded-md border border-border bg-background px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-        placeholder="Enter group name"
-        required
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearchChange($event)"
+        placeholder="Search groups by name or description..."
+        class="block w-full pl-10 pr-3 py-3 border border-border/50 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+        style="height: 52px; font-size: 16px;"
       />
     </div>
 
-    <div class="mb-6">
-      <label class="mb-2 block text-sm font-medium">Description</label>
-      <textarea
-        [value]="formData().description"
-        (input)="updateFormField('description', $any($event.target).value)"
-        class="w-full rounded-md border border-border bg-background px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-        placeholder="Enter group description (optional)"
-        rows="3"
-      ></textarea>
-    </div>
-  </app-form-modal>
+    @if (totalItems() > 0) {
+      <div class="mt-3 text-sm text-muted-foreground">
+        Showing <span class="font-semibold text-foreground">{{ (currentPage() - 1) * pageSize() + 1 }}</span> to
+        <span class="font-semibold text-foreground">{{ Math.min(currentPage() * pageSize(), totalItems()) }}</span> of
+        <span class="font-semibold text-foreground">{{ totalItems() }}</span> results
+      </div>
+    }
+  </div>
 
-  <!-- Confirm Delete Dialog -->
-  @if (showDeleteDialog() && groupToDelete()) {
-    <app-confirm-dialog
-      [show]="showDeleteDialog()"
-      title="Delete Group"
-      [message]="'Are you sure you want to delete the group ' + groupToDelete()!.name + '? This action cannot be undone.'"
-      confirmLabel="Delete"
-      confirmClass="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-      (confirm)="confirmDelete()"
-      (cancel)="showDeleteDialog.set(false)"
-    />
-  }
+  <!-- Groups Content -->
+    <div class="rounded-2xl border-2 border-border/50 bg-card shadow-lg overflow-hidden">
+      @if (loading()) {
+        <!-- Loading State -->
+        <div class="flex h-64 items-center justify-center p-6">
+          <div class="text-center">
+            <div class="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+            <p class="mt-4 text-muted-foreground">Loading groups...</p>
+          </div>
+        </div>
+      } @else if (groups().length === 0) {
+      <!-- Empty State -->
+      <div class="flex flex-col items-center justify-center p-12">
+        <div class="flex h-20 w-20 items-center justify-center rounded-full bg-muted/30 mb-4">
+          <span class="text-5xl opacity-50">👥</span>
+        </div>
+        <h3 class="text-xl font-bold text-foreground mb-2">No groups found</h3>
+        <p class="text-base text-muted-foreground mb-6">Get started by creating your first group</p>
+        @if (canEdit()) {
+          <button
+            (click)="openCreateModal()"
+            class="inline-flex items-center gap-2 rounded-xl border-2 border-rose-600 hover:border-rose-700 bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 px-6 py-3 text-base font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 shadow-sm hover:shadow-md transition-all"
+          >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Create First Group
+          </button>
+        }
+      </div>
+      } @else {
+        <!-- Groups Table -->
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y-2 divide-border">
+          <thead class="bg-linear-to-r from-muted/50 to-muted/30">
+            <tr>
+              <th scope="col" class="px-6 py-4 text-left text-sm font-bold text-muted-foreground uppercase tracking-wide">
+                Group
+              </th>
+              <th scope="col" class="px-6 py-4 text-left text-sm font-bold text-muted-foreground uppercase tracking-wide">
+                Description
+              </th>
+              @if (canEdit()) {
+                <th scope="col" class="px-6 py-4 text-right text-sm font-bold text-muted-foreground uppercase tracking-wide">
+                  Actions
+                </th>
+              }
+            </tr>
+          </thead>
+          <tbody class="bg-card divide-y-2 divide-border">
+            @for (group of groups(); track group.id) {
+              <tr class="hover:bg-linear-to-r hover:from-primary/5 hover:to-transparent transition-colors">
+                <td class="px-6 py-5">
+                  <div class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                      <span class="text-xl">👥</span>
+                    </div>
+                    <div class="font-bold text-base">{{ group.name }}</div>
+                  </div>
+                </td>
+                <td class="px-6 py-5">
+                  <div class="text-sm text-muted-foreground max-w-md">
+                    {{ group.description || 'No description' }}
+                  </div>
+                </td>
+                @if (canEdit()) {
+                  <td class="px-6 py-5">
+                    <div class="flex items-center justify-end gap-2">
+                      <button
+                        (click)="openEditModal(group)"
+                        class="inline-flex items-center gap-1.5 rounded-lg border border-border/50 bg-transparent hover:bg-muted px-3 py-1.5 text-sm font-medium text-foreground shadow-sm hover:shadow transition-all"
+                      >
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        Edit
+                      </button>
+                      <button
+                        (click)="openDeleteDialog(group)"
+                        class="inline-flex items-center gap-1.5 rounded-lg border border-red-200 dark:border-red-900/50 bg-transparent hover:bg-red-50 dark:hover:bg-red-950/20 px-3 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 shadow-sm hover:shadow transition-all"
+                      >
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+          </table>
+        </div>
+
+      <!-- Pagination -->
+      @if (totalPages() > 1) {
+        <div class="bg-muted/30 px-6 py-4 border-t border-border/50">
+          <div class="flex items-center justify-end gap-2">
+            <button
+              (click)="onPageChange(currentPage() - 1)"
+              [disabled]="currentPage() === 1"
+              class="inline-flex items-center gap-2 rounded-lg border border-border/50 bg-transparent hover:bg-muted px-4 py-2 text-sm font-medium text-foreground shadow-sm hover:shadow transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+              </svg>
+              Previous
+            </button>
+            <button
+              (click)="onPageChange(currentPage() + 1)"
+              [disabled]="currentPage() === totalPages()"
+              class="inline-flex items-center gap-2 rounded-lg border border-border/50 bg-transparent hover:bg-muted px-4 py-2 text-sm font-medium text-foreground shadow-sm hover:shadow transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      }
+    }
+  </div>
 </div>
+
+<!-- Create/Edit Modal -->
+@if (showModal()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+    <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl border border-border/50 bg-card shadow-2xl">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-border/50 bg-rose-600 dark:bg-rose-700 px-6 py-4">
+        <h3 class="text-xl font-bold text-white">
+          {{ isEditing() ? 'Edit Group' : 'Create New Group' }}
+        </h3>
+        <button
+          (click)="closeModal()"
+          class="rounded-lg p-1.5 hover:bg-rose-700 dark:hover:bg-rose-800 transition-colors text-white"
+        >
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="px-6 py-6 space-y-5">
+        <div class="space-y-2">
+          <label class="text-sm font-semibold">
+            Group Name <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="formData().name"
+            (ngModelChange)="updateFormField('name', $event)"
+            placeholder="e.g., Public Schools"
+            class="w-full px-4 py-3 border-2 border-border/50 rounded-xl bg-background focus:ring-2 focus:ring-primary focus:border-primary transition-all text-base"
+            autofocus
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-sm font-semibold">
+            Description
+          </label>
+          <textarea
+            [(ngModel)]="formData().description"
+            (ngModelChange)="updateFormField('description', $event)"
+            rows="4"
+            placeholder="Enter a detailed description of this group..."
+            class="w-full px-4 py-3 border-2 border-border/50 rounded-xl bg-background focus:ring-2 focus:ring-primary focus:border-primary transition-all resize-none text-base"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-end gap-3 border-t border-border/50 bg-muted/30 px-6 py-4">
+        <button
+          (click)="closeModal()"
+          class="inline-flex items-center gap-2 rounded-lg border border-border/50 bg-transparent hover:bg-muted px-4 py-2 text-sm font-medium text-foreground shadow-sm hover:shadow transition-all"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="onSubmit()"
+          [disabled]="!formData().name"
+          class="inline-flex items-center gap-2 rounded-lg border-2 border-rose-600 hover:border-rose-700 bg-rose-600 hover:bg-rose-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          @if (isEditing()) {
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+          } @else {
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+          }
+          {{ isEditing() ? 'Update Group' : 'Create Group' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Delete Confirmation Modal -->
+@if (showDeleteDialog() && groupToDelete()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-lg overflow-hidden rounded-xl border border-border/50 bg-card shadow-2xl">
+      <!-- Warning Icon and Message -->
+      <div class="px-6 pt-6 pb-4">
+        <div class="flex flex-col items-center text-center">
+          <div class="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20 mb-4">
+            <svg class="h-8 w-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Delete Group</h3>
+          <p class="text-base text-muted-foreground">
+            Are you sure you want to delete the group <span class="font-bold text-foreground">{{ groupToDelete()!.name }}</span>?
+          </p>
+          <p class="text-sm text-muted-foreground mt-2">
+            This action cannot be undone and may affect schools assigned to this group.
+          </p>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center justify-end gap-3 border-t border-border/50 bg-muted/30 px-6 py-4">
+        <button
+          (click)="showDeleteDialog.set(false)"
+          class="inline-flex items-center gap-2 rounded-lg border border-border/50 bg-transparent hover:bg-muted px-4 py-2 text-sm font-medium text-foreground shadow-sm hover:shadow transition-all"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="confirmDelete()"
+          class="inline-flex items-center gap-2 rounded-lg border-2 border-red-600 hover:border-red-700 bg-red-600 hover:bg-red-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+          </svg>
+          Delete Group
+        </button>
+      </div>
+    </div>
+  </div>
+}

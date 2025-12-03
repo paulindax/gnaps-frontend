@@ -99,8 +99,15 @@ export class FinanceService {
   }
 
   // Bill Items
-  getBillItems(billId: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/bills/items/${billId}`);
+  getBillItems(billId: number, page?: number, limit?: number, search?: string): Observable<any> {
+    let params = '';
+    if (page !== undefined && limit !== undefined) {
+      params = `?page=${page}&limit=${limit}`;
+      if (search) {
+        params += `&search=${encodeURIComponent(search)}`;
+      }
+    }
+    return this.http.get(`${this.baseUrl}/bills/items/${billId}${params}`);
   }
 
   createBillItem(data: Partial<BillItem>): Observable<BillItem> {

@@ -1,82 +1,244 @@
-<div class="w-full min-h-screen bg-background">
-  <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
-    <!-- Header -->
-    <div class="mb-8 sm:mb-10 lg:mb-12">
-      <h1 class="text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl">Payment History</h1>
+<!-- Enhanced Payments Module with Financial Dashboard -->
+<div class="min-h-screen bg-gradient-to-br from-background via-background to-muted/30">
+  <div class="w-full px-4 py-6 sm:px-6 lg:px-8">
+    <!-- Page Header with Gradient -->
+    <div class="mb-6 lg:mb-8">
+      <h1 class="text-3xl font-bold tracking-tight lg:text-4xl bg-gradient-to-r from-primary via-primary/95 to-primary/70 bg-clip-text text-transparent">
+        Payment Management
+      </h1>
+      <p class="mt-2 text-base text-muted-foreground lg:text-lg">
+        Track your payments and download certificates
+      </p>
     </div>
 
-    <!-- Desktop Table View -->
-    <div class="hidden overflow-hidden rounded-lg border-2 border-border bg-card shadow-sm lg:block">
-    <table class="min-w-full divide-y divide-border">
-      <thead class="bg-muted">
-        <tr>
-          <th class="px-6 py-4 text-left text-sm font-semibold text-muted-foreground uppercase tracking-wide">Reference</th>
-          <th class="px-6 py-4 text-left text-sm font-semibold text-muted-foreground uppercase tracking-wide">Amount</th>
-          <th class="px-6 py-4 text-left text-sm font-semibold text-muted-foreground uppercase tracking-wide">Status</th>
-          <th class="px-6 py-4 text-left text-sm font-semibold text-muted-foreground uppercase tracking-wide">Date</th>
-          <th class="px-6 py-4 text-left text-sm font-semibold text-muted-foreground uppercase tracking-wide">Actions</th>
-        </tr>
-      </thead>
-      <tbody class="bg-card divide-y divide-border">
-        @if (payments(); as paymentList) {
-          @for (payment of paymentList; track payment.id) {
-            <tr class="hover:bg-muted/50">
-              <td class="px-6 py-5 font-semibold text-base">{{ payment.reference }}</td>
-              <td class="px-6 py-5 font-medium text-base">{{ payment.amount | currency }}</td>
-              <td class="px-6 py-5">
-                <app-badge [variant]="payment.status === 'completed' ? 'success' : 'warning'">
-                  {{ payment.status }}
-                </app-badge>
-              </td>
-              <td class="px-6 py-5 text-base">{{ payment.created_at | date }}</td>
-              <td class="px-6 py-5">
+    <!-- Financial Overview Dashboard -->
+    <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:mb-8">
+      <!-- Total Payments Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-gradient-to-br from-card via-card to-primary/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Payments</p>
+            <h3 class="mt-2 text-4xl font-bold text-primary">{{ statistics().total }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+            <span class="text-3xl">💳</span>
+          </div>
+        </div>
+        <div class="pt-4 border-t-2 border-border/50">
+          <p class="text-base font-semibold text-primary">{{ statistics().totalAmount | currency }}</p>
+          <p class="text-sm text-muted-foreground">Total amount</p>
+        </div>
+      </div>
+
+      <!-- Completed Payments Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-gradient-to-br from-card via-card to-green-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Completed</p>
+            <h3 class="mt-2 text-4xl font-bold text-green-600 dark:text-green-500">{{ statistics().completed }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-colors">
+            <span class="text-3xl">✅</span>
+          </div>
+        </div>
+        <div class="pt-4 border-t-2 border-border/50">
+          <p class="text-base font-semibold text-green-600 dark:text-green-500">{{ statistics().completedAmount | currency }}</p>
+          <p class="text-sm text-muted-foreground">Paid amount</p>
+        </div>
+      </div>
+
+      <!-- Pending Payments Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-gradient-to-br from-card via-card to-amber-500/5 p-6 shadow-sm hover:shadow-md transition-all sm:col-span-2 lg:col-span-1">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Pending</p>
+            <h3 class="mt-2 text-4xl font-bold text-amber-600 dark:text-amber-500">{{ statistics().pending }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/10 group-hover:bg-amber-500/20 transition-colors">
+            <span class="text-3xl">⏳</span>
+          </div>
+        </div>
+        <div class="pt-4 border-t-2 border-border/50">
+          <p class="text-base font-semibold text-amber-600 dark:text-amber-500">{{ statistics().pendingAmount | currency }}</p>
+          <p class="text-sm text-muted-foreground">Amount due</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment List Section -->
+    <div class="rounded-2xl border-2 border-border/50 bg-card p-6 shadow-md">
+      <!-- Section Header -->
+      <div class="mb-6 flex items-center gap-3 border-b-2 border-border/50 pb-6">
+        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/10">
+          <span class="text-2xl">📋</span>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold">Payment History</h2>
+          <p class="text-sm text-muted-foreground">View all your payment transactions</p>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      @if (isLoading()) {
+        <div class="flex h-64 items-center justify-center">
+          <div class="text-center">
+            <div class="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+            <p class="mt-4 text-muted-foreground">Loading payments...</p>
+          </div>
+        </div>
+      } @else {
+        <!-- Desktop Table View -->
+        <div class="hidden overflow-hidden rounded-xl border-2 border-border/50 lg:block">
+          <table class="min-w-full divide-y-2 divide-border">
+            <thead class="bg-gradient-to-r from-muted/50 to-muted/30">
+              <tr>
+                <th class="px-6 py-4 text-left text-sm font-bold text-muted-foreground uppercase tracking-wide">Reference</th>
+                <th class="px-6 py-4 text-left text-sm font-bold text-muted-foreground uppercase tracking-wide">Amount</th>
+                <th class="px-6 py-4 text-left text-sm font-bold text-muted-foreground uppercase tracking-wide">Status</th>
+                <th class="px-6 py-4 text-left text-sm font-bold text-muted-foreground uppercase tracking-wide">Date</th>
+                <th class="px-6 py-4 text-left text-sm font-bold text-muted-foreground uppercase tracking-wide">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="bg-card divide-y-2 divide-border">
+              @if (payments().length > 0) {
+                @for (payment of payments(); track payment.id) {
+                  <tr class="hover:bg-gradient-to-r hover:from-primary/5 hover:to-transparent transition-colors">
+                    <td class="px-6 py-5">
+                      <p class="font-mono font-bold text-base text-primary">{{ payment.reference }}</p>
+                    </td>
+                    <td class="px-6 py-5">
+                      <p class="font-bold text-lg">{{ payment.amount | currency }}</p>
+                    </td>
+                    <td class="px-6 py-5">
+                      <app-badge [variant]="getStatusVariant(payment.status)">
+                        {{ payment.status }}
+                      </app-badge>
+                    </td>
+                    <td class="px-6 py-5">
+                      <p class="text-base">{{ payment.created_at | date: 'medium' }}</p>
+                    </td>
+                    <td class="px-6 py-5">
+                      <div class="flex gap-2">
+                        @if (payment.status === 'pending') {
+                          <app-button-helm
+                            size="sm"
+                            (click)="makePayment(payment.id)"
+                            class="shadow-sm hover:shadow-md transition-shadow"
+                          >
+                            <span class="mr-1">💰</span>
+                            Pay Now
+                          </app-button-helm>
+                        }
+                        @if (payment.status === 'completed') {
+                          <app-button-helm
+                            size="sm"
+                            variant="outline"
+                            (click)="downloadCertificate(payment.id)"
+                            class="shadow-sm hover:shadow-md transition-shadow"
+                          >
+                            <span class="mr-1">📄</span>
+                            Certificate
+                          </app-button-helm>
+                        }
+                      </div>
+                    </td>
+                  </tr>
+                }
+              } @else {
+                <tr>
+                  <td colspan="5" class="px-6 py-12 text-center">
+                    <div class="flex flex-col items-center">
+                      <span class="text-6xl opacity-20 mb-4">💳</span>
+                      <p class="text-lg font-medium text-muted-foreground">No payments found</p>
+                      <p class="mt-2 text-sm text-muted-foreground">Your payment history will appear here</p>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile Timeline View -->
+        <div class="space-y-4 lg:hidden">
+          @if (payments().length > 0) {
+            @for (payment of payments(); track payment.id) {
+              <div class="group rounded-xl border-2 border-border/50 bg-gradient-to-br from-card to-muted/10 p-5 shadow-sm hover:shadow-md transition-all">
+                <!-- Header with Reference and Status -->
+                <div class="mb-4 flex items-start justify-between gap-4 pb-4 border-b-2 border-border/50">
+                  <div class="flex-1">
+                    <p class="mb-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Reference</p>
+                    <p class="font-mono font-bold text-base text-primary">{{ payment.reference }}</p>
+                  </div>
+                  <app-badge [variant]="getStatusVariant(payment.status)" class="shrink-0">
+                    {{ payment.status }}
+                  </app-badge>
+                </div>
+
+                <!-- Amount and Date Grid -->
+                <div class="mb-4 grid grid-cols-2 gap-4">
+                  <div class="rounded-xl border-2 border-border/50 bg-gradient-to-br from-card to-muted/20 p-4">
+                    <p class="mb-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Amount</p>
+                    <p class="text-xl font-bold text-primary">{{ payment.amount | currency }}</p>
+                  </div>
+                  <div class="rounded-xl border-2 border-border/50 bg-gradient-to-br from-card to-muted/20 p-4">
+                    <p class="mb-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Date</p>
+                    <p class="text-base font-medium">{{ payment.created_at | date: 'shortDate' }}</p>
+                    <p class="text-xs text-muted-foreground mt-1">{{ payment.created_at | date: 'shortTime' }}</p>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
                 @if (payment.status === 'pending') {
-                  <app-button-helm size="sm" (click)="makePayment(payment.id)">Pay Now</app-button-helm>
+                  <app-button-helm
+                    size="sm"
+                    (click)="makePayment(payment.id)"
+                    class="w-full shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <span class="mr-2">💰</span>
+                    Pay Now - {{ payment.amount | currency }}
+                  </app-button-helm>
                 }
                 @if (payment.status === 'completed') {
-                  <app-button-helm size="sm" (click)="downloadCertificate(payment.id)">Certificate</app-button-helm>
+                  <app-button-helm
+                    size="sm"
+                    variant="outline"
+                    (click)="downloadCertificate(payment.id)"
+                    class="w-full shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <span class="mr-2">📄</span>
+                    Download Certificate
+                  </app-button-helm>
                 }
-              </td>
-            </tr>
+              </div>
+            }
+          } @else {
+            <div class="flex h-64 items-center justify-center rounded-xl border-2 border-dashed border-border/50 bg-muted/20">
+              <div class="text-center">
+                <span class="text-6xl opacity-20">💳</span>
+                <p class="mt-4 text-lg font-medium text-muted-foreground">No payments found</p>
+                <p class="mt-2 text-base text-muted-foreground">Your payment history will appear here</p>
+              </div>
+            </div>
           }
-        }
-      </tbody>
-    </table>
+        </div>
+      }
     </div>
 
-    <!-- Mobile Card View -->
-    <div class="space-y-4 lg:hidden">
-      @if (payments(); as paymentList) {
-        @for (payment of paymentList; track payment.id) {
-          <div class="rounded-lg border-2 border-border bg-card p-5 shadow-sm">
-            <div class="mb-4 flex items-start justify-between gap-4">
-              <div class="flex-1">
-                <p class="mb-1.5 text-sm text-muted-foreground">Reference</p>
-                <p class="text-base font-semibold">{{ payment.reference }}</p>
-              </div>
-              <app-badge [variant]="payment.status === 'completed' ? 'success' : 'warning'" class="shrink-0">
-                {{ payment.status }}
-              </app-badge>
-            </div>
-            <div class="mb-4 grid grid-cols-2 gap-4">
-              <div>
-                <p class="mb-1.5 text-sm text-muted-foreground">Amount</p>
-                <p class="text-lg font-semibold">{{ payment.amount | currency }}</p>
-              </div>
-              <div>
-                <p class="mb-1.5 text-sm text-muted-foreground">Date</p>
-                <p class="text-base">{{ payment.created_at | date: 'short' }}</p>
-              </div>
-            </div>
-            @if (payment.status === 'pending') {
-              <app-button-helm size="sm" (click)="makePayment(payment.id)" class="w-full">Pay Now</app-button-helm>
-            }
-            @if (payment.status === 'completed') {
-              <app-button-helm size="sm" (click)="downloadCertificate(payment.id)" class="w-full">Download Certificate</app-button-helm>
-            }
-          </div>
-        }
-      }
+    <!-- Help Section -->
+    <div class="mt-6 rounded-2xl border-2 border-dashed border-border/50 bg-muted/20 p-6">
+      <div class="flex items-start gap-4">
+        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10">
+          <span class="text-2xl">💡</span>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold mb-2">Need Help?</h3>
+          <p class="text-base text-muted-foreground">
+            If you have any questions about your payments or need assistance downloading certificates,
+            please contact our support team.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </div>

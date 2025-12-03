@@ -8,6 +8,7 @@ import { Event, EventRegistration } from '../../../core/models';
 import { ButtonHelmComponent } from '../../../shared/ui/button-helm/button-helm.component';
 import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
 import { InputHelmComponent } from '../../../shared/ui/input-helm/input-helm.component';
+import { FlashMessageService } from '../../../core/services/flash-message.service';
 
 @Component({
   selector: 'app-event-detail',
@@ -26,6 +27,7 @@ export class EventDetailComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private flashMessage = inject(FlashMessageService);
 
   event = signal<Event | null>(null);
   registrations = signal<EventRegistration[]>([]);
@@ -36,6 +38,9 @@ export class EventDetailComponent implements OnInit {
   registrationData = signal<Partial<EventRegistration>>({
     number_of_attendees: 1
   });
+
+  selectedRegistration = signal<EventRegistration | null>(null);
+  showRegistrationDetails = signal(false);
 
   role = this.authService.userRole;
 
@@ -69,7 +74,7 @@ export class EventDetailComponent implements OnInit {
       error: (err) => {
         console.error('Failed to load event:', err);
         this.isLoading.set(false);
-        alert('Failed to load event details');
+        this.flashMessage.error('Failed to load event details');
         this.router.navigate(['/events']);
       }
     });
@@ -122,14 +127,14 @@ export class EventDetailComponent implements OnInit {
     this.eventService.registerForEvent(event.id, data).subscribe({
       next: () => {
         this.isRegistering.set(false);
-        alert('Registration successful!');
+        this.flashMessage.success('Registration successful!');
         this.closeRegistrationForm();
         this.loadEvent(event.id);
       },
       error: (err) => {
         console.error('Failed to register:', err);
         this.isRegistering.set(false);
-        alert('Failed to register for event. Please try again.');
+        this.flashMessage.error('Failed to register for event. Please try again.');
       }
     });
   }
@@ -156,5 +161,53 @@ export class EventDetailComponent implements OnInit {
       default:
         return 'default';
     }
+  }
+
+  // Get registration link
+  getRegistrationLink(): string {
+    const event = this.event();
+    const code = event?.registration_code;
+    if (!code) return '';
+    return `${window.location.origin}/event-register/${code}`;
+  }
+
+  // Copy link to clipboard
+  copyLink(input: HTMLInputElement): void {
+    const link = this.getRegistrationLink();
+    navigator.clipboard.writeText(link).then(() => {
+      this.flashMessage.success('Registration link copied to clipboard!');
+    }).catch(() => {
+      // Fallback for older browsers
+      input.select();
+      document.execCommand('copy');
+      this.flashMessage.success('Registration link copied to clipboard!');
+    });
+  }
+
+  // View registration details
+  viewRegistrationDetails(registration: EventRegistration): void {
+    this.selectedRegistration.set(registration);
+    this.showRegistrationDetails.set(true);
+  }
+
+  closeRegistrationDetails(): void {
+    this.showRegistrationDetails.set(false);
+    this.selectedRegistration.set(null);
+  }
+
+  // Copy to clipboard helper
+  copyToClipboard(text: string): void {
+    navigator.clipboard.writeText(text).then(() => {
+      this.flashMessage.success('Copied to clipboard!');
+    }).catch(() => {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      this.flashMessage.success('Copied to clipboard!');
+    });
   }
 }

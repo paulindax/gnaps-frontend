@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Event, EventRegistration, School } from '../models';
+import { Event, EventRegistration, School, SchoolBalance } from '../models';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -26,5 +26,10 @@ export class PublicEventService {
     return this.http.get<School[]>(`${this.baseUrl}/schools`, {
       params: { search: keyword }
     });
+  }
+
+  // Get school balance (no auth required)
+  getSchoolBalance(schoolId: number): Observable<SchoolBalance> {
+    return this.http.get<SchoolBalance>(`${this.baseUrl}/school-balance/${schoolId}`);
   }
 }

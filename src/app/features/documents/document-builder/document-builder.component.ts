@@ -2,13 +2,16 @@ import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { DocumentService } from '../../../core/services/document.service';
 import { Document, DocumentField } from '../../../core/models';
+import { FlashMessageService } from '../../../core/services/flash-message.service';
+import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-document-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgSelectModule, ConfirmDialogComponent],
   templateUrl: './document-builder.component.html',
   styleUrls: ['./document-builder.component.css']
 })
@@ -16,10 +19,15 @@ export class DocumentBuilderComponent implements OnInit {
   private documentService = inject(DocumentService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private flashMessage = inject(FlashMessageService);
 
   isEditing = signal(false);
   documentId = signal<number | null>(null);
   isSaving = signal(false);
+
+  // Confirm dialog signals
+  showDeleteFieldDialog = signal(false);
+  fieldToDelete = signal<DocumentField | null>(null);
 
   // Document metadata
   documentData = signal({
@@ -87,7 +95,7 @@ export class DocumentBuilderComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading document:', err);
-        alert('Failed to load document');
+        this.flashMessage.error('Failed to load document');
         this.router.navigate(['/documents/vault']);
       }
     });
@@ -122,7 +130,7 @@ export class DocumentBuilderComponent implements OnInit {
     const form = this.fieldForm();
 
     if (!form.label) {
-      alert('Please enter a field label');
+      this.flashMessage.error('Please enter a field label');
       return;
     }
 
@@ -152,10 +160,24 @@ export class DocumentBuilderComponent implements OnInit {
     this.closeFieldEditor();
   }
 
-  deleteField(field: DocumentField): void {
-    if (confirm(`Delete field "${field.label}"?`)) {
+  openDeleteFieldDialog(field: DocumentField): void {
+    this.fieldToDelete.set(field);
+    this.showDeleteFieldDialog.set(true);
+  }
+
+  confirmDeleteField(): void {
+    const field = this.fieldToDelete();
+    if (field) {
       this.fields.update(fields => fields.filter(f => f.id !== field.id));
+      this.flashMessage.success('Field deleted successfully!');
     }
+    this.showDeleteFieldDialog.set(false);
+    this.fieldToDelete.set(null);
+  }
+
+  cancelDeleteField(): void {
+    this.showDeleteFieldDialog.set(false);
+    this.fieldToDelete.set(null);
   }
 
   moveFieldUp(index: number): void {
@@ -196,12 +218,12 @@ export class DocumentBuilderComponent implements OnInit {
     const data = this.documentData();
 
     if (!data.title) {
-      alert('Please enter a document title');
+      this.flashMessage.error('Please enter a document title');
       return;
     }
 
     if (this.fields().length === 0) {
-      alert('Please add at least one field to the document');
+      this.flashMessage.error('Please add at least one field to the document');
       return;
     }
 
@@ -219,13 +241,13 @@ export class DocumentBuilderComponent implements OnInit {
     observable.subscribe({
       next: () => {
         this.isSaving.set(false);
-        alert(`Document ${this.isEditing() ? 'updated' : 'created'} successfully!`);
+        this.flashMessage.success(`Document ${this.isEditing() ? 'updated' : 'created'} successfully!`);
         this.router.navigate(['/documents/vault']);
       },
       error: (err) => {
         console.error('Error saving document:', err);
         this.isSaving.set(false);
-        alert('Failed to save document');
+        this.flashMessage.error('Failed to save document. Please try again.');
       }
     });
   }

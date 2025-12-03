@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SchoolService } from '../../../core/services/school.service';
@@ -11,6 +11,8 @@ import { InputHelmComponent } from '../../../shared/ui/input-helm/input-helm.com
 import { SelectHelmComponent, SelectOption } from '../../../shared/ui/select-helm/select-helm.component';
 import { TabsHelmComponent, TabComponent } from '../../../shared/ui/tabs-helm/tabs-helm.component';
 import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
+import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
+import { FlashMessageService } from '../../../core/services/flash-message.service';
 
 @Component({
   selector: 'app-school-list',
@@ -23,7 +25,8 @@ import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
     SelectHelmComponent,
     TabsHelmComponent,
     TabComponent,
-    BadgeComponent
+    BadgeComponent,
+    ConfirmDialogComponent
   ],
   templateUrl: './school-list.component.html'
 })
@@ -32,6 +35,7 @@ export class SchoolListComponent implements OnInit {
   private regionService = inject(RegionService);
   private zoneService = inject(ZoneService);
   private groupService = inject(GroupService);
+  private flashMessage = inject(FlashMessageService);
 
   // Signals
   schools = signal<School[]>([]);
@@ -41,6 +45,10 @@ export class SchoolListComponent implements OnInit {
   showEditContactModal = signal(false);
   isLoading = signal(false);
   isSaving = signal(false);
+
+  // Confirm dialog signals
+  showDeleteDialog = signal(false);
+  schoolToDelete = signal<School | null>(null);
 
   // Pagination
   currentPage = signal(1);
@@ -57,6 +65,23 @@ export class SchoolListComponent implements OnInit {
   regions = signal<SelectOption[]>([{ value: '', label: 'All Regions' }]);
   zones = signal<SelectOption[]>([{ value: '', label: 'All Zones' }]);
   groups = signal<SelectOption[]>([{ value: '', label: 'All Groups' }]);
+
+  // Statistics computed signals
+  statistics = computed(() => ({
+    total: this.totalSchools(),
+    active: this.schools().filter(s => s.status === 'active' || !s.status).length,
+    regions: this.regions().length - 1, // Subtract "All Regions" option
+    zones: this.zones().length - 1 // Subtract "All Zones" option
+  }));
+
+  activeFiltersCount = computed(() => {
+    let count = 0;
+    if (this.searchQuery()) count++;
+    if (this.selectedRegion() && this.selectedRegion() !== '') count++;
+    if (this.selectedZone() && this.selectedZone() !== '') count++;
+    if (this.selectedGroup() && this.selectedGroup() !== '') count++;
+    return count;
+  });
 
   newSchool: Partial<School> = {};
   editSchoolData = signal<Partial<School>>({});
@@ -197,17 +222,26 @@ export class SchoolListComponent implements OnInit {
     this.loadSchools();
   }
 
+  clearFilters(): void {
+    this.searchQuery.set('');
+    this.selectedRegion.set('');
+    this.selectedZone.set('');
+    this.selectedGroup.set('');
+    this.currentPage.set(1);
+    this.loadSchools();
+  }
+
   admitSchool(): void {
     this.schoolService.admitSchool(this.newSchool).subscribe({
       next: () => {
         this.showAdmitForm.set(false);
         this.newSchool = {};
         this.loadSchools();
-        alert('School admitted successfully!');
+        this.flashMessage.success('School admitted successfully!');
       },
       error: (err) => {
         console.error('Failed to admit school:', err);
-        alert('Failed to admit school. Please try again.');
+        this.flashMessage.error('Failed to admit school. Please try again.');
       }
     });
   }
@@ -255,12 +289,12 @@ export class SchoolListComponent implements OnInit {
         this.loadSchools();
         this.showEditSchoolModal.set(false);
         this.isSaving.set(false);
-        alert('School updated successfully!');
+        this.flashMessage.success('School updated successfully!');
       },
       error: (err) => {
         console.error('Failed to update school:', err);
         this.isSaving.set(false);
-        alert('Failed to update school. Please try again.');
+        this.flashMessage.error('Failed to update school. Please try again.');
       }
     });
   }
@@ -276,12 +310,12 @@ export class SchoolListComponent implements OnInit {
         this.loadSchools();
         this.showEditContactModal.set(false);
         this.isSaving.set(false);
-        alert('Contact information updated successfully!');
+        this.flashMessage.success('Contact information updated successfully!');
       },
       error: (err) => {
         console.error('Failed to update contact:', err);
         this.isSaving.set(false);
-        alert('Failed to update contact. Please try again.');
+        this.flashMessage.error('Failed to update contact. Please try again.');
       }
     });
   }
@@ -309,24 +343,32 @@ export class SchoolListComponent implements OnInit {
     this.editContactData.update(data => ({ ...data, [field]: value }));
   }
 
-  deleteSchool(school: School): void {
-    if (confirm(`Are you sure you want to delete ${school.name}?`)) {
+  openDeleteDialog(school: School): void {
+    this.schoolToDelete.set(school);
+    this.showDeleteDialog.set(true);
+  }
+
+  confirmDelete(): void {
+    const school = this.schoolToDelete();
+    if (school) {
       this.schoolService.deleteSchool(school.id).subscribe({
         next: () => {
           this.loadSchools();
-          alert('School deleted successfully!');
+          this.flashMessage.success('School deleted successfully!');
         },
         error: (err) => {
           console.error('Failed to delete school:', err);
-          alert('Failed to delete school. Please try again.');
+          this.flashMessage.error('Failed to delete school. Please try again.');
         }
       });
     }
+    this.showDeleteDialog.set(false);
+    this.schoolToDelete.set(null);
   }
 
   billSchool(schoolId: number): void {
     // TODO: Implement billing functionality
     console.log('Create bill for school ID:', schoolId);
-    alert('Billing functionality coming soon!');
+    this.flashMessage.info('Billing functionality coming soon!');
   }
 }

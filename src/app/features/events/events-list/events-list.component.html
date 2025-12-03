@@ -1,44 +1,115 @@
+<!-- Professional Events Portal with Shadcn Styling & Rose Theme -->
 <div class="min-h-screen bg-linear-to-br from-background via-background to-muted/30">
   <div class="w-full px-4 py-6 sm:px-6 lg:px-8">
-    <!-- Page Header -->
+
+    <!-- Enhanced Header with Rose Gradient -->
     <div class="mb-6 lg:mb-8">
-      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 class="text-3xl font-bold tracking-tight lg:text-4xl bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Events & Calendar
-          </h1>
-          <p class="mt-2 text-sm text-muted-foreground lg:text-base">
-            Manage and view upcoming events across the organization
-          </p>
-        </div>
-        <div class="flex gap-3">
-          <app-button-helm
-            (click)="toggleViewMode()"
-            variant="outline"
-            class="shadow-sm hover:shadow-md transition-shadow"
-          >
-            <span class="mr-2">{{ viewMode() === 'calendar' ? '📋' : '📅' }}</span>
-            {{ viewMode() === 'calendar' ? 'List View' : 'Calendar View' }}
-          </app-button-helm>
-          @if (canManageEvents()) {
-            <app-button-helm
-              (click)="createEvent()"
-              class="shadow-lg hover:shadow-xl transition-shadow"
-            >
-              <span class="mr-2">➕</span>
-              Create Event
-            </app-button-helm>
-          }
+      <div class="overflow-hidden rounded-2xl border-2 border-border/50 bg-card shadow-md">
+        <div class="px-6 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex items-center gap-4">
+              <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-muted">
+                <span class="text-3xl">📅</span>
+              </div>
+              <div>
+                <h1 class="text-3xl font-bold text-foreground lg:text-4xl tracking-tight">
+                  Events & Calendar
+                </h1>
+                <p class="mt-1 text-lg text-muted-foreground font-medium">
+                  Discover and manage upcoming events across the organization
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <app-button-helm
+                (click)="toggleViewMode()"
+                variant="outline"
+                class="border-rose-300 dark:border-rose-700 text-muted-foreground hover:bg-rose-50 dark:hover:bg-rose-900/20"
+              >
+                <span class="mr-2">{{ viewMode() === 'calendar' ? '📋' : '📅' }}</span>
+                {{ viewMode() === 'calendar' ? 'List View' : 'Calendar View' }}
+              </app-button-helm>
+              @if (canManageEvents()) {
+                <button
+                  (click)="createEvent()"
+                  class="inline-flex items-center gap-2 rounded-xl border-2 border-rose-600 hover:border-rose-700 bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 px-6 py-3.5 text-base font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 shadow-sm hover:shadow-md transition-all"
+                >
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                  </svg>
+                  Create Event
+                </button>
+              }
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Filters -->
-    <div class="mb-6 rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <!-- Statistics Cards Grid with Rose Theme -->
+    <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:mb-8">
+      <!-- Total Events Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Events</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ totalEvents() }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <span class="text-3xl">📅</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- This Month Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">This Month</p>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ thisMonthEventsCount() }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <span class="text-3xl">📆</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- View Mode Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Current View</p>
+            <h3 class="mt-2 text-2xl font-bold text-rose-600 dark:text-rose-400 capitalize">{{ viewMode() }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <span class="text-3xl">{{ viewMode() === 'calendar' ? '📅' : '📋' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Month Display Card -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-all sm:col-span-2 lg:col-span-1">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Month</p>
+            <h3 class="mt-2 text-xl font-bold text-rose-600 dark:text-rose-400">{{ currentMonthName() }}</h3>
+          </div>
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+            <span class="text-3xl">📍</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="mb-6 rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Search -->
         <div>
-          <label class="mb-2 block text-sm font-medium">Search Events</label>
+          <label class="mb-2 flex items-center gap-2 text-sm font-bold text-foreground">
+            <span class="text-lg">🔍</span>
+            Search Events
+          </label>
           <app-input-helm
             [(ngModel)]="searchQuery"
             (ngModelChange)="onSearchChange($event)"
@@ -65,28 +136,24 @@
           placeholder="All Events"
           class="w-full"
         />
-
-        <!-- Total Events -->
-        <div class="flex items-end">
-          <div class="w-full rounded-lg bg-primary/10 px-4 py-3 text-center">
-            <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Total Events</p>
-            <p class="text-2xl font-bold text-primary">{{ totalEvents() }}</p>
-          </div>
-        </div>
       </div>
     </div>
 
     <!-- Calendar View -->
     @if (viewMode() === 'calendar') {
-      <div class="rounded-xl border-2 border-border/50 bg-card shadow-xl p-6">
+      <div class="rounded-2xl border-2 border-border/50 bg-card shadow-lg overflow-hidden">
         <!-- Calendar Header -->
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold">{{ currentMonthName() }} {{ selectedYear() }}</h2>
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-linear-to-r from-rose-50/50 via-card to-rose-50/50 dark:from-rose-950/10 dark:via-card dark:to-rose-950/10 px-6 py-5 border-b-2 border-border/50">
+          <h2 class="text-2xl font-bold text-foreground">
+            <span class="text-3xl mr-2">📅</span>
+            {{ currentMonthName() }} {{ selectedYear() }}
+          </h2>
           <div class="flex gap-2">
             <app-button-helm
               (click)="previousMonth()"
               variant="outline"
               size="sm"
+              class="shadow-sm hover:shadow-md transition-shadow"
             >
               ← Previous
             </app-button-helm>
@@ -94,6 +161,7 @@
               (click)="nextMonth()"
               variant="outline"
               size="sm"
+              class="shadow-sm hover:shadow-md transition-shadow"
             >
               Next →
             </app-button-helm>
@@ -101,122 +169,139 @@
         </div>
 
         <!-- Calendar Grid -->
-        <div class="grid grid-cols-7 gap-2">
-          <!-- Day headers -->
-          @for (day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track day) {
-            <div class="text-center text-sm font-semibold text-muted-foreground py-2">
-              {{ day }}
-            </div>
-          }
-
-          <!-- Calendar days -->
-          @for (dayData of calendarDays(); track dayData.date) {
-            <div
-              class="min-h-24 rounded-lg border-2 p-2 transition-all hover:shadow-md cursor-pointer"
-              [class.border-border/30]="!dayData.isCurrentMonth"
-              [class.border-border/50]="dayData.isCurrentMonth"
-              [class.bg-muted/20]="!dayData.isCurrentMonth"
-              [class.bg-primary/5]="dayData.events.length > 0 && dayData.isCurrentMonth"
-              [class.border-primary/30]="dayData.events.length > 0"
-            >
-              <div class="flex items-center justify-between mb-1">
-                <span
-                  class="text-sm font-semibold"
-                  [class.text-muted-foreground]="!dayData.isCurrentMonth"
-                  [class.text-primary]="dayData.events.length > 0 && dayData.isCurrentMonth"
-                >
-                  {{ dayData.date.getDate() }}
-                </span>
-                @if (dayData.events.length > 0) {
-                  <span class="text-xs bg-primary text-primary-foreground rounded-full px-1.5 py-0.5">
-                    {{ dayData.events.length }}
-                  </span>
-                }
+        <div class="p-6">
+          <div class="grid grid-cols-7 gap-3">
+            <!-- Day headers -->
+            @for (day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track day) {
+              <div class="text-center text-sm font-bold text-muted-foreground uppercase tracking-wide py-3 bg-muted/30 rounded-lg">
+                {{ day }}
               </div>
+            }
 
-              <!-- Event indicators -->
-              <div class="space-y-1">
-                @for (event of dayData.events.slice(0, 2); track event.id) {
-                  <div
-                    class="text-xs truncate rounded px-1.5 py-1 bg-primary/20 hover:bg-primary/30 transition-colors"
-                    (click)="viewEventDetails(event)"
+            <!-- Calendar days -->
+            @for (dayData of calendarDays(); track dayData.date) {
+              <div
+                class="min-h-28 rounded-xl border-2 p-3 transition-all hover:shadow-md cursor-pointer group"
+                [class.border-border/30]="!dayData.isCurrentMonth"
+                [class.border-border/50]="dayData.isCurrentMonth && dayData.events.length === 0"
+                [class.bg-muted/10]="!dayData.isCurrentMonth"
+                [class.bg-rose-50/30]="dayData.events.length > 0 && dayData.isCurrentMonth"
+                [class.dark:bg-rose-950/10]="dayData.events.length > 0 && dayData.isCurrentMonth"
+                [class.border-rose-300/50]="dayData.events.length > 0 && dayData.isCurrentMonth"
+                [class.dark:border-rose-800/50]="dayData.events.length > 0 && dayData.isCurrentMonth"
+                [class.hover:border-rose-500/50]="dayData.events.length > 0"
+              >
+                <div class="flex items-center justify-between mb-2">
+                  <span
+                    class="text-sm font-bold"
+                    [class.text-muted-foreground]="!dayData.isCurrentMonth"
+                    [class.text-rose-600]="dayData.events.length > 0 && dayData.isCurrentMonth"
+                    [class.dark:text-rose-400]="dayData.events.length > 0 && dayData.isCurrentMonth"
                   >
-                    {{ event.title }}
-                  </div>
-                }
-                @if (dayData.events.length > 2) {
-                  <div class="text-xs text-muted-foreground pl-1.5">
-                    +{{ dayData.events.length - 2 }} more
-                  </div>
-                }
+                    {{ dayData.date.getDate() }}
+                  </span>
+                  @if (dayData.events.length > 0) {
+                    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-rose-600 text-xs font-bold text-white shadow-sm">
+                      {{ dayData.events.length }}
+                    </span>
+                  }
+                </div>
+
+                <!-- Event indicators -->
+                <div class="space-y-1.5">
+                  @for (event of dayData.events.slice(0, 2); track event.id) {
+                    <div
+                      class="text-xs truncate rounded-lg px-2 py-1.5 bg-rose-500/20 dark:bg-rose-500/10 border border-rose-500/30 hover:bg-rose-500/30 dark:hover:bg-rose-500/20 transition-all font-semibold text-rose-900 dark:text-rose-200 group-hover:shadow-sm"
+                      (click)="viewEventDetails(event); $event.stopPropagation()"
+                    >
+                      {{ event.title }}
+                    </div>
+                  }
+                  @if (dayData.events.length > 2) {
+                    <div class="text-xs text-rose-600 dark:text-rose-400 pl-2 font-semibold">
+                      +{{ dayData.events.length - 2 }} more
+                    </div>
+                  }
+                </div>
               </div>
-            </div>
-          }
+            }
+          </div>
         </div>
       </div>
     }
 
     <!-- List View -->
     @if (viewMode() === 'list') {
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @if (events().length > 0) {
+      @if (events().length > 0) {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           @for (event of events(); track event.id) {
-            <div class="rounded-xl border-2 border-border/50 bg-card shadow-lg hover:shadow-xl transition-all overflow-hidden group cursor-pointer"
-                 (click)="viewEventDetails(event)">
+            <article class="rounded-2xl border-2 border-border/50 bg-card shadow-sm hover:shadow-md transition-all overflow-hidden group cursor-pointer"
+                     (click)="viewEventDetails(event)">
               <!-- Event Image -->
               @if (event.image_url) {
-                <div class="h-48 bg-linear-to-br from-primary/20 to-primary/5 overflow-hidden">
-                  <img [src]="event.image_url" [alt]="event.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                <div class="aspect-video w-full overflow-hidden bg-muted">
+                  <img
+                    [src]="event.image_url"
+                    [alt]="event.title"
+                    class="h-full w-full object-cover transition-transform group-hover:scale-105 duration-300"
+                    loading="lazy"
+                  />
                 </div>
               } @else {
-                <div class="h-48 bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                  <span class="text-6xl opacity-50">📅</span>
+                <div class="aspect-video w-full bg-linear-to-br from-rose-100 via-rose-50 to-rose-100 dark:from-rose-950/20 dark:via-rose-900/10 dark:to-rose-950/20 flex items-center justify-center">
+                  <span class="text-7xl opacity-30">📅</span>
                 </div>
               }
 
               <!-- Event Content -->
               <div class="p-6">
                 <div class="flex items-start justify-between gap-3 mb-3">
-                  <h3 class="text-lg font-bold group-hover:text-primary transition-colors line-clamp-2">
+                  <h3 class="text-lg font-bold text-foreground group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors line-clamp-2 flex-1">
                     {{ event.title }}
                   </h3>
                   @if (event.is_paid) {
-                    <span class="shrink-0 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                    <span class="shrink-0 rounded-full bg-rose-500/10 border border-rose-500/30 px-3 py-1 text-xs font-bold text-rose-600 dark:text-rose-400">
                       ${{ event.price }}
                     </span>
                   } @else {
-                    <span class="shrink-0 rounded-full bg-green-500/10 px-3 py-1 text-xs font-semibold text-green-600">
+                    <span class="shrink-0 rounded-full bg-green-500/10 border border-green-500/30 px-3 py-1 text-xs font-bold text-green-600 dark:text-green-400">
                       FREE
                     </span>
                   }
                 </div>
 
-                <p class="text-sm text-muted-foreground line-clamp-2 mb-4">
+                <p class="text-sm text-muted-foreground line-clamp-2 mb-4 leading-relaxed">
                   {{ event.description }}
                 </p>
 
                 <!-- Event Details -->
-                <div class="space-y-2 mb-4">
-                  <div class="flex items-center gap-2 text-sm">
-                    <span class="text-lg">📅</span>
-                    <span>{{ event.start_date | date:'MMM d, y' }}</span>
+                <div class="space-y-2.5 mb-4">
+                  <div class="flex items-center gap-3 text-sm">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-500/10">
+                      <span class="text-lg">📅</span>
+                    </div>
+                    <span class="font-medium">{{ event.start_date | date:'MMM d, y' }}</span>
                   </div>
                   @if (event.venue) {
-                    <div class="flex items-center gap-2 text-sm">
-                      <span class="text-lg">📍</span>
-                      <span>{{ event.venue }}</span>
+                    <div class="flex items-center gap-3 text-sm">
+                      <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-500/10">
+                        <span class="text-lg">📍</span>
+                      </div>
+                      <span class="font-medium truncate">{{ event.venue }}</span>
                     </div>
                   }
                   @if (event.max_attendees) {
-                    <div class="flex items-center gap-2 text-sm">
-                      <span class="text-lg">👥</span>
-                      <span>{{ event.registered_count || 0 }}/{{ event.max_attendees }} registered</span>
+                    <div class="flex items-center gap-3 text-sm">
+                      <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-500/10">
+                        <span class="text-lg">👥</span>
+                      </div>
+                      <span class="font-medium">{{ event.registered_count || 0 }}/{{ event.max_attendees }} registered</span>
                     </div>
                   }
                 </div>
 
-                <!-- Status Badge -->
-                <div class="flex items-center justify-between">
+                <!-- Status and Actions -->
+                <div class="flex items-center justify-between pt-3 border-t-2 border-border/50">
                   <app-badge [variant]="getStatusVariant(event.status)">
                     {{ event.status || 'published' }}
                   </app-badge>
@@ -224,30 +309,56 @@
                   @if (canManageEvents()) {
                     <button
                       (click)="editEvent(event); $event.stopPropagation()"
-                      class="text-sm text-primary hover:underline"
+                      class="flex items-center gap-1.5 text-sm font-bold text-rose-600 dark:text-rose-400 hover:underline transition-colors"
                     >
+                      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                      </svg>
                       Edit
                     </button>
                   } @else {
                     <button
                       (click)="registerForEvent(event); $event.stopPropagation()"
-                      class="text-sm text-primary hover:underline"
+                      class="flex items-center gap-1.5 text-sm font-bold text-rose-600 dark:text-rose-400 hover:underline transition-colors"
                     >
-                      Register →
+                      Register
+                      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                      </svg>
                     </button>
                   }
                 </div>
               </div>
-            </div>
+            </article>
           }
-        } @else {
-          <div class="col-span-full flex flex-col items-center justify-center py-16">
-            <span class="text-6xl opacity-20 mb-4">📅</span>
-            <p class="text-lg font-medium text-muted-foreground">No events found</p>
-            <p class="text-sm text-muted-foreground mt-2">Try adjusting your filters</p>
+        </div>
+      } @else {
+        <!-- Empty State -->
+        <div class="rounded-2xl border-2 border-border/50 bg-card p-12 text-center shadow-sm">
+          <div class="flex h-24 w-24 items-center justify-center rounded-full bg-muted/30 mx-auto mb-6">
+            <span class="text-7xl opacity-30">📅</span>
           </div>
-        }
-      </div>
+          <h3 class="text-xl font-bold text-foreground mb-2">No events found</h3>
+          <p class="text-base text-muted-foreground mb-6">
+            @if (searchQuery() || selectedStatus() || selectedType()) {
+              Try adjusting your filters to find more events.
+            } @else {
+              There are no events scheduled at the moment.
+            }
+          </p>
+          @if (canManageEvents()) {
+            <button
+              (click)="createEvent()"
+              class="inline-flex items-center gap-2 rounded-xl border-2 border-rose-600 hover:border-rose-700 bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 px-6 py-3.5 text-base font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 shadow-sm hover:shadow-md transition-all"
+            >
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              Create First Event
+            </button>
+          }
+        </div>
+      }
     }
   </div>
 </div>

@@ -1,15 +1,16 @@
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { PublicEventService } from '../../../core/services/public-event.service';
 import { FlashMessageService } from '../../../core/services/flash-message.service';
-import { Event, EventRegistration, School } from '../../../core/models';
+import { Event, EventRegistration, School, SchoolBalance } from '../../../core/models';
 
 @Component({
   selector: 'app-event-register-public',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgSelectModule],
   templateUrl: './event-register-public.component.html',
   styleUrls: ['./event-register-public.component.css']
 })
@@ -30,12 +31,52 @@ export class EventRegisterPublicComponent implements OnInit {
   selectedSchool = signal<School | null>(null);
   isSearching = signal(false);
 
+  // School balance
+  schoolBalance = signal<SchoolBalance | null>(null);
+  isLoadingBalance = signal(false);
+
+  // Payment status
+  paymentCompleted = signal(false);
+  isProcessingPayment = signal(false);
+  showPaymentModal = signal(false);
+
+  // Registration completion
+  registrationComplete = signal(false);
+
   // Registration data
   registrationData = signal<Partial<EventRegistration>>({
     school_id: 0,
     payment_method: undefined,
     payment_phone: '',
     number_of_attendees: 1
+  });
+
+  // Calculate total payment amount (event fee + school balance)
+  totalPayment = computed(() => {
+    const event = this.event();
+    const balance = this.schoolBalance();
+
+    let total = 0;
+
+    // Add event fee if the event is paid
+    if (event?.is_paid && event?.price) {
+      const attendees = this.registrationData().number_of_attendees || 1;
+      total += event.price * attendees;
+    }
+
+    // Add school balance if exists
+    if (balance && balance.has_balance) {
+      total += balance.balance;
+    }
+
+    return total;
+  });
+
+  // Check if payment is required
+  requiresPayment = computed(() => {
+    const event = this.event();
+    const balance = this.schoolBalance();
+    return event?.is_paid || (balance && balance.has_balance);
   });
 
   // Payment methods
@@ -97,6 +138,32 @@ export class EventRegisterPublicComponent implements OnInit {
     this.registrationData.update(data => ({ ...data, school_id: school.id }));
     this.schoolSearchKeyword.set(school.name);
     this.searchResults.set([]);
+
+    // Check school balance
+    this.loadSchoolBalance(school.id);
+  }
+
+  loadSchoolBalance(schoolId: number): void {
+    this.isLoadingBalance.set(true);
+    this.publicEventService.getSchoolBalance(schoolId).subscribe({
+      next: (balance) => {
+        this.schoolBalance.set(balance);
+        this.isLoadingBalance.set(false);
+
+        // Show notification if school has outstanding balance
+        if (balance.has_balance && balance.balance > 0) {
+          this.flashMessageService.info(
+            `This school has an outstanding balance of GH₵${balance.balance.toFixed(2)} which will be added to the payment.`
+          );
+        }
+      },
+      error: (err) => {
+        console.error('Error loading school balance:', err);
+        this.isLoadingBalance.set(false);
+        // Set balance to null if there's an error (fail gracefully)
+        this.schoolBalance.set(null);
+      }
+    });
   }
 
   updateField(field: string, value: any): void {
@@ -109,8 +176,8 @@ export class EventRegisterPublicComponent implements OnInit {
       return false;
     }
 
-    const event = this.event();
-    if (event?.is_paid) {
+    // If payment is required (either event is paid or school has balance)
+    if (this.requiresPayment()) {
       const data = this.registrationData();
       if (!data.payment_method) {
         this.flashMessageService.warning('Please select a payment method');
@@ -125,8 +192,35 @@ export class EventRegisterPublicComponent implements OnInit {
     return true;
   }
 
+  processPayment(): void {
+    if (!this.validateForm()) return;
+
+    // Show payment modal
+    this.showPaymentModal.set(true);
+    this.isProcessingPayment.set(true);
+
+    // Simulate payment processing (replace with actual payment API call)
+    // In production, this would call a payment gateway API
+    setTimeout(() => {
+      // Simulate successful payment after 3 seconds
+      this.isProcessingPayment.set(false);
+      this.paymentCompleted.set(true);
+      this.showPaymentModal.set(false);
+
+      this.flashMessageService.success(
+        `Payment of GH₵${this.totalPayment().toFixed(2)} processed successfully! You can now complete your registration.`
+      );
+    }, 3000);
+  }
+
   submitRegistration(): void {
     if (!this.validateForm()) return;
+
+    // Check if payment is required but not completed
+    if (this.requiresPayment() && !this.paymentCompleted()) {
+      this.flashMessageService.warning('Please complete payment before submitting registration');
+      return;
+    }
 
     const event = this.event();
     if (!event) return;
@@ -137,10 +231,10 @@ export class EventRegisterPublicComponent implements OnInit {
       this.registrationCode(),
       this.registrationData()
     ).subscribe({
-      next: (registration) => {
+      next: () => {
         this.isSubmitting.set(false);
+        this.registrationComplete.set(true);
         // Flash message is automatically handled by the interceptor from backend response
-        this.router.navigate(['/']);
       },
       error: (err) => {
         console.error('Error submitting registration:', err);

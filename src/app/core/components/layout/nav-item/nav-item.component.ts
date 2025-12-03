@@ -30,7 +30,11 @@ export class NavItemComponent {
 
   get linkClass(): string {
     return cn(
-      'group mx-2 flex min-h-[56px] items-center rounded-lg px-5 py-4 transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-4 focus:ring-ring active:scale-98'
+      'group flex min-h-[56px] items-center rounded-xl px-4 py-3 transition-all duration-200',
+      'hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/5',
+      'hover:shadow-sm hover:translate-x-1',
+      'focus:outline-none focus:ring-2 focus:ring-primary/50',
+      'active:scale-[0.98]'
     );
   }
 

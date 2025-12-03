@@ -1,14 +1,16 @@
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DocumentService } from '../../../core/services/document.service';
 import { Document } from '../../../core/models';
 import { AuthService } from '../../../core/services/auth.service';
+import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
+import { FlashMessageService } from '../../../core/services/flash-message.service';
 
 @Component({
   selector: 'app-document-vault',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ConfirmDialogComponent],
   templateUrl: './document-vault.component.html',
   styleUrls: ['./document-vault.component.css']
 })
@@ -16,11 +18,24 @@ export class DocumentVaultComponent implements OnInit {
   private documentService = inject(DocumentService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private flashMessage = inject(FlashMessageService);
 
   documents = signal<Document[]>([]);
   loading = signal(false);
   selectedCategory = signal<string>('all');
   selectedStatus = signal<string>('all');
+
+  // Confirm dialog signals
+  showDeleteDialog = signal(false);
+  documentToDelete = signal<Document | null>(null);
+
+  // Computed values
+  publishedCount = computed(() =>
+    this.documents().filter(d => d.status === 'published').length
+  );
+  draftCount = computed(() =>
+    this.documents().filter(d => d.status === 'draft').length
+  );
 
   role = this.authService.userRole;
 
@@ -80,18 +95,32 @@ export class DocumentVaultComponent implements OnInit {
     this.router.navigate(['/documents/submissions', doc.id]);
   }
 
-  deleteDocument(doc: Document): void {
-    if (confirm(`Are you sure you want to delete "${doc.title}"?`)) {
+  openDeleteDialog(doc: Document): void {
+    this.documentToDelete.set(doc);
+    this.showDeleteDialog.set(true);
+  }
+
+  confirmDelete(): void {
+    const doc = this.documentToDelete();
+    if (doc) {
       this.documentService.deleteDocument(doc.id).subscribe({
         next: () => {
           this.loadDocuments();
+          this.flashMessage.success('Document deleted successfully!');
         },
         error: (err) => {
           console.error('Error deleting document:', err);
-          alert('Failed to delete document');
+          this.flashMessage.error('Failed to delete document. Please try again.');
         }
       });
     }
+    this.showDeleteDialog.set(false);
+    this.documentToDelete.set(null);
+  }
+
+  cancelDelete(): void {
+    this.showDeleteDialog.set(false);
+    this.documentToDelete.set(null);
   }
 
   canManageDocuments(): boolean {

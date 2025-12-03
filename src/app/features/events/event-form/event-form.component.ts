@@ -4,10 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EventService } from '../../../core/services/event.service';
 import { Event } from '../../../core/models';
-import { ButtonHelmComponent } from '../../../shared/ui/button-helm/button-helm.component';
-import { InputHelmComponent } from '../../../shared/ui/input-helm/input-helm.component';
 import { SelectHelmComponent, SelectOption } from '../../../shared/ui/select-helm/select-helm.component';
 import { ImageUploadComponent } from '../../../shared/ui/image-upload/image-upload.component';
+import { FlashMessageService } from '../../../core/services/flash-message.service';
 
 @Component({
   selector: 'app-event-form',
@@ -15,8 +14,6 @@ import { ImageUploadComponent } from '../../../shared/ui/image-upload/image-uplo
   imports: [
     CommonModule,
     FormsModule,
-    ButtonHelmComponent,
-    InputHelmComponent,
     SelectHelmComponent,
     ImageUploadComponent
   ],
@@ -26,6 +23,7 @@ export class EventFormComponent implements OnInit {
   private eventService = inject(EventService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private flashMessage = inject(FlashMessageService);
 
   isEditing = signal(false);
   isSaving = signal(false);
@@ -69,7 +67,7 @@ export class EventFormComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load event:', err);
-        alert('Failed to load event details');
+        this.flashMessage.error('Failed to load event details');
         this.router.navigate(['/events']);
       }
     });
@@ -99,7 +97,7 @@ export class EventFormComponent implements OnInit {
 
     // Validation
     if (!rawData.title || !rawData.description || !rawData.start_date) {
-      alert('Please fill in all required fields');
+      this.flashMessage.error('Please fill in all required fields');
       return;
     }
 
@@ -129,13 +127,13 @@ export class EventFormComponent implements OnInit {
     observable.subscribe({
       next: () => {
         this.isSaving.set(false);
-        alert(`Event ${this.isEditing() ? 'updated' : 'created'} successfully!`);
+        this.flashMessage.success(`Event ${this.isEditing() ? 'updated' : 'created'} successfully!`);
         this.router.navigate(['/events']);
       },
       error: (err) => {
         console.error('Failed to save event:', err);
         this.isSaving.set(false);
-        alert(`Failed to ${this.isEditing() ? 'update' : 'create'} event. Please try again.`);
+        this.flashMessage.error(`Failed to ${this.isEditing() ? 'update' : 'create'} event. Please try again.`);
       }
     });
   }
@@ -155,6 +153,6 @@ export class EventFormComponent implements OnInit {
   copyLink(input: HTMLInputElement): void {
     input.select();
     document.execCommand('copy');
-    alert('Registration link copied to clipboard!');
+    this.flashMessage.success('Registration link copied to clipboard!');
   }
 }

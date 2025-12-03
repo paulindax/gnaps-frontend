@@ -2,15 +2,18 @@ import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { DocumentService } from '../../../core/services/document.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Document, DocumentField } from '../../../core/models';
 import { ImageUploadComponent } from '../../../shared/ui/image-upload/image-upload.component';
+import { FlashMessageService } from '../../../core/services/flash-message.service';
+import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-document-fill',
   standalone: true,
-  imports: [CommonModule, FormsModule, ImageUploadComponent],
+  imports: [CommonModule, FormsModule, NgSelectModule, ImageUploadComponent, ConfirmDialogComponent],
   templateUrl: './document-fill.component.html',
   styleUrls: ['./document-fill.component.css']
 })
@@ -19,10 +22,14 @@ export class DocumentFillComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private flashMessage = inject(FlashMessageService);
 
   document = signal<Document | null>(null);
   loading = signal(false);
   isSubmitting = signal(false);
+
+  // Confirm dialog signals
+  showSubmitDialog = signal(false);
 
   // Form data storage
   formData = signal<Record<string, any>>({});
@@ -62,7 +69,7 @@ export class DocumentFillComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading document:', err);
-        alert('Failed to load document');
+        this.flashMessage.error('Failed to load document');
         this.loading.set(false);
         this.router.navigate(['/documents/vault']);
       }
@@ -88,7 +95,7 @@ export class DocumentFillComponent implements OnInit {
 
     for (const field of fields) {
       if (field.required && (!data[field.id] || data[field.id] === '')) {
-        alert(`Please fill in the required field: ${field.label}`);
+        this.flashMessage.error(`Please fill in the required field: ${field.label}`);
         return false;
       }
     }
@@ -98,7 +105,7 @@ export class DocumentFillComponent implements OnInit {
 
   saveDraft(): void {
     if (!this.userSchoolId()) {
-      alert('School ID not found. Please contact support.');
+      this.flashMessage.error('School ID not found. Please contact support.');
       return;
     }
 
@@ -117,31 +124,31 @@ export class DocumentFillComponent implements OnInit {
     this.documentService.submitDocument(submission).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        alert('Draft saved successfully!');
+        this.flashMessage.success('Draft saved successfully!');
         this.router.navigate(['/documents/vault']);
       },
       error: (err) => {
         console.error('Error saving draft:', err);
         this.isSubmitting.set(false);
-        alert('Failed to save draft');
+        this.flashMessage.error('Failed to save draft. Please try again.');
       }
     });
   }
 
-  submitForm(): void {
+  openSubmitDialog(): void {
     if (!this.validateForm()) return;
 
     if (!this.userSchoolId()) {
-      alert('School ID not found. Please contact support.');
+      this.flashMessage.error('School ID not found. Please contact support.');
       return;
     }
 
+    this.showSubmitDialog.set(true);
+  }
+
+  confirmSubmit(): void {
     const doc = this.document();
     if (!doc) return;
-
-    if (!confirm('Are you sure you want to submit this form? You may not be able to edit it after submission.')) {
-      return;
-    }
 
     this.isSubmitting.set(true);
 
@@ -156,15 +163,21 @@ export class DocumentFillComponent implements OnInit {
     this.documentService.submitDocument(submission).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        alert('Form submitted successfully!');
+        this.flashMessage.success('Form submitted successfully!');
         this.router.navigate(['/documents/vault']);
       },
       error: (err) => {
         console.error('Error submitting form:', err);
         this.isSubmitting.set(false);
-        alert('Failed to submit form');
+        this.flashMessage.error('Failed to submit form. Please try again.');
       }
     });
+
+    this.showSubmitDialog.set(false);
+  }
+
+  cancelSubmit(): void {
+    this.showSubmitDialog.set(false);
   }
 
   printForm(): void {

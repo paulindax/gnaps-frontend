@@ -5,20 +5,18 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { SettingsService } from '../../../core/services/settings.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Zone, Region } from '../../../core/models';
-import { ButtonHelmComponent } from '../../../shared/ui/button-helm/button-helm.component';
-import { DataTableComponent, TableColumn, TableAction, PaginationData } from '../../../shared/ui/data-table/data-table.component';
-import { FormModalComponent } from '../../../shared/ui/form-modal/form-modal.component';
-import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-zones',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule, ButtonHelmComponent, DataTableComponent, FormModalComponent, ConfirmDialogComponent],
+  imports: [CommonModule, FormsModule, NgSelectModule],
   templateUrl: './zones.component.html'
 })
 export class ZonesComponent implements OnInit {
   private settingsService = inject(SettingsService);
   private authService = inject(AuthService);
+
+  protected readonly Math = Math;
 
   zones = signal<Zone[]>([]);
   regions = signal<Region[]>([]);
@@ -53,37 +51,6 @@ export class ZonesComponent implements OnInit {
     return userRole === 'system_admin' || userRole === 'national_admin' || userRole === 'regional_admin';
   };
 
-  // Table configuration
-  tableColumns: TableColumn<Zone>[] = [
-    { header: 'Name', field: 'name' },
-    { header: 'Code', field: 'code' },
-    {
-      header: 'Region',
-      field: 'region_id',
-      render: (zone) => this.getRegionName(zone.region_id)
-    }
-  ];
-
-  tableActions: TableAction<Zone>[] = [
-    {
-      label: 'Edit',
-      onClick: (zone) => this.openEditModal(zone),
-      class: 'mr-2 text-primary hover:underline'
-    },
-    {
-      label: 'Delete',
-      onClick: (zone) => this.openDeleteDialog(zone),
-      class: 'text-destructive hover:underline'
-    }
-  ];
-
-  paginationData = signal<PaginationData>({
-    currentPage: 1,
-    totalPages: 0,
-    pageSize: 10,
-    totalItems: 0
-  });
-
   ngOnInit(): void {
     this.loadRegions();
     this.loadZones();
@@ -107,15 +74,6 @@ export class ZonesComponent implements OnInit {
         this.zones.set(response.data);
         this.totalItems.set(response.pagination.total);
         this.totalPages.set(Math.ceil(response.pagination.total / response.pagination.limit));
-
-        // Update pagination data
-        this.paginationData.set({
-          currentPage: this.currentPage(),
-          totalPages: this.totalPages(),
-          pageSize: this.pageSize(),
-          totalItems: this.totalItems()
-        });
-
         this.loading.set(false);
       },
       error: (error) => {

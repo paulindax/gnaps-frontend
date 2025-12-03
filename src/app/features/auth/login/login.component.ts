@@ -1,31 +1,38 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-import { ButtonHelmComponent } from '../../../shared/ui/button-helm/button-helm.component';
-import { InputHelmComponent } from '../../../shared/ui/input-helm/input-helm.component';
-import { cn } from '../../../../lib/utils';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonHelmComponent, InputHelmComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   username = '';
   password = '';
   loading = signal(false);
   error = signal('');
+  sessionMessage = signal('');
 
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
-  get errorClass(): string {
-    return cn(
-      'rounded-md bg-destructive/10 p-3 text-center text-sm font-medium text-destructive'
-    );
+  ngOnInit(): void {
+    // Check for session expiration message from query params
+    this.route.queryParams.subscribe(params => {
+      if (params['message']) {
+        this.sessionMessage.set(params['message']);
+        // Clear the query parameter after reading it
+        this.router.navigate([], {
+          queryParams: {},
+          replaceUrl: true
+        });
+      }
+    });
   }
 
   onSubmit(): void {

@@ -281,3 +281,28 @@ export interface BillAssignment {
   created_at: string;
   updated_at: string;
 }
+
+export type ExecutiveRole = 'national_admin' | 'region_admin' | 'zone_admin';
+
+export interface Executive {
+  id: number;
+  executive_no?: string;
+  first_name: string;
+  middle_name?: string;
+  last_name: string;
+  email: string;
+  mobile_no?: string;
+  gender?: string;
+  position_id?: number;
+  position_name?: string;
+  role: ExecutiveRole;
+  region_id?: number;
+  region_name?: string;
+  zone_id?: number;
+  zone_name?: string;
+  status: 'active' | 'inactive';
+  photo_file_name?: string;
+  bio?: string;
+  created_at: string;
+  updated_at: string;
+}

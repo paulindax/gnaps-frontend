@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -78,6 +78,11 @@ export class EventsListComponent implements OnInit {
   // Calendar data
   calendarDays = signal<Array<{date: Date, events: Event[], isCurrentMonth: boolean}>>([]);
   currentMonthName = signal('');
+
+  // Computed values
+  thisMonthEventsCount = computed(() =>
+    this.calendarDays().filter(d => d.isCurrentMonth && d.events.length > 0).length
+  );
 
   role = this.authService.userRole;
 

@@ -1,17 +1,16 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { NewsService } from '../../core/services/news.service';
 import { News } from '../../core/models';
-import { CardHelmComponent } from '../../shared/ui/card-helm/card-helm.component';
 import { ButtonHelmComponent } from '../../shared/ui/button-helm/button-helm.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, CardHelmComponent, ButtonHelmComponent, RouterLink],
+  imports: [CommonModule, ButtonHelmComponent, RouterLink],
   templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent {
@@ -63,5 +62,25 @@ export class DashboardComponent {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  getRoleDisplayName(role: string): string {
+    const roleNames: Record<string, string> = {
+      'system_admin': 'System Administrator',
+      'national_admin': 'National Administrator',
+      'regional_admin': 'Regional Administrator',
+      'zone_admin': 'Zone Administrator',
+      'school_user': 'School Administrator'
+    };
+    return roleNames[role] || role;
+  }
+
+  getCurrentDate(): string {
+    return new Date().toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   }
 }

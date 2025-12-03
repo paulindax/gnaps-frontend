@@ -38,6 +38,11 @@ export class BillItemsComponent implements OnInit {
   bill = signal<Bill | null>(null);
   billItems = signal<BillItem[]>([]);
   billParticulars = signal<BillParticular[]>([]);
+  total = signal(0);
+  page = signal(1);
+  limit = signal(10);
+  search = signal('');
+  searchQuery = signal('');
   loading = signal(false);
   showModal = signal(false);
   showDeleteConfirm = signal(false);
@@ -69,6 +74,8 @@ export class BillItemsComponent implements OnInit {
     const user = this.authService.currentUserSignal();
     return user && ['system_admin', 'national_admin'].includes(user.role);
   });
+
+  totalPages = computed(() => Math.ceil(this.total() / this.limit()));
 
   calculateTotal(): string {
     const total = this.billItems().reduce((sum, item) => sum + (item.amount || 0), 0);
@@ -201,9 +208,10 @@ export class BillItemsComponent implements OnInit {
 
   loadBillItems(): void {
     this.loading.set(true);
-    this.financeService.getBillItems(this.billIdSignal()).subscribe({
+    this.financeService.getBillItems(this.billIdSignal(), this.page(), this.limit(), this.search()).subscribe({
       next: (response) => {
         this.billItems.set(response.data || []);
+        this.total.set(response.pagination?.total || 0);
         this.loading.set(false);
       },
       error: (error) => {
@@ -211,6 +219,18 @@ export class BillItemsComponent implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  onSearchChange(query: string): void {
+    this.searchQuery.set(query);
+    this.search.set(query);
+    this.page.set(1);
+    this.loadBillItems();
+  }
+
+  onPageChange(page: number): void {
+    this.page.set(page);
+    this.loadBillItems();
   }
 
   loadBillParticulars(): void {

@@ -8,7 +8,9 @@ export interface TableColumn<T> {
   header: string;
   field?: keyof T | string;
   render?: (item: T) => string;
+  renderHtml?: (item: T) => string; // For HTML content like badges
   width?: string;
+  align?: 'left' | 'center' | 'right';
 }
 
 export interface TableAction<T> {
@@ -98,6 +100,21 @@ export class DataTableComponent<T extends Record<string, any>> implements OnDest
     const value = this.getNestedValue(item, field);
 
     return value !== null && value !== undefined ? String(value) : '';
+  }
+
+  getCellHtml(item: T, column: TableColumn<T>): string {
+    if (column.renderHtml) {
+      return column.renderHtml(item);
+    }
+    return '';
+  }
+
+  hasHtmlRender(column: TableColumn<T>): boolean {
+    return !!column.renderHtml;
+  }
+
+  getColumnAlign(column: TableColumn<T>): string {
+    return column.align || 'left';
   }
 
   private getNestedValue(obj: any, path: string): any {

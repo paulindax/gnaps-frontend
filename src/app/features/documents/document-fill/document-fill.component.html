@@ -1,35 +1,50 @@
-<div class="w-full min-h-screen bg-background">
-  <div class="mx-auto max-w-4xl px-4 py-6">
+<div class="w-full min-h-screen bg-linear-to-br from-background via-background to-muted/30">
+  <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
     @if (loading()) {
       <div class="flex justify-center items-center h-64">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <div class="animate-spin rounded-full h-16 w-16 border-4 border-rose-200 border-t-rose-600"></div>
       </div>
     } @else if (document()) {
-      <!-- Header -->
-      <div class="mb-8 print:mb-4">
-        <h1 class="text-2xl font-bold tracking-tight">{{ document()!.title }}</h1>
-        @if (document()!.description) {
-          <p class="mt-2 text-sm text-muted-foreground">{{ document()!.description }}</p>
-        }
-        @if (document()!.is_required) {
-          <div class="mt-3 inline-flex items-center gap-2 rounded-full bg-orange-100 px-3 py-1 text-sm font-medium text-orange-800 print:hidden">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            Required Document
+      <!-- Document Header -->
+      <div class="mb-6 lg:mb-8 print:mb-4">
+        <div class="overflow-hidden rounded-2xl border-2 border-border/50 bg-card shadow-md print:border print:shadow-none">
+          <div class="px-6 py-8 sm:px-8 sm:py-10">
+            <div class="flex items-start gap-4">
+              <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-muted print:hidden">
+                <span class="text-3xl">📄</span>
+              </div>
+              <div class="flex-1">
+                <h1 class="text-3xl font-bold text-foreground lg:text-4xl tracking-tight">
+                  {{ document()!.title }}
+                </h1>
+                @if (document()!.description) {
+                  <p class="mt-3 text-base text-muted-foreground lg:text-lg">
+                    {{ document()!.description }}
+                  </p>
+                }
+                @if (document()!.is_required) {
+                  <div class="mt-4 inline-flex items-center gap-2 rounded-xl bg-rose-50 dark:bg-rose-950/20 px-4 py-2.5 text-base font-semibold text-rose-700 dark:text-rose-300 border-2 border-rose-200 dark:border-rose-800 print:hidden">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    Required Document
+                  </div>
+                }
+              </div>
+            </div>
           </div>
-        }
+        </div>
       </div>
 
-      <!-- Form -->
-      <div class="rounded-lg border border-border bg-card p-8 shadow-sm print:border-0 print:shadow-none">
-        <div class="space-y-6">
+      <!-- Form Card -->
+      <div class="rounded-2xl border-2 border-border/50 bg-card p-8 sm:p-10 lg:p-12 shadow-md print:border-0 print:shadow-none print:bg-white">
+        <div class="space-y-8">
           @for (field of getTemplateFields(); track field.id) {
             <div class="print:break-inside-avoid">
-              <label class="block text-sm font-medium mb-2">
+              <label class="block text-base font-semibold mb-3 text-foreground">
                 {{ field.label }}
                 @if (field.required) {
-                  <span class="text-destructive">*</span>
+                  <span class="text-rose-600 dark:text-rose-400 ml-1">*</span>
                 }
               </label>
 
@@ -42,7 +57,7 @@
                     [placeholder]="field.placeholder || ''"
                     [required]="field.required"
                     [style.width.px]="field.width"
-                    class="w-full max-w-full rounded-lg border border-input bg-background px-3 py-2 text-sm print:border-b print:border-t-0 print:border-l-0 print:border-r-0 print:rounded-none print:px-0"
+                    class="w-full max-w-full rounded-xl border-2 border-input bg-background px-4 py-3 text-base transition-all focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 print:border-b print:border-t-0 print:border-l-0 print:border-r-0 print:rounded-none print:px-0"
                   />
                 }
 
@@ -54,7 +69,7 @@
                     [required]="field.required"
                     [style.width.px]="field.width"
                     [style.height.px]="field.height"
-                    class="w-full max-w-full rounded-lg border border-input bg-background px-3 py-2 text-sm print:border print:rounded-none print:px-1"
+                    class="w-full max-w-full rounded-xl border-2 border-input bg-background px-4 py-3 text-base transition-all focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 print:border print:rounded-none print:px-1"
                   ></textarea>
                 }
 
@@ -66,7 +81,7 @@
                     [placeholder]="field.placeholder || ''"
                     [required]="field.required"
                     [style.width.px]="field.width"
-                    class="w-full max-w-full rounded-lg border border-input bg-background px-3 py-2 text-sm print:border-b print:border-t-0 print:border-l-0 print:border-r-0 print:rounded-none print:px-0"
+                    class="w-full max-w-full rounded-xl border-2 border-input bg-background px-4 py-3 text-base transition-all focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 print:border-b print:border-t-0 print:border-l-0 print:border-r-0 print:rounded-none print:px-0"
                   />
                 }
 
@@ -77,56 +92,57 @@
                     (change)="updateField(field.id, $any($event.target).value)"
                     [required]="field.required"
                     [style.width.px]="field.width"
-                    class="w-full max-w-full rounded-lg border border-input bg-background px-3 py-2 text-sm print:border-b print:border-t-0 print:border-l-0 print:border-r-0 print:rounded-none print:px-0"
+                    class="w-full max-w-full rounded-xl border-2 border-input bg-background px-4 py-3 text-base transition-all focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 print:border-b print:border-t-0 print:border-l-0 print:border-r-0 print:rounded-none print:px-0"
                   />
                 }
 
                 @case ('checkbox') {
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-3">
                     <input
                       type="checkbox"
                       [checked]="formData()[field.id]"
                       (change)="updateField(field.id, $any($event.target).checked)"
                       [required]="field.required"
-                      class="h-4 w-4 rounded border-input"
+                      class="h-5 w-5 rounded border-2 border-input text-rose-600 focus:ring-2 focus:ring-rose-500/20 transition-all cursor-pointer"
                     />
-                    <span class="text-sm">{{ field.placeholder || 'Check if applicable' }}</span>
+                    <span class="text-base text-muted-foreground">{{ field.placeholder || 'Check if applicable' }}</span>
                   </div>
                 }
 
                 @case ('dropdown') {
-                  <select
-                    [value]="formData()[field.id]"
-                    (change)="updateField(field.id, $any($event.target).value)"
-                    [required]="field.required"
+                  <ng-select
+                    [ngModel]="formData()[field.id]"
+                    (ngModelChange)="updateField(field.id, $event)"
+                    [items]="field.options || []"
+                    [clearable]="!field.required"
+                    placeholder="Select an option"
+                    [required]="!!field.required"
                     [style.width.px]="field.width"
-                    class="w-full max-w-full rounded-lg border border-input bg-background px-3 py-2 text-sm print:border-b print:border-t-0 print:border-l-0 print:border-r-0 print:rounded-none print:px-0"
+                    class="custom-ng-select w-full max-w-full print:border-b print:border-t-0 print:border-l-0 print:border-r-0 print:rounded-none"
                   >
-                    <option value="">Select an option</option>
-                    @for (option of field.options; track option) {
-                      <option [value]="option">{{ option }}</option>
-                    }
-                  </select>
+                  </ng-select>
                 }
 
                 @case ('file') {
                   <div class="print:hidden">
-                    <app-image-upload
-                      [imageUrl]="formData()[field.id] || ''"
-                      (imageUrlChange)="updateField(field.id, $event)"
-                      [mediaType]="'any'"
-                      [maxSize]="10"
-                    />
+                    <div class="rounded-xl border-2 border-dashed border-rose-300 dark:border-rose-800 bg-rose-50/50 dark:bg-rose-950/20 p-6 transition-all hover:border-rose-500">
+                      <app-image-upload
+                        [imageUrl]="formData()[field.id] || ''"
+                        (imageUrlChange)="updateField(field.id, $event)"
+                        [mediaType]="'any'"
+                        [maxSize]="10"
+                      />
+                    </div>
                   </div>
                   @if (formData()[field.id]) {
-                    <div class="hidden print:block mt-2 text-sm">
+                    <div class="hidden print:block mt-2 text-base">
                       File attached: {{ formData()[field.id] }}
                     </div>
                   }
                 }
 
                 @case ('signature') {
-                  <div class="border-2 border-border rounded-lg p-4 text-center bg-muted print:bg-white"
+                  <div class="border-2 border-rose-200 dark:border-rose-800 rounded-xl p-6 text-center bg-rose-50/30 dark:bg-rose-950/10 print:bg-white transition-all"
                        [style.width.px]="field.width"
                        [style.height.px]="field.height || 100">
                     <input
@@ -134,7 +150,7 @@
                       [value]="formData()[field.id]"
                       (input)="updateField(field.id, $any($event.target).value)"
                       placeholder="Type your signature"
-                      class="w-full h-full text-center text-2xl font-signature bg-transparent border-0 outline-none"
+                      class="w-full h-full text-center text-2xl font-signature bg-transparent border-0 outline-none focus:outline-none"
                     />
                   </div>
                 }
@@ -144,49 +160,73 @@
         </div>
       </div>
 
-      <!-- Actions -->
-      <div class="mt-6 flex gap-4 print:hidden">
+      <!-- Action Buttons with Professional Design -->
+      <div class="mt-8 flex flex-wrap gap-3 print:hidden">
+        <!-- Primary Action Button -->
         <button
-          (click)="submitForm()"
+          (click)="openSubmitDialog()"
           [disabled]="isSubmitting()"
-          class="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+          class="group inline-flex items-center justify-center gap-2.5 rounded-xl border-2 border-rose-600 hover:border-rose-700 bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 px-6 py-3.5 text-base font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-rose-600 disabled:hover:shadow-sm"
         >
           @if (isSubmitting()) {
-            <span class="flex items-center gap-2">
-              <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Submitting...
-            </span>
+            <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Submitting...</span>
           } @else {
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
             <span>Submit Form</span>
           }
         </button>
+
+        <!-- Secondary Action Buttons -->
         <button
           (click)="saveDraft()"
           [disabled]="isSubmitting()"
-          class="rounded-lg border border-border bg-background px-6 py-3 text-sm font-semibold hover:bg-accent disabled:opacity-50"
+          class="inline-flex items-center justify-center gap-2 rounded-lg bg-white dark:bg-gray-900 px-5 py-3.5 text-[15px] font-semibold text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Save Draft
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+          </svg>
+          <span>Save Draft</span>
         </button>
+
         <button
           (click)="printForm()"
-          class="rounded-lg border border-border bg-background px-6 py-3 text-sm font-semibold hover:bg-accent ml-auto"
+          class="inline-flex items-center justify-center gap-2 rounded-lg bg-white dark:bg-gray-900 px-5 py-3.5 text-[15px] font-semibold text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 ml-auto"
         >
-          <svg class="inline-block w-4 h-4 mr-2 -mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
           </svg>
-          Print / PDF
+          <span>Print / PDF</span>
         </button>
+
+        <!-- Tertiary Action Button -->
         <button
           (click)="cancel()"
           [disabled]="isSubmitting()"
-          class="rounded-lg border border-border bg-background px-6 py-3 text-sm font-semibold hover:bg-accent disabled:opacity-50"
+          class="inline-flex items-center justify-center gap-2 rounded-lg bg-white dark:bg-gray-900 px-5 py-3.5 text-[15px] font-semibold text-gray-700 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Cancel
+          <span>Cancel</span>
         </button>
       </div>
     }
   </div>
 </div>
+
+<!-- Confirm Submit Dialog -->
+@if (showSubmitDialog()) {
+  <app-confirm-dialog
+    [show]="true"
+    title="Submit Form"
+    message="Are you sure you want to submit this form? You may not be able to edit it after submission."
+    confirmLabel="Submit"
+    cancelLabel="Cancel"
+    confirmClass="bg-rose-600 text-white hover:bg-rose-700"
+    (confirm)="confirmSubmit()"
+    (cancel)="cancelSubmit()"
+  />
+}

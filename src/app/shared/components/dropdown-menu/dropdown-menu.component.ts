@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, AfterViewInit, ElementRef, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, AfterViewInit, ElementRef, ViewChild, OnChanges, SimpleChanges, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface DropdownMenuItem {
+  title?: string;
   label: string;
   icon: string; // SVG path
   action: string;
@@ -25,6 +26,7 @@ export interface DropdownMenuItem {
   `]
 })
 export class DropdownMenuComponent implements AfterViewInit, OnChanges {
+  @Input() title = '';
   @Input() isOpen = false;
   @Input() items: DropdownMenuItem[] = [];
   @Input() triggerElement?: HTMLElement;
@@ -71,12 +73,12 @@ export class DropdownMenuComponent implements AfterViewInit, OnChanges {
     this.close.emit();
   }
 
-  getItemClasses(item: DropdownMenuItem): string {
+  getItemClasses(item?: DropdownMenuItem): string {
     const baseClasses = 'w-full px-4 py-2 text-left text-sm hover:bg-muted transition-colors flex items-center gap-2';
 
-    if (item.variant === 'destructive') {
+    if (item?.variant === 'destructive') {
       return `${baseClasses} text-red-600 dark:text-red-400`;
-    } else if (item.variant === 'success') {
+    } else if (item?.variant === 'success') {
       return `${baseClasses} text-green-600 dark:text-green-400`;
     }
 

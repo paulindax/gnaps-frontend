@@ -1,115 +1,135 @@
-<div class="w-full min-h-screen bg-background">
-  <div class="mx-auto max-w-7xl px-4 py-6">
-    <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-2xl font-bold tracking-tight">
-        {{ isEditing() ? 'Edit Document' : 'Create Document' }}
-      </h1>
-      <p class="mt-2 text-sm text-muted-foreground">
-        Build your document template with custom fields
-      </p>
+<!-- Enhanced Document Builder with Rose Theme and Shadcn Styling -->
+<div class="min-h-screen bg-linear-to-br from-background via-background to-muted/30">
+  <div class="w-full px-4 py-6 sm:px-6 lg:px-8">
+    <!-- Page Header with Rose Gradient -->
+    <div class="mb-6 lg:mb-8">
+      <div class="overflow-hidden rounded-2xl border-2 border-rose-200/50 dark:border-rose-900/30 bg-linear-to-br from-rose-50 via-rose-100/50 to-rose-50 dark:from-rose-950/40 dark:via-rose-900/20 dark:to-rose-950/40 shadow-md">
+        <div class="px-6 py-6 sm:px-8">
+          <div class="flex items-center gap-4">
+            <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40 ring-2 ring-rose-200 dark:ring-rose-800">
+              <span class="text-2xl">{{ isEditing() ? '✏️' : '📝' }}</span>
+            </div>
+            <div>
+              <h1 class="text-2xl font-bold text-rose-900 dark:text-rose-100 lg:text-3xl tracking-tight">
+                {{ isEditing() ? 'Edit Document Template' : 'Create Document Template' }}
+              </h1>
+              <p class="mt-1 text-sm text-rose-700 dark:text-rose-300 lg:text-base">
+                Build your document template with custom fields
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="grid gap-6 lg:grid-cols-3">
       <!-- Left Panel - Document Settings & Fields -->
       <div class="lg:col-span-1 space-y-6">
         <!-- Document Settings -->
-        <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
-          <h2 class="mb-4 text-lg font-semibold">Document Settings</h2>
+        <div class="rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm">
+          <h2 class="mb-5 text-lg font-bold flex items-center gap-2">
+            <span class="text-xl">⚙️</span>
+            Document Settings
+          </h2>
 
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium mb-2">Title *</label>
+              <label class="block text-sm font-semibold mb-2">
+                Title <span class="text-red-500">*</span>
+              </label>
               <input
                 type="text"
                 [value]="documentData().title"
                 (input)="updateDocumentField('title', $any($event.target).value)"
-                class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                class="w-full rounded-xl border-2 border-border/50 bg-background px-4 py-2.5 text-base focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all"
                 placeholder="e.g., School Registration Form"
               />
             </div>
 
             <div>
-              <label class="block text-sm font-medium mb-2">Description</label>
+              <label class="block text-sm font-semibold mb-2">Description</label>
               <textarea
                 [value]="documentData().description"
                 (input)="updateDocumentField('description', $any($event.target).value)"
                 rows="3"
-                class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                class="w-full rounded-xl border-2 border-border/50 bg-background px-4 py-2.5 text-base focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all resize-none"
                 placeholder="Brief description of this document"
               ></textarea>
             </div>
 
             <div>
-              <label class="block text-sm font-medium mb-2">Category</label>
-              <select
-                [value]="documentData().category"
-                (change)="updateDocumentField('category', $any($event.target).value)"
-                class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+              <label class="block text-sm font-semibold mb-2">Category</label>
+              <ng-select
+                [ngModel]="documentData().category"
+                (ngModelChange)="updateDocumentField('category', $event)"
+                [items]="categories"
+                [clearable]="true"
+                placeholder="Select category"
+                class="w-full"
               >
-                <option value="">Select category</option>
-                @for (cat of categories; track cat) {
-                  <option [value]="cat">{{ cat }}</option>
-                }
-              </select>
+              </ng-select>
             </div>
 
             <div>
-              <label class="block text-sm font-medium mb-2">Status</label>
-              <select
-                [value]="documentData().status"
-                (change)="updateDocumentField('status', $any($event.target).value)"
-                class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+              <label class="block text-sm font-semibold mb-2">Status</label>
+              <ng-select
+                [ngModel]="documentData().status"
+                (ngModelChange)="updateDocumentField('status', $event)"
+                [items]="[{value: 'draft', label: 'Draft'}, {value: 'published', label: 'Published'}, {value: 'archived', label: 'Archived'}]"
+                bindLabel="label"
+                bindValue="value"
+                [clearable]="false"
+                class="w-full"
               >
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-                <option value="archived">Archived</option>
-              </select>
+              </ng-select>
             </div>
 
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-3 p-4 rounded-xl bg-muted/30">
               <input
                 type="checkbox"
                 id="required"
                 [checked]="documentData().is_required"
                 (change)="updateDocumentField('is_required', $any($event.target).checked)"
-                class="h-4 w-4 rounded border-input"
+                class="h-5 w-5 rounded border-2 border-border/50 text-rose-600 focus:ring-2 focus:ring-rose-500"
               />
-              <label for="required" class="text-sm font-medium">Required document</label>
+              <label for="required" class="text-sm font-semibold cursor-pointer">Required document</label>
             </div>
           </div>
         </div>
 
         <!-- Fields List -->
-        <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
-          <div class="mb-4 flex items-center justify-between">
-            <h2 class="text-lg font-semibold">Fields ({{ fields().length }})</h2>
+        <div class="rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm">
+          <div class="mb-5 flex items-center justify-between">
+            <h2 class="text-lg font-bold flex items-center gap-2">
+              <span class="text-xl">📋</span>
+              Fields ({{ fields().length }})
+            </h2>
             <button
               (click)="addField()"
-              class="rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              class="inline-flex items-center gap-2 rounded-xl border-2 border-rose-600 hover:border-rose-700 bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 text-base font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 shadow-sm hover:shadow-md transition-all"
             >
-              Add Field
+              ➕ Add Field
             </button>
           </div>
 
-          <div class="space-y-2">
+          <div class="space-y-2 max-h-96 overflow-y-auto">
             @for (field of fields(); track field.id; let i = $index) {
-              <div class="group rounded-lg border border-border bg-background p-3 hover:border-primary transition-colors">
-                <div class="flex items-start justify-between">
-                  <div class="flex-1">
-                    <p class="font-medium text-sm">{{ field.label }}</p>
-                    <p class="text-xs text-muted-foreground mt-1">
+              <div class="group rounded-xl border-2 border-border/50 bg-background p-4 hover:border-rose-300 dark:hover:border-rose-800 transition-all">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="flex-1 min-w-0">
+                    <p class="font-bold text-base truncate">{{ field.label }}</p>
+                    <p class="text-sm text-muted-foreground mt-1">
                       {{ getFieldTypeLabel(field.type) }}
                       @if (field.required) {
-                        <span class="text-destructive">*</span>
+                        <span class="text-rose-600 dark:text-rose-400 font-bold">*</span>
                       }
                     </p>
                   </div>
-                  <div class="flex gap-1">
+                  <div class="flex gap-1 shrink-0">
                     <button
                       (click)="moveFieldUp(i)"
                       [disabled]="i === 0"
-                      class="p-1 rounded hover:bg-accent disabled:opacity-50"
+                      class="p-2 rounded-lg hover:bg-muted disabled:opacity-30 transition-colors"
                       title="Move up"
                     >
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -119,7 +139,7 @@
                     <button
                       (click)="moveFieldDown(i)"
                       [disabled]="i === fields().length - 1"
-                      class="p-1 rounded hover:bg-accent disabled:opacity-50"
+                      class="p-2 rounded-lg hover:bg-muted disabled:opacity-30 transition-colors"
                       title="Move down"
                     >
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -128,19 +148,19 @@
                     </button>
                     <button
                       (click)="editField(field)"
-                      class="p-1 rounded hover:bg-accent"
+                      class="p-2 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40 transition-colors"
                       title="Edit"
                     >
-                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg class="w-4 h-4 text-rose-600 dark:text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                       </svg>
                     </button>
                     <button
-                      (click)="deleteField(field)"
-                      class="p-1 rounded hover:bg-destructive hover:text-destructive-foreground"
+                      (click)="openDeleteFieldDialog(field)"
+                      class="p-2 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors"
                       title="Delete"
                     >
-                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
                     </button>
@@ -148,9 +168,13 @@
                 </div>
               </div>
             } @empty {
-              <p class="text-center text-sm text-muted-foreground py-8">
-                No fields added yet. Click "Add Field" to get started.
-              </p>
+              <div class="text-center py-12">
+                <div class="flex h-16 w-16 items-center justify-center rounded-full bg-muted/30 mx-auto mb-3">
+                  <span class="text-3xl opacity-50">📋</span>
+                </div>
+                <p class="text-base font-medium text-muted-foreground">No fields added yet</p>
+                <p class="text-sm text-muted-foreground mt-1">Click "Add Field" to get started</p>
+              </div>
             }
           </div>
         </div>
@@ -160,65 +184,71 @@
       <div class="lg:col-span-2">
         @if (showFieldEditor()) {
           <!-- Field Editor -->
-          <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
+          <div class="rounded-2xl border-2 border-rose-200/50 dark:border-rose-900/30 bg-linear-to-br from-rose-50/30 via-card to-card dark:from-rose-950/10 dark:via-card dark:to-card p-6 shadow-sm">
             <div class="mb-6 flex items-center justify-between">
-              <h2 class="text-lg font-semibold">
+              <h2 class="text-xl font-bold flex items-center gap-2">
+                <span class="text-2xl">{{ selectedField() ? '✏️' : '➕' }}</span>
                 {{ selectedField() ? 'Edit Field' : 'Add New Field' }}
               </h2>
               <button
                 (click)="closeFieldEditor()"
-                class="rounded-lg p-2 hover:bg-accent"
+                class="rounded-lg p-2 hover:bg-muted transition-colors"
               >
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
 
-            <div class="space-y-4">
+            <div class="space-y-5">
               <div>
-                <label class="block text-sm font-medium mb-2">Field Type *</label>
-                <select
-                  [value]="fieldForm().type"
-                  (change)="updateFieldType($any($event.target).value)"
-                  class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                <label class="block text-sm font-semibold mb-2">
+                  Field Type <span class="text-red-500">*</span>
+                </label>
+                <ng-select
+                  [ngModel]="fieldForm().type"
+                  (ngModelChange)="updateFieldType($event)"
+                  [items]="fieldTypes"
+                  bindLabel="label"
+                  bindValue="value"
+                  [clearable]="false"
+                  class="w-full"
                 >
-                  @for (type of fieldTypes; track type.value) {
-                    <option [value]="type.value">{{ type.label }}</option>
-                  }
-                </select>
+                </ng-select>
               </div>
 
               <div>
-                <label class="block text-sm font-medium mb-2">Label *</label>
+                <label class="block text-sm font-semibold mb-2">
+                  Label <span class="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   [value]="fieldForm().label"
                   (input)="updateFieldLabel($any($event.target).value)"
-                  class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                  class="w-full rounded-xl border-2 border-border/50 bg-background px-4 py-2.5 text-base focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all"
                   placeholder="e.g., School Name"
                 />
               </div>
 
               <div>
-                <label class="block text-sm font-medium mb-2">Placeholder</label>
+                <label class="block text-sm font-semibold mb-2">Placeholder</label>
                 <input
                   type="text"
                   [value]="fieldForm().placeholder"
                   (input)="updateFieldPlaceholder($any($event.target).value)"
-                  class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                  class="w-full rounded-xl border-2 border-border/50 bg-background px-4 py-2.5 text-base focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all"
                   placeholder="e.g., Enter school name"
                 />
               </div>
 
               @if (fieldForm().type === 'dropdown') {
                 <div>
-                  <label class="block text-sm font-medium mb-2">Options (comma-separated)</label>
+                  <label class="block text-sm font-semibold mb-2">Options (comma-separated)</label>
                   <textarea
                     [value]="fieldForm().options?.join(', ')"
                     (input)="updateFieldOptions($any($event.target).value)"
                     rows="3"
-                    class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                    class="w-full rounded-xl border-2 border-border/50 bg-background px-4 py-2.5 text-base focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all resize-none"
                     placeholder="Option 1, Option 2, Option 3"
                   ></textarea>
                 </div>
@@ -226,50 +256,50 @@
 
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-medium mb-2">Width (px)</label>
+                  <label class="block text-sm font-semibold mb-2">Width (px)</label>
                   <input
                     type="number"
                     [value]="fieldForm().width"
                     (input)="updateFieldWidth(+$any($event.target).value)"
-                    class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                    class="w-full rounded-xl border-2 border-border/50 bg-background px-4 py-2.5 text-base focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all"
                     min="100"
                     max="800"
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium mb-2">Height (px)</label>
+                  <label class="block text-sm font-semibold mb-2">Height (px)</label>
                   <input
                     type="number"
                     [value]="fieldForm().height"
                     (input)="updateFieldHeight(+$any($event.target).value)"
-                    class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                    class="w-full rounded-xl border-2 border-border/50 bg-background px-4 py-2.5 text-base focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all"
                     min="30"
                     max="400"
                   />
                 </div>
               </div>
 
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-3 p-4 rounded-xl bg-muted/30">
                 <input
                   type="checkbox"
                   id="field-required"
                   [checked]="fieldForm().required"
                   (change)="updateFieldRequired($any($event.target).checked)"
-                  class="h-4 w-4 rounded border-input"
+                  class="h-5 w-5 rounded border-2 border-border/50 text-rose-600 focus:ring-2 focus:ring-rose-500"
                 />
-                <label for="field-required" class="text-sm font-medium">Required field</label>
+                <label for="field-required" class="text-sm font-semibold cursor-pointer">Required field</label>
               </div>
 
               <div class="flex gap-3 pt-4">
                 <button
                   (click)="saveField()"
-                  class="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+                  class="inline-flex items-center gap-2 rounded-xl border-2 border-rose-600 hover:border-rose-700 bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 text-base font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 shadow-sm hover:shadow-md transition-all"
                 >
-                  Save Field
+                  💾 Save Field
                 </button>
                 <button
                   (click)="closeFieldEditor()"
-                  class="flex-1 rounded-lg border border-border bg-background px-4 py-2 text-sm font-semibold hover:bg-accent"
+                  class="flex-1 rounded-xl border-2 border-border/50 bg-background hover:bg-muted px-6 py-3 text-base font-semibold shadow-sm hover:shadow-md transition-all"
                 >
                   Cancel
                 </button>
@@ -278,24 +308,29 @@
           </div>
         } @else {
           <!-- Preview -->
-          <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
-            <h2 class="mb-6 text-lg font-semibold">Document Preview</h2>
+          <div class="rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm">
+            <h2 class="mb-6 text-xl font-bold flex items-center gap-2">
+              <span class="text-2xl">👁️</span>
+              Document Preview
+            </h2>
 
             @if (fields().length > 0) {
-              <div class="space-y-4 bg-white p-8 rounded-lg border border-border min-h-[600px]">
-                <div class="mb-6">
-                  <h3 class="text-xl font-bold">{{ documentData().title || 'Untitled Document' }}</h3>
+              <div class="space-y-5 bg-background p-8 rounded-xl border-2 border-border/50 min-h-[600px]">
+                <div class="mb-8 pb-6 border-b-2 border-border/50">
+                  <h3 class="text-2xl font-bold text-rose-900 dark:text-rose-100">
+                    {{ documentData().title || 'Untitled Document' }}
+                  </h3>
                   @if (documentData().description) {
-                    <p class="mt-2 text-sm text-muted-foreground">{{ documentData().description }}</p>
+                    <p class="mt-2 text-base text-muted-foreground">{{ documentData().description }}</p>
                   }
                 </div>
 
                 @for (field of fields(); track field.id) {
-                  <div class="mb-4">
-                    <label class="block text-sm font-medium mb-2">
+                  <div class="mb-5">
+                    <label class="block text-sm font-semibold mb-2">
                       {{ field.label }}
                       @if (field.required) {
-                        <span class="text-destructive">*</span>
+                        <span class="text-rose-600 dark:text-rose-400">*</span>
                       }
                     </label>
                     @switch (field.type) {
@@ -304,7 +339,7 @@
                           type="text"
                           [placeholder]="field.placeholder || ''"
                           [style.width.px]="field.width"
-                          class="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                          class="rounded-xl border-2 border-border/50 bg-muted/30 px-4 py-2.5 text-base"
                           disabled
                         />
                       }
@@ -313,7 +348,7 @@
                           [placeholder]="field.placeholder || ''"
                           [style.width.px]="field.width"
                           [style.height.px]="field.height"
-                          class="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                          class="rounded-xl border-2 border-border/50 bg-muted/30 px-4 py-2.5 text-base resize-none"
                           disabled
                         ></textarea>
                       }
@@ -322,7 +357,7 @@
                           type="number"
                           [placeholder]="field.placeholder || ''"
                           [style.width.px]="field.width"
-                          class="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                          class="rounded-xl border-2 border-border/50 bg-muted/30 px-4 py-2.5 text-base"
                           disabled
                         />
                       }
@@ -330,40 +365,38 @@
                         <input
                           type="date"
                           [style.width.px]="field.width"
-                          class="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                          class="rounded-xl border-2 border-border/50 bg-muted/30 px-4 py-2.5 text-base"
                           disabled
                         />
                       }
                       @case ('checkbox') {
                         <input
                           type="checkbox"
-                          class="h-4 w-4 rounded border-input"
+                          class="h-5 w-5 rounded border-2 border-border/50"
                           disabled
                         />
                       }
                       @case ('dropdown') {
-                        <select
+                        <ng-select
+                          [items]="field.options || []"
                           [style.width.px]="field.width"
-                          class="rounded-lg border border-input bg-background px-3 py-2 text-sm"
-                          disabled
+                          [readonly]="true"
+                          placeholder="Select an option"
+                          class="pointer-events-none opacity-60"
                         >
-                          <option>Select an option</option>
-                          @for (option of field.options; track option) {
-                            <option>{{ option }}</option>
-                          }
-                        </select>
+                        </ng-select>
                       }
                       @case ('file') {
-                        <div class="border-2 border-dashed border-border rounded-lg p-4 text-center text-sm text-muted-foreground"
+                        <div class="border-2 border-dashed border-border/50 rounded-xl p-6 text-center text-base text-muted-foreground bg-muted/20"
                              [style.width.px]="field.width">
-                          Click to upload or drag and drop
+                          📎 Click to upload or drag and drop
                         </div>
                       }
                       @case ('signature') {
-                        <div class="border-2 border-border rounded-lg p-4 text-center text-sm text-muted-foreground"
+                        <div class="border-2 border-border/50 rounded-xl p-6 text-center text-base text-muted-foreground bg-muted/20"
                              [style.width.px]="field.width"
                              [style.height.px]="field.height || 100">
-                          Signature area
+                          ✍️ Signature area
                         </div>
                       }
                     }
@@ -371,12 +404,12 @@
                 }
               </div>
             } @else {
-              <div class="flex flex-col items-center justify-center py-16 text-center">
-                <svg class="w-16 h-16 text-muted-foreground mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <p class="text-lg font-medium text-muted-foreground">No fields to preview</p>
-                <p class="text-sm text-muted-foreground mt-1">Add fields to see them here</p>
+              <div class="flex flex-col items-center justify-center py-20 text-center">
+                <div class="flex h-20 w-20 items-center justify-center rounded-full bg-muted/30 mb-4">
+                  <span class="text-5xl opacity-50">📄</span>
+                </div>
+                <p class="text-xl font-bold text-foreground mb-2">No fields to preview</p>
+                <p class="text-base text-muted-foreground">Add fields to see them here</p>
               </div>
             }
           </div>
@@ -385,31 +418,45 @@
     </div>
 
     <!-- Actions -->
-    <div class="mt-6 flex gap-4 border-t border-border pt-6">
+    <div class="mt-6 flex gap-4">
       <button
         (click)="saveDocument()"
         [disabled]="isSaving()"
-        class="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+        class="inline-flex items-center gap-2 rounded-xl border-2 border-rose-600 hover:border-rose-700 bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 text-base font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         @if (isSaving()) {
-          <span class="flex items-center gap-2">
-            <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+          <span class="flex items-center justify-center gap-2">
+            <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
             {{ isEditing() ? 'Updating...' : 'Creating...' }}
           </span>
         } @else {
-          <span>{{ isEditing() ? 'Update Document' : 'Create Document' }}</span>
+          <span>{{ isEditing() ? '💾 Update Document' : '➕ Create Document' }}</span>
         }
       </button>
       <button
         (click)="cancel()"
         [disabled]="isSaving()"
-        class="rounded-lg border border-border bg-background px-6 py-3 text-sm font-semibold hover:bg-accent disabled:opacity-50"
+        class="rounded-xl border-2 border-border/50 bg-background hover:bg-muted px-8 py-3.5 text-base font-semibold shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Cancel
       </button>
     </div>
   </div>
 </div>
+
+<!-- Confirm Delete Field Dialog -->
+@if (showDeleteFieldDialog()) {
+  <app-confirm-dialog
+    [show]="true"
+    title="Delete Field"
+    [message]="'Are you sure you want to delete the field ' + (fieldToDelete()?.label || 'this field') + '?'"
+    confirmLabel="Delete"
+    cancelLabel="Cancel"
+    confirmClass="bg-red-600 text-white hover:bg-red-700"
+    (confirm)="confirmDeleteField()"
+    (cancel)="cancelDeleteField()"
+  />
+}

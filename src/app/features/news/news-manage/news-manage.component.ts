@@ -7,19 +7,20 @@ import { News } from '../../../core/models';
 import { NewsService } from '../../../core/services/news.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ButtonHelmComponent } from '../../../shared/ui/button-helm/button-helm.component';
-import { DataTableComponent, TableColumn, TableAction, PaginationData } from '../../../shared/ui/data-table/data-table.component';
-import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-news-manage',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule, ButtonHelmComponent, DataTableComponent, ConfirmDialogComponent],
+  imports: [CommonModule, FormsModule, NgSelectModule, ButtonHelmComponent],
   templateUrl: './news-manage.component.html'
 })
 export class NewsManageComponent implements OnInit {
   private newsService = inject(NewsService);
   private authService = inject(AuthService);
   private router = inject(Router);
+
+  // Expose Math for template
+  protected readonly Math = Math;
 
   news = signal<News[]>([]);
   loading = signal(false);
@@ -53,60 +54,6 @@ export class NewsManageComponent implements OnInit {
     ...this.categories.map(cat => ({ value: cat, label: cat }))
   ];
 
-  // Table configuration
-  tableColumns: TableColumn<News>[] = [
-    { header: 'Title', field: 'title' },
-    {
-      header: 'Status',
-      render: (item) => {
-        const statusClass = item.status === 'published'
-          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
-        return `<span class="inline-block rounded-full px-2 py-1 text-xs font-medium ${statusClass}">${item.status}</span>`;
-      }
-    },
-    { header: 'Category', field: 'category' },
-    {
-      header: 'Featured',
-      render: (item) => item.featured
-        ? '<span class="text-amber-500">★ Featured</span>'
-        : ''
-    },
-    {
-      header: 'Created',
-      render: (item) => new Date(item.created_at).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      })
-    }
-  ];
-
-  tableActions: TableAction<News>[] = [
-    {
-      label: 'View',
-      onClick: (news) => this.viewNews(news),
-      class: 'mr-2 text-primary hover:underline'
-    },
-    {
-      label: 'Edit',
-      onClick: (news) => this.editNews(news),
-      class: 'mr-2 text-primary hover:underline'
-    },
-    {
-      label: 'Delete',
-      onClick: (news) => this.openDeleteDialog(news),
-      class: 'text-destructive hover:underline'
-    }
-  ];
-
-  paginationData = signal<PaginationData>({
-    currentPage: 1,
-    totalPages: 0,
-    pageSize: 10,
-    totalItems: 0
-  });
-
   ngOnInit(): void {
     this.loadNews();
   }
@@ -132,14 +79,6 @@ export class NewsManageComponent implements OnInit {
         this.news.set(response.data);
         this.totalItems.set(response.pagination.total);
         this.totalPages.set(Math.ceil(response.pagination.total / response.pagination.limit));
-
-        this.paginationData.set({
-          currentPage: this.currentPage(),
-          totalPages: this.totalPages(),
-          pageSize: this.pageSize(),
-          totalItems: this.totalItems()
-        });
-
         this.loading.set(false);
       },
       error: (error) => {

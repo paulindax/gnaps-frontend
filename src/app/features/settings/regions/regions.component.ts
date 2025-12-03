@@ -4,20 +4,18 @@ import { FormsModule } from '@angular/forms';
 import { SettingsService } from '../../../core/services/settings.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Region } from '../../../core/models';
-import { ButtonHelmComponent } from '../../../shared/ui/button-helm/button-helm.component';
-import { DataTableComponent, TableColumn, TableAction, PaginationData } from '../../../shared/ui/data-table/data-table.component';
-import { FormModalComponent } from '../../../shared/ui/form-modal/form-modal.component';
-import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-regions',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonHelmComponent, DataTableComponent, FormModalComponent, ConfirmDialogComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './regions.component.html'
 })
 export class RegionsComponent implements OnInit {
   private settingsService = inject(SettingsService);
   private authService = inject(AuthService);
+
+  protected readonly Math = Math;
 
   regions = signal<Region[]>([]);
   loading = signal(false);
@@ -46,44 +44,6 @@ export class RegionsComponent implements OnInit {
     return userRole === 'system_admin' || userRole === 'national_admin';
   };
 
-  // Table configuration
-  tableColumns: TableColumn<Region>[] = [
-    { header: 'Name', field: 'name' },
-    { header: 'Code', field: 'code' },
-    // {
-    //   header: 'Created At',
-    //   field: 'created_at',
-    //   render: (item) => {
-    //     if (!item.created_at) return '';
-    //     return new Date(item.created_at).toLocaleDateString('en-US', {
-    //       year: 'numeric',
-    //       month: 'short',
-    //       day: 'numeric'
-    //     });
-    //   }
-    // }
-  ];
-
-  tableActions: TableAction<Region>[] = [
-    {
-      label: 'Edit',
-      onClick: (region) => this.openEditModal(region),
-      class: 'mr-2 text-primary hover:underline'
-    },
-    {
-      label: 'Delete',
-      onClick: (region) => this.openDeleteDialog(region),
-      class: 'text-destructive hover:underline'
-    }
-  ];
-
-  paginationData = signal<PaginationData>({
-    currentPage: 1,
-    totalPages: 0,
-    pageSize: 10,
-    totalItems: 0
-  });
-
   ngOnInit(): void {
     this.loadRegions();
   }
@@ -102,15 +62,6 @@ export class RegionsComponent implements OnInit {
         this.regions.set(response.data);
         this.totalItems.set(response.pagination.total);
         this.totalPages.set(Math.ceil(response.pagination.total / response.pagination.limit));
-
-        // Update pagination data
-        this.paginationData.set({
-          currentPage: this.currentPage(),
-          totalPages: this.totalPages(),
-          pageSize: this.pageSize(),
-          totalItems: this.totalItems()
-        });
-
         this.loading.set(false);
       },
       error: (error) => {

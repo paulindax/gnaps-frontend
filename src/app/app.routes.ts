@@ -21,6 +21,7 @@ import { DocumentBuilderComponent } from './features/documents/document-builder/
 import { DocumentFillComponent } from './features/documents/document-fill/document-fill.component';
 import { SettingsComponent } from './features/settings/settings.component';
 import { FinanceComponent } from './features/finance/finance.component';
+import { ManageExecutivesComponent } from './features/executives/manage-executives.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [loginGuard] },
@@ -89,6 +90,11 @@ export const routes: Routes = [
             loadComponent: () => import('./features/finance/bill-items/bill-items.component').then(m => m.BillItemsComponent)
           }
         ]
+      },
+      {
+        path: 'executives',
+        component: ManageExecutivesComponent,
+        canActivate: [roleGuard(['system_admin', 'national_admin'])]
       },
       { path: '', redirectTo: '/dashboard', pathMatch: 'full' }
     ]

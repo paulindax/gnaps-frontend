@@ -51,7 +51,10 @@
           <tr class="border-b border-border bg-muted/50">
             @for (column of columns(); track column.field) {
               <th
-                class="px-4 py-3 text-left text-sm font-semibold"
+                class="px-4 py-3 text-sm font-semibold"
+                [class.text-left]="getColumnAlign(column) === 'left'"
+                [class.text-center]="getColumnAlign(column) === 'center'"
+                [class.text-right]="getColumnAlign(column) === 'right'"
                 [style.width]="column.width"
               >
                 {{ column.header }}
@@ -66,8 +69,17 @@
           @for (item of data(); track $index) {
             <tr class="border-b border-border hover:bg-muted/30">
               @for (column of columns(); track column.field) {
-                <td class="px-4 py-3">
-                  {{ getCellValue(item, column) }}
+                <td
+                  class="px-4 py-3"
+                  [class.text-left]="getColumnAlign(column) === 'left'"
+                  [class.text-center]="getColumnAlign(column) === 'center'"
+                  [class.text-right]="getColumnAlign(column) === 'right'"
+                >
+                  @if (hasHtmlRender(column)) {
+                    <div [innerHTML]="getCellHtml(item, column)"></div>
+                  } @else {
+                    {{ getCellValue(item, column) }}
+                  }
                 </td>
               }
               @if (hasActions()) {
