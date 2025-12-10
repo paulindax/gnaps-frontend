@@ -22,9 +22,14 @@ import { DocumentFillComponent } from './features/documents/document-fill/docume
 import { SettingsComponent } from './features/settings/settings.component';
 import { FinanceComponent } from './features/finance/finance.component';
 import { ManageExecutivesComponent } from './features/executives/manage-executives.component';
+import { FinanceReportsComponent } from './features/finance-reports/finance-reports.component';
+import { MessagingComponent } from './features/messaging/messaging.component';
+import { ActivityLogsComponent } from './features/activity-logs/activity-logs.component';
+import { SchoolRegistrationComponent } from './features/auth/school-registration/school-registration.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [loginGuard] },
+  { path: 'join', component: SchoolRegistrationComponent }, // Public route for new school registration
   { path: 'event-register/:code', component: EventRegisterPublicComponent }, // Public route, no auth required
   { 
     path: '',
@@ -35,20 +40,20 @@ export const routes: Routes = [
       {
         path: 'schools',
         component: SchoolListComponent,
-        canActivate: [roleGuard(['system_admin', 'national_admin', 'regional_admin', 'zone_admin'])]
+        canActivate: [roleGuard(['system_admin', 'national_admin', 'region_admin', 'zone_admin'])]
       },
       {
         path: 'payments',
         component: PaymentListComponent,
-        canActivate: [roleGuard(['school_user'])]
+        canActivate: [roleGuard(['school_admin'])]
       },
       {
         path: 'news',
         children: [
           { path: '', component: NewsListComponent },
-          { path: 'manage', component: NewsManageComponent, canActivate: [roleGuard(['system_admin', 'national_admin', 'regional_admin', 'zone_admin'])] },
-          { path: 'create', component: NewsFormComponent, canActivate: [roleGuard(['system_admin', 'national_admin', 'regional_admin', 'zone_admin'])] },
-          { path: 'edit/:id', component: NewsFormComponent, canActivate: [roleGuard(['system_admin', 'national_admin', 'regional_admin', 'zone_admin'])] },
+          { path: 'manage', component: NewsManageComponent, canActivate: [roleGuard(['system_admin', 'national_admin', 'region_admin', 'zone_admin'])] },
+          { path: 'create', component: NewsFormComponent, canActivate: [roleGuard(['system_admin', 'national_admin', 'region_admin', 'zone_admin'])] },
+          { path: 'edit/:id', component: NewsFormComponent, canActivate: [roleGuard(['system_admin', 'national_admin', 'region_admin', 'zone_admin'])] },
           { path: ':id', component: NewsDetailComponent }
         ]
       },
@@ -56,17 +61,17 @@ export const routes: Routes = [
         path: 'events',
         children: [
           { path: '', component: EventsListComponent },
-          { path: 'create', component: EventFormComponent, canActivate: [roleGuard(['system_admin', 'national_admin', 'regional_admin'])] },
+          { path: 'create', component: EventFormComponent, canActivate: [roleGuard(['system_admin', 'national_admin', 'region_admin'])] },
           { path: ':id', component: EventDetailComponent },
-          { path: ':id/edit', component: EventFormComponent, canActivate: [roleGuard(['system_admin', 'national_admin', 'regional_admin'])] }
+          { path: ':id/edit', component: EventFormComponent, canActivate: [roleGuard(['system_admin', 'national_admin', 'region_admin'])] }
         ]
       },
       {
         path: 'documents',
         children: [
           { path: 'vault', component: DocumentVaultComponent },
-          { path: 'builder', component: DocumentBuilderComponent, canActivate: [roleGuard(['system_admin', 'national_admin', 'regional_admin'])] },
-          { path: 'builder/:id', component: DocumentBuilderComponent, canActivate: [roleGuard(['system_admin', 'national_admin', 'regional_admin'])] },
+          { path: 'builder', component: DocumentBuilderComponent, canActivate: [roleGuard(['system_admin', 'national_admin', 'region_admin'])] },
+          { path: 'builder/:id', component: DocumentBuilderComponent, canActivate: [roleGuard(['system_admin', 'national_admin', 'region_admin'])] },
           { path: 'fill/:id', component: DocumentFillComponent },
           { path: '', redirectTo: 'vault', pathMatch: 'full' }
         ]
@@ -74,12 +79,12 @@ export const routes: Routes = [
       {
         path: 'settings',
         component: SettingsComponent,
-        canActivate: [roleGuard(['system_admin', 'national_admin', 'regional_admin', 'zone_admin'])]
+        canActivate: [roleGuard(['system_admin', 'national_admin', 'region_admin', 'zone_admin'])]
       },
       {
         path: 'finance',
         component: FinanceComponent,
-        canActivate: [roleGuard(['system_admin', 'national_admin'])],
+        canActivate: [roleGuard(['system_admin', 'national_admin', 'region_admin', 'zone_admin'])],
         children: [
           {
             path: 'bills',
@@ -94,7 +99,22 @@ export const routes: Routes = [
       {
         path: 'executives',
         component: ManageExecutivesComponent,
-        canActivate: [roleGuard(['system_admin', 'national_admin'])]
+        canActivate: [roleGuard(['system_admin', 'national_admin', 'region_admin', 'zone_admin'])]
+      },
+      {
+        path: 'finance-reports',
+        component: FinanceReportsComponent,
+        canActivate: [roleGuard(['system_admin', 'national_admin', 'region_admin', 'zone_admin'])]
+      },
+      {
+        path: 'messaging',
+        component: MessagingComponent,
+        canActivate: [roleGuard(['system_admin', 'national_admin', 'region_admin', 'zone_admin'])]
+      },
+      {
+        path: 'activity-logs',
+        component: ActivityLogsComponent,
+        canActivate: [roleGuard(['system_admin'])]
       },
       { path: '', redirectTo: '/dashboard', pathMatch: 'full' }
     ]

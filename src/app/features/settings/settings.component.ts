@@ -28,17 +28,17 @@ export class SettingsComponent {
 
   canAccessZones = computed(() => {
     const userRole = this.role();
-    return userRole === 'system_admin' || userRole === 'national_admin' || userRole === 'regional_admin';
+    return userRole === 'system_admin' || userRole === 'national_admin' || userRole === 'region_admin';
   });
 
   canAccessPositions = computed(() => {
     const userRole = this.role();
-    return userRole !== 'school_user';
+    return userRole !== 'school_admin';
   });
 
   canAccessGroups = computed(() => {
     const userRole = this.role();
-    return userRole !== 'school_user';
+    return userRole !== 'school_admin';
   });
 
   // Available tabs based on role

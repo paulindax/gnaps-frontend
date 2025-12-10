@@ -46,7 +46,7 @@
       </div>
     </div>
 
-    <!-- Statistics Cards Grid with Rose Theme -->
+    <!-- Statistics Cards Grid with Blue Theme -->
     <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:mb-8">
       <!-- Total Events Card -->
       <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-all">
@@ -241,7 +241,7 @@
               @if (event.image_url) {
                 <div class="aspect-video w-full overflow-hidden bg-muted">
                   <img
-                    [src]="event.image_url"
+                    [src]="getImageUrl(event.image_url)"
                     [alt]="event.title"
                     class="h-full w-full object-cover transition-transform group-hover:scale-105 duration-300"
                     loading="lazy"
@@ -260,7 +260,7 @@
                     {{ event.title }}
                   </h3>
                   @if (event.is_paid) {
-                    <span class="shrink-0 rounded-full bg-rose-500/10 border border-rose-500/30 px-3 py-1 text-xs font-bold text-rose-600 dark:text-rose-400">
+                    <span class="shrink-0 rounded-full bg-amber-500/10 border border-amber-500/30 px-3 py-1 text-xs font-bold text-amber-600 dark:text-amber-400">
                       ${{ event.price }}
                     </span>
                   } @else {

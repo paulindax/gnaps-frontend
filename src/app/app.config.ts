@@ -6,6 +6,7 @@ import { routes } from './app.routes';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { FlashMessageInterceptor } from './core/interceptors/flash-message.interceptor';
 import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
+import { ActivityLogInterceptor } from './core/interceptors/activity-log.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,6 +26,11 @@ export const appConfig: ApplicationConfig = {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: LoadingInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ActivityLogInterceptor,
       multi: true
     }
   ]

@@ -46,7 +46,7 @@ export class SideNavComponent {
       {
         title: 'System',
         items: allItems.filter(item =>
-          ['Finance', 'Settings'].includes(item.label)
+          ['Finance', 'Finance Reports', 'Messaging', 'Settings'].includes(item.label)
         )
       }
     ];
@@ -72,9 +72,9 @@ export class SideNavComponent {
     const map: Record<string, string> = {
       system_admin: 'System Admin',
       national_admin: 'National Admin',
-      regional_admin: 'Regional Admin',
+      region_admin: 'Regional Admin',
       zone_admin: 'Zone Admin',
-      school_user: 'School User'
+      school_admin: 'School User'
     };
     return map[role || ''] || 'User';
   });
@@ -86,14 +86,16 @@ export class SideNavComponent {
 
   // Navigation items
   private navItems: NavItem[] = [
-    { label: 'Dashboard', route: '/dashboard', icon: '📊', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin', 'school_user'] },
-    { label: 'Schools', route: '/schools', icon: '🏫', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin'] },
-    { label: 'Payments', route: '/payments', icon: '💳', roles: ['school_user'] },
-    { label: 'Executives', route: '/executives', icon: '👔', roles: ['system_admin', 'national_admin'] },
-    { label: 'News', route: '/news', icon: '📰', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin', 'school_user'] },
-    { label: 'Events', route: '/events', icon: '📅', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin', 'school_user'] },
-    { label: 'Documents', route: '/documents', icon: '📄', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin', 'school_user'] },
-    { label: 'Finance', route: '/finance', icon: '💰', roles: ['system_admin', 'national_admin'] },
-    { label: 'Settings', route: '/settings', icon: '⚙️', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin'] }
+    { label: 'Dashboard', route: '/dashboard', icon: '📊', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin', 'school_admin'] },
+    { label: 'Schools', route: '/schools', icon: '🏫', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin'] },
+    { label: 'Payments', route: '/payments', icon: '💳', roles: ['school_admin'] },
+    { label: 'Executives', route: '/executives', icon: '👔', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin'] },
+    { label: 'News', route: '/news', icon: '📰', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin', 'school_admin'] },
+    { label: 'Events', route: '/events', icon: '📅', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin', 'school_admin'] },
+    { label: 'Documents', route: '/documents', icon: '📄', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin', 'school_admin'] },
+    { label: 'Finance', route: '/finance', icon: '💰', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin'] },
+    { label: 'Finance Reports', route: '/finance-reports', icon: '📈', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin'] },
+    { label: 'Messaging', route: '/messaging', icon: '💬', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin'] },
+    { label: 'Settings', route: '/settings', icon: '⚙️', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin'] }
   ];
 }

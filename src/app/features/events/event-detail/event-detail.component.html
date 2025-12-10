@@ -1,372 +1,615 @@
-<div class="min-h-screen bg-linear-to-br from-background via-background to-muted/30">
-  <div class="w-full px-4 py-6 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+<!-- Professional Event Detail - Optimized for 35+ executives -->
+<div class="min-h-screen bg-background">
+  <div class="w-full px-4 py-8 sm:px-6 lg:px-10 max-w-7xl mx-auto">
     @if (event(); as event) {
-      <!-- Page Header -->
-      <div class="mb-6">
+      <!-- Header Navigation -->
+      <nav class="mb-8">
         <button
           (click)="goBack()"
-          class="mb-4 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          class="inline-flex items-center gap-3 px-4 py-3 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors"
         >
-          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
           Back to Events
         </button>
+      </nav>
+
+      <!-- Event Header Card -->
+      <header class="bg-card border border-border rounded-xl shadow-sm mb-8 overflow-hidden">
+        <div class="flex flex-col lg:flex-row">
+          <!-- Event Image -->
+          @if (event.image_url) {
+            <div class="lg:w-80 h-56 lg:h-auto bg-muted shrink-0">
+              <img
+                [src]="getImageUrl(event.image_url)"
+                [alt]="event.title"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          }
+
+          <!-- Event Title & Key Info -->
+          <div class="flex-1 p-6 lg:p-8">
+            <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-3 mb-2">
+                  <app-badge [variant]="getStatusVariant(event.status)" class="text-sm">
+                    {{ (event.status || 'published') | uppercase }}
+                  </app-badge>
+                  @if (event.is_paid) {
+                    <span class="inline-flex items-center px-3 py-1 rounded-md bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 text-sm font-semibold">
+                      Paid Event
+                    </span>
+                  } @else {
+                    <span class="inline-flex items-center px-3 py-1 rounded-md bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-sm font-semibold">
+                      Free Event
+                    </span>
+                  }
+                </div>
+                <h1 class="text-2xl lg:text-3xl font-bold text-foreground leading-tight">{{ event.title }}</h1>
+              </div>
+
+              @if (event.is_paid && event.price) {
+                <div class="text-right shrink-0">
+                  <p class="text-sm text-muted-foreground mb-1">Registration Fee</p>
+                  <p class="text-3xl font-bold text-primary">GH₵{{ event.price | number:'1.2-2' }}</p>
+                </div>
+              }
+            </div>
+
+            @if (event.description) {
+              <p class="text-base whitespace-break-spaces text-muted-foreground leading-relaxed">{{ event.description }}</p>
+            }
+
+            <!-- Quick Info Row -->
+            <div class="flex flex-wrap gap-6 mt-6 pt-6 border-t border-border">
+              <div class="flex items-center gap-2 text-base">
+                <svg class="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span class="font-medium">{{ event.start_date | date:'EEEE, MMMM d, y' }}</span>
+              </div>
+              @if (event.venue || event.location) {
+                <div class="flex items-center gap-2 text-base">
+                  <svg class="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span class="font-medium">{{ event.venue || event.location }}</span>
+                </div>
+              }
+              @if (event.max_attendees) {
+                <div class="flex items-center gap-2 text-base">
+                  <svg class="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  <span class="font-medium">{{ event.registered_count || 0 }} / {{ event.max_attendees }} registered</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Registration Link Section (Admin Only) -->
+      @if (event.registration_code && canManageEvents()) {
+        <section class="bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 rounded-xl p-6 mb-8">
+          <div class="flex items-start gap-4">
+            <div class="shrink-0 w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-900/50 flex items-center justify-center">
+              <svg class="w-6 h-6 text-rose-600 dark:text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h2 class="text-lg font-semibold text-rose-900 dark:text-rose-100 mb-2">Public Registration Link</h2>
+              <p class="text-sm text-rose-700 dark:text-rose-300 mb-4">Share this link to allow schools to register for this event.</p>
+
+              <div class="flex items-center gap-3 bg-white dark:bg-background p-3 rounded-lg border border-rose-200 dark:border-rose-700">
+                <input
+                  #linkInput
+                  type="text"
+                  [value]="getRegistrationLink()"
+                  readonly
+                  class="flex-1 bg-transparent border-0 text-base font-mono text-foreground focus:outline-none min-w-0"
+                />
+                <button
+                  type="button"
+                  (click)="copyLink(linkInput)"
+                  class="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-base font-semibold transition-colors"
+                >
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  Copy Link
+                </button>
+              </div>
+
+              <p class="mt-3 text-sm text-rose-600 dark:text-rose-400">
+                Registration Code: <strong class="font-mono">{{ event.registration_code }}</strong>
+              </p>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- Main Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Left Column: Details & Registrations -->
+        <div class="lg:col-span-2 space-y-8">
+
+          <!-- Event Details Section -->
+          <section class="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+            <div class="px-6 py-5 border-b border-border bg-muted/30">
+              <h2 class="text-xl font-semibold text-foreground">Event Details</h2>
+            </div>
+
+            <div class="p-6">
+              <dl class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Date & Time -->
+                <div>
+                  <dt class="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">Date & Time</dt>
+                  <dd class="text-base font-medium text-foreground">
+                    {{ event.start_date | date:'EEEE, MMMM d, y' }}
+                    <br>
+                    <span class="text-muted-foreground">{{ event.start_date | date:'h:mm a' }}</span>
+                    @if (event.end_date) {
+                      <span class="text-muted-foreground"> - {{ event.end_date | date:'h:mm a' }}</span>
+                    }
+                  </dd>
+                </div>
+
+                <!-- Venue -->
+                @if (event.venue) {
+                  <div>
+                    <dt class="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">Venue</dt>
+                    <dd class="text-base font-medium text-foreground">{{ event.venue }}</dd>
+                  </div>
+                }
+
+                <!-- Location -->
+                @if (event.location) {
+                  <div>
+                    <dt class="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">Location</dt>
+                    <dd class="text-base font-medium text-foreground">{{ event.location }}</dd>
+                  </div>
+                }
+
+                <!-- Registration Deadline -->
+                @if (event.registration_deadline) {
+                  <div>
+                    <dt class="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">Registration Deadline</dt>
+                    <dd class="text-base font-medium text-foreground">
+                      {{ event.registration_deadline | date:'MMMM d, y' }}
+                      <span class="text-muted-foreground">at {{ event.registration_deadline | date:'h:mm a' }}</span>
+                    </dd>
+                  </div>
+                }
+
+                <!-- Associated Bill -->
+                @if (event.bill_name) {
+                  <div>
+                    <dt class="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">Associated Bill</dt>
+                    <dd class="text-base font-medium text-foreground">{{ event.bill_name }}</dd>
+                  </div>
+                }
+
+                <!-- Capacity -->
+                @if (event.max_attendees) {
+                  <div>
+                    <dt class="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">Capacity</dt>
+                    <dd>
+                      <div class="flex items-center gap-3">
+                        <div class="flex-1 h-3 bg-muted rounded-full overflow-hidden max-w-48">
+                          <div
+                            class="h-full bg-primary rounded-full transition-all"
+                            [style.width.%]="((event.registered_count || 0) / event.max_attendees) * 100"
+                          ></div>
+                        </div>
+                        <span class="text-base font-semibold text-foreground whitespace-nowrap">
+                          {{ event.registered_count || 0 }} / {{ event.max_attendees }}
+                        </span>
+                      </div>
+                    </dd>
+                  </div>
+                }
+              </dl>
+
+              <!-- Description -->
+              @if (event.description) {
+                <div class="mt-6 pt-6 border-t border-border">
+                  <h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">Description</h3>
+                  <p class="text-base text-foreground leading-relaxed whitespace-pre-line">{{ event.description }}</p>
+                </div>
+              }
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Right Column: Actions & Summary -->
+        <div class="space-y-6">
+
+          <!-- Actions Card -->
+          <section class="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+            <div class="px-6 py-5 border-b border-border bg-muted/30">
+              <h2 class="text-lg font-semibold text-foreground">Actions</h2>
+            </div>
+            <div class="p-6 space-y-4">
+              @if (canManageEvents()) {
+                <button
+                  (click)="editEvent()"
+                  class="w-full inline-flex items-center justify-center gap-3 px-6 py-4 text-base font-semibold border-2 border-border rounded-lg hover:bg-muted transition-colors"
+                >
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  Edit Event
+                </button>
+              }
+
+              @if (canRegister() && event.status === 'published') {
+                <button
+                  (click)="openRegistrationForm()"
+                  class="w-full inline-flex items-center justify-center gap-3 px-6 py-4 text-base font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Register for Event
+                </button>
+              }
+            </div>
+          </section>
+
+          <!-- Event Summary Card -->
+          <section class="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+            <div class="px-6 py-5 border-b border-border bg-muted/30">
+              <h2 class="text-lg font-semibold text-foreground">Event Summary</h2>
+            </div>
+            <div class="p-6 space-y-5">
+              <div class="flex justify-between items-center pb-4 border-b border-border">
+                <span class="text-base text-muted-foreground">Status</span>
+                <app-badge [variant]="getStatusVariant(event.status)">
+                  {{ (event.status || 'published') | uppercase }}
+                </app-badge>
+              </div>
+
+              <div class="flex justify-between items-center pb-4 border-b border-border">
+                <span class="text-base text-muted-foreground">Event Type</span>
+                <span class="text-base font-semibold text-foreground">{{ event.is_paid ? 'Paid' : 'Free' }}</span>
+              </div>
+
+              @if (event.is_paid && event.price) {
+                <div class="flex justify-between items-center pb-4 border-b border-border">
+                  <span class="text-base text-muted-foreground">Price</span>
+                  <span class="text-base font-semibold text-foreground">GH₵{{ event.price | number:'1.2-2' }}</span>
+                </div>
+              }
+
+              @if (event.max_attendees) {
+                <div class="flex justify-between items-center pb-4 border-b border-border">
+                  <span class="text-base text-muted-foreground">Registered</span>
+                  <span class="text-base font-semibold text-foreground">{{ event.registered_count || 0 }} / {{ event.max_attendees }}</span>
+                </div>
+              }
+
+              @if (event.bill_name) {
+                <div class="flex justify-between items-center">
+                  <span class="text-base text-muted-foreground">Linked Bill</span>
+                  <span class="text-base font-semibold text-foreground">{{ event.bill_name }}</span>
+                </div>
+              }
+            </div>
+          </section>
+
+          <!-- Help Section -->
+          <!-- <section class="bg-muted/30 border border-border rounded-xl p-6">
+            <div class="flex items-start gap-4">
+              <svg class="w-6 h-6 text-muted-foreground flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <h3 class="text-base font-semibold text-foreground mb-1">Need Help?</h3>
+                <p class="text-sm text-muted-foreground">Contact your regional administrator for assistance with event management.</p>
+              </div>
+            </div>
+          </section> -->
+        </div>
       </div>
 
-      <!-- Public Registration Link -->
-      @if (event.registration_code) {
-        <div class="rounded-2xl border-2 border-rose-200/60 dark:border-rose-900/40 bg-linear-to-br from-rose-50/80 via-rose-100/40 to-rose-50/80 dark:from-rose-950/30 dark:via-rose-900/15 dark:to-rose-950/30 p-6 shadow-md mb-6">
-          <h2 class="text-lg font-bold mb-4 flex items-center gap-3 text-rose-900 dark:text-rose-100 lg:text-xl">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40 ring-2 ring-rose-200 dark:ring-rose-800">
-              <span class="text-xl">🔗</span>
+      <!-- Registrations Section (Admin Only) - Full Width -->
+      @if (canManageEvents()) {
+        <section class="mt-8 bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+          <div class="px-6 py-5 border-b border-border bg-muted/30">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <h2 class="text-xl font-semibold text-foreground">Registrations</h2>
+              <app-data-export
+                [data]="registrations()"
+                [config]="registrationExportConfig()"
+                buttonLabel="Export"
+              />
             </div>
-            Public Registration Link
-          </h2>
+            <!-- Stats Row -->
+            <div class="flex flex-wrap items-center gap-3 mt-4">
+              <!-- Total Registrations -->
+              <div class="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 dark:bg-indigo-700 rounded-lg shadow-sm">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                <span class="text-sm font-medium text-white/90">Registrations:</span>
+                <strong class="text-lg font-bold text-white">{{ registrations().length }}</strong>
+              </div>
+              <!-- Total Attendees -->
+              <div class="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 dark:bg-emerald-700 rounded-lg shadow-sm">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span class="text-sm font-medium text-white/90">Total Attendees:</span>
+                <strong class="text-lg font-bold text-white">{{ totalAttendees() }}</strong>
+              </div>
+            </div>
+          </div>
 
-          <div class="bg-white dark:bg-background rounded-xl p-5 border-2 border-rose-200/50 dark:border-rose-800/50 shadow-sm">
-            <div class="flex flex-col gap-4">
-              <div>
-                <p class="text-sm text-muted-foreground mb-2 font-medium">Share this link to allow schools to register:</p>
-                <div class="flex items-center gap-2 bg-muted/50 p-4 rounded-xl border-2 border-border/50">
-                  <input
-                    #linkInput
-                    type="text"
-                    [value]="getRegistrationLink()"
-                    readonly
-                    class="flex-1 bg-transparent border-0 text-sm font-mono focus:outline-none"
-                  />
+          @if (registrations().length > 0) {
+            <!-- Registration Table -->
+            <div class="overflow-x-auto">
+              <table class="w-full border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700">
+                    <th class="px-4 py-3 text-left text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider w-12">#</th>
+                    <th class="px-4 py-3 text-left text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">School Name</th>
+                    <th class="px-4 py-3 text-center text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider w-28">Attendees</th>
+                    <th class="px-4 py-3 text-left text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider w-36">Registered</th>
+                    <th class="px-4 py-3 text-center text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider w-32">Status</th>
+                    <th class="px-4 py-3 text-center text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider w-24">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (registration of paginatedRegistrations(); track registration.id; let i = $index) {
+                    <tr class="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
+                      <!-- Row Number -->
+                      <td class="px-4 py-4">
+                        <span class="text-sm font-medium text-slate-400 dark:text-slate-500">{{ (registrationPage() - 1) * registrationPageSize() + i + 1 }}</span>
+                      </td>
+                      <!-- School Name -->
+                      <td class="px-4 py-4">
+                        <div class="flex items-center gap-3">
+                          <div class="shrink-0 w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-sm">
+                            <span class="text-white font-bold text-sm">{{ (registration.school_name || 'N')[0] | uppercase }}</span>
+                          </div>
+                          <div class="min-w-0">
+                            <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{{ registration.school_name || 'N/A' }}</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">#{{ registration.school_member_no || registration.school_id }}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <!-- Attendees -->
+                      <td class="px-4 py-4 text-center">
+                        <div class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 rounded-full">
+                          <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          <span class="text-sm font-bold text-blue-700 dark:text-blue-300">{{ registration.number_of_attendees || 0 }}</span>
+                        </div>
+                      </td>
+                      <!-- Registration Date -->
+                      <td class="px-4 py-4">
+                        <div class="flex flex-col">
+                          <span class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ registration.registration_date | date:'MMM d, yyyy' }}</span>
+                          <span class="text-xs text-slate-400 dark:text-slate-500">{{ registration.registration_date | date:'h:mm a' }}</span>
+                        </div>
+                      </td>
+                      <!-- Payment Status -->
+                      <td class="px-4 py-4 text-center">
+                        @if (registration.payment_status === 'paid' || registration.payment_status === 'confirmed') {
+                          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                            {{ registration.payment_status | uppercase }}
+                          </span>
+                        } @else if (registration.payment_status === 'pending') {
+                          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            PENDING
+                          </span>
+                        } @else {
+                          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300">
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            {{ (registration.payment_status || 'unpaid') | uppercase }}
+                          </span>
+                        }
+                      </td>
+                      <!-- Action -->
+                      <td class="px-4 py-4 text-center">
+                        <button
+                          (click)="viewRegistrationDetails(registration)"
+                          class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-primary hover:text-white transition-all duration-200 group-hover:shadow-md"
+                          title="View Details"
+                        >
+                          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            @if (totalRegistrationPages() > 1) {
+              <div class="px-6 py-4 border-t border-border bg-muted/20 flex items-center justify-between">
+                <p class="text-base text-muted-foreground">
+                  Showing <strong>{{ (registrationPage() - 1) * registrationPageSize() + 1 }}</strong> to
+                  <strong>{{ getRegistrationEndIndex() }}</strong> of
+                  <strong>{{ registrations().length }}</strong> registrations
+                </p>
+                <div class="flex items-center gap-2">
                   <button
-                    type="button"
-                    (click)="copyLink(linkInput)"
-                    class="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2 shadow-sm hover:shadow-md transition-all"
+                    (click)="previousRegistrationPage()"
+                    [disabled]="registrationPage() === 1"
+                    class="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-border hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Previous page"
                   >
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                     </svg>
-                    Copy
+                  </button>
+                  @for (page of getPageNumbers(); track page) {
+                    <button
+                      (click)="goToRegistrationPage(page)"
+                      [class]="registrationPage() === page
+                        ? 'inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary text-primary-foreground font-semibold'
+                        : 'inline-flex items-center justify-center w-10 h-10 rounded-lg border border-border hover:bg-muted transition-colors font-medium'"
+                    >
+                      {{ page }}
+                    </button>
+                  }
+                  <button
+                    (click)="nextRegistrationPage()"
+                    [disabled]="registrationPage() === totalRegistrationPages()"
+                    class="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-border hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Next page"
+                  >
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
                   </button>
                 </div>
               </div>
-
-              <div class="flex items-center gap-2 text-sm text-muted-foreground bg-muted/30 rounded-lg p-3">
-                <svg class="w-5 h-5 shrink-0 text-rose-600 dark:text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Registration Code: <strong class="text-rose-600 dark:text-rose-400">{{ event.registration_code }}</strong></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      }
-
-      <!-- Event Hero Section -->
-      <div class="rounded-xl border-2 border-border/50 bg-card shadow-xl overflow-hidden mb-6">
-        @if (event.image_url) {
-          <div class="h-96 bg-linear-to-br from-primary/20 to-primary/5 overflow-hidden">
-            <img [src]="event.image_url" [alt]="event.title" class="w-full h-full object-cover" />
-          </div>
-        } @else {
-          <div class="h-96 bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-            <span class="text-9xl opacity-50">📅</span>
-          </div>
-        } 
-
-        <div class="p-8">
-          <div class="flex items-start justify-between gap-4 mb-4">
-            <div class="flex-1">
-              <h1 class="text-4xl font-bold mb-2">{{ event.title }}</h1>
-              <app-badge [variant]="getStatusVariant(event.status)" class="inline-block">
-                {{ event.status || 'published' }}
-              </app-badge>
-            </div>
-
-            @if (event.is_paid) {
-              <div class="shrink-0 rounded-xl bg-primary/10 border-2 border-primary/20 px-6 py-4 text-center">
-                <p class="text-sm font-semibold text-muted-foreground">Price</p>
-                <p class="text-3xl font-bold text-primary">${{ event.price }}</p>
-              </div>
-            } @else {
-              <div class="shrink-0 rounded-xl bg-green-500/10 border-2 border-green-500/20 px-6 py-4">
-                <p class="text-2xl font-bold text-green-600">FREE</p>
-              </div>
             }
-          </div>
-
-          <p class="text-lg text-muted-foreground">{{ event.description }}</p>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Event Details Column -->
-        <div class="lg:col-span-2 space-y-6">
-          <!-- Event Information -->
-          <div class="rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm">
-            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
-              <span class="text-2xl">ℹ️</span>
-              Event Information
-            </h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Date & Time -->
-              <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4">
-                <div class="flex items-center gap-2 mb-2">
-                  <span class="text-lg">📅</span>
-                  <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Date & Time</label>
-                </div>
-                <p class="font-semibold">{{ event.start_date | date:'medium' }}</p>
-                @if (event.end_date) {
-                  <p class="text-sm text-muted-foreground mt-1">to {{ event.end_date | date:'medium' }}</p>
-                }
-              </div>
-
-              <!-- Venue -->
-              @if (event.venue) {
-                <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4">
-                  <div class="flex items-center gap-2 mb-2">
-                    <span class="text-lg">🏢</span>
-                    <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Venue</label>
-                  </div>
-                  <p class="font-semibold">{{ event.venue }}</p>
-                </div>
-              }
-
-              <!-- Location -->
-              @if (event.location) {
-                <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4">
-                  <div class="flex items-center gap-2 mb-2">
-                    <span class="text-lg">📍</span>
-                    <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Location</label>
-                  </div>
-                  <p class="font-semibold">{{ event.location }}</p>
-                </div>
-              }
-
-              <!-- Registration Deadline -->
-              @if (event.registration_deadline) {
-                <div class="rounded-lg border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-4">
-                  <div class="flex items-center gap-2 mb-2">
-                    <span class="text-lg">⏰</span>
-                    <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Registration Deadline</label>
-                  </div>
-                  <p class="font-semibold">{{ event.registration_deadline | date:'medium' }}</p>
-                </div>
-              }
-            </div>
-          </div>
-
-          <!-- Registrations (Admin Only) -->
-          @if (canManageEvents() && registrations().length > 0) {
-            <div class="rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm">
-              <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
-                <span class="text-2xl">👥</span>
-                Registrations ({{ registrations().length }})
-              </h2>
-
-              <div class="space-y-3">
-                @for (registration of registrations(); track registration.id) {
-                  <div class="rounded-lg border-2 border-border/50 p-4 hover:shadow-md transition-shadow">
-                    <div class="flex items-center justify-between gap-4">
-                      <div class="flex-1">
-                        <p class="font-semibold text-base">{{ registration.school_name }}</p>
-                        <p class="text-sm text-muted-foreground mt-1">
-                          {{ registration.number_of_attendees }} attendee(s) •
-                          Registered on {{ registration.registration_date | date:'short' }}
-                        </p>
-                      </div>
-                      <div class="flex items-center gap-2">
-                        <app-badge
-                          [variant]="registration.payment_status === 'paid' ? 'success' : registration.payment_status === 'pending' ? 'outline' : 'destructive'"
-                        >
-                          {{ registration.payment_status }}
-                        </app-badge>
-                        <button
-                          (click)="viewRegistrationDetails(registration)"
-                          class="px-3 py-2 text-sm font-medium text-primary hover:text-primary/80 hover:bg-primary/10 rounded-lg transition-colors flex items-center gap-1.5"
-                          title="View Details"
-                        >
-                          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                          </svg>
-                          Details
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                }
-              </div>
+          } @else {
+            <!-- Empty State -->
+            <div class="px-6 py-12 text-center">
+              <svg class="w-16 h-16 mx-auto text-muted-foreground/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <p class="text-lg font-medium text-muted-foreground mb-2">No registrations yet</p>
+              <p class="text-base text-muted-foreground">Share the registration link above to start receiving registrations.</p>
             </div>
           }
-        </div>
+        </section>
+      }
 
-        <!-- Actions Column -->
-        <div class="space-y-6">
-          <!-- Quick Stats -->
-          <div class="rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm">
-            <h3 class="text-lg font-bold mb-4">Quick Stats</h3>
-
-            <div class="space-y-4">
-              @if (event.max_attendees) {
-                <div>
-                  <p class="text-sm text-muted-foreground mb-1">Attendance</p>
-                  <div class="flex items-center gap-2">
-                    <div class="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                      <div
-                        class="h-full bg-primary transition-all"
-                        [style.width.%]="((event.registered_count || 0) / event.max_attendees) * 100"
-                      ></div>
-                    </div>
-                    <span class="text-sm font-semibold">{{ event.registered_count || 0 }}/{{ event.max_attendees }}</span>
-                  </div>
-                </div>
-              }
-
-              <div>
-                <p class="text-sm text-muted-foreground">Event Type</p>
-                <p class="font-semibold">{{ event.is_paid ? 'Paid Event' : 'Free Event' }}</p>
-              </div>
-
-              <div>
-                <p class="text-sm text-muted-foreground">Status</p>
-                <p class="font-semibold capitalize">{{ event.status || 'published' }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Actions -->
-          <div class="rounded-xl border-2 border-border/50 bg-card p-6 shadow-sm space-y-3">
-            <h3 class="text-lg font-bold mb-4">Actions</h3>
-
-            @if (canManageEvents()) {
-              <app-button-helm
-                (click)="editEvent()"
-                variant="outline"
-                class="w-full"
-              >
-                <span class="mr-2">✏️</span>
-                Edit Event
-              </app-button-helm>
-            }
-
-            @if (canRegister() && event.status === 'published') {
-              <app-button-helm
-                (click)="openRegistrationForm()"
-                class="w-full"
-              >
-                <span class="mr-2">✅</span>
-                Register for Event
-              </app-button-helm>
-            }
-          </div>
-        </div>
-      </div>
     } @else {
+      <!-- Loading State -->
       <div class="flex items-center justify-center min-h-96">
         <div class="text-center">
-          <span class="text-6xl opacity-20">⏳</span>
-          <p class="mt-4 text-lg font-medium text-muted-foreground">Loading event...</p>
+          <svg class="w-12 h-12 mx-auto text-muted-foreground/30 animate-pulse mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <p class="text-lg font-medium text-muted-foreground">Loading event details...</p>
         </div>
       </div>
     }
 
     <!-- Registration Modal -->
     @if (showRegistrationForm()) {
-      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-        <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border-2 border-border/50 bg-card p-6 shadow-2xl sm:p-8">
-          <div class="mb-6 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                <span class="text-2xl">✅</span>
-              </div>
-              <h2 class="text-2xl font-bold">Register for Event</h2>
-            </div>
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true">
+        <div class="w-full max-w-lg bg-card rounded-xl shadow-xl overflow-hidden">
+          <!-- Modal Header -->
+          <div class="px-6 py-5 border-b border-border bg-muted/30 flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-foreground">Register for Event</h2>
             <button
               type="button"
               (click)="closeRegistrationForm()"
-              class="rounded-lg p-2 hover:bg-muted transition-colors"
+              class="p-2 hover:bg-muted rounded-lg transition-colors"
+              aria-label="Close"
             >
-              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
-          <form (ngSubmit)="submitRegistration()" class="space-y-5">
-            <!-- Event Info -->
+          <form (ngSubmit)="submitRegistration()" class="p-6 space-y-6">
+            <!-- Event Summary -->
             @if (event(); as event) {
-              <div class="rounded-lg bg-muted/50 p-4">
-                <p class="font-semibold">{{ event.title }}</p>
-                <p class="text-sm text-muted-foreground mt-1">{{ event.start_date | date:'medium' }}</p>
-                @if (event.is_paid) {
-                  <p class="text-lg font-bold text-primary mt-2">${{ event.price }} per person</p>
+              <div class="bg-muted/50 rounded-lg p-4">
+                <p class="text-lg font-semibold text-foreground">{{ event.title }}</p>
+                <p class="text-base text-muted-foreground mt-1">{{ event.start_date | date:'EEEE, MMMM d, y' }}</p>
+                @if (event.is_paid && event.price) {
+                  <p class="text-lg font-bold text-primary mt-2">GH₵{{ event.price | number:'1.2-2' }} per attendee</p>
                 }
               </div>
             }
 
             <!-- Number of Attendees -->
             <div>
-              <label class="text-sm font-medium">Number of Attendees <span class="text-destructive">*</span></label>
+              <label for="attendees" class="block text-base font-semibold text-foreground mb-2">
+                Number of Attendees <span class="text-destructive">*</span>
+              </label>
               <app-input-helm
+                id="attendees"
                 [ngModel]="registrationData().number_of_attendees"
                 (ngModelChange)="updateRegistrationField('number_of_attendees', $event)"
                 name="number_of_attendees"
                 type="number"
                 placeholder="Enter number of attendees"
                 required
-                class="mt-2"
               />
             </div>
 
-            <!-- Total Cost (if paid) -->
+            <!-- Total Cost -->
             @if (event(); as event) {
-              @if (event.is_paid) {
-                <div class="rounded-lg bg-primary/10 border-2 border-primary/20 p-4">
-                  <p class="text-sm font-semibold text-muted-foreground">Total Cost</p>
+              @if (event.is_paid && event.price) {
+                <div class="bg-primary/10 border border-primary/20 rounded-lg p-4">
+                  <p class="text-sm font-semibold text-muted-foreground mb-1">Total Cost</p>
                   <p class="text-3xl font-bold text-primary">
-                    ${{ (event.price || 0) * (registrationData().number_of_attendees || 1) }}
+                    GH₵{{ (event.price * (registrationData().number_of_attendees || 1)) | number:'1.2-2' }}
                   </p>
                 </div>
               }
             }
 
-            <!-- Info Box -->
-            <div class="rounded-lg bg-muted/50 p-4 text-sm text-muted-foreground">
-              <div class="flex items-start gap-2">
-                <span class="text-lg">💡</span>
-                <p>
+            <!-- Info Notice -->
+            <div class="bg-muted/50 rounded-lg p-4">
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="text-sm text-muted-foreground">
                   @if (event(); as event) {
                     @if (event.is_paid) {
                       After registration, you will receive payment instructions to complete your registration.
                     } @else {
-                      You will receive a confirmation email after registration.
+                      You will receive a confirmation after successful registration.
                     }
                   }
                 </p>
               </div>
             </div>
 
-            <div class="flex gap-3 pt-4 border-t">
-              <app-button-helm
+            <!-- Form Actions -->
+            <div class="flex gap-4 pt-4 border-t border-border">
+              <button
                 type="button"
-                variant="outline"
                 (click)="closeRegistrationForm()"
-                class="flex-1"
                 [disabled]="isRegistering()"
+                class="flex-1 px-6 py-3 text-base font-semibold border-2 border-border rounded-lg hover:bg-muted disabled:opacity-50 transition-colors"
               >
                 Cancel
-              </app-button-helm>
-              <app-button-helm
+              </button>
+              <button
                 type="submit"
-                class="flex-1"
                 [disabled]="isRegistering()"
+                class="flex-1 px-6 py-3 text-base font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 transition-colors"
               >
                 @if (isRegistering()) {
-                  <span>Registering...</span>
+                  <span>Processing...</span>
                 } @else {
-                  <span>✅ Confirm Registration</span>
+                  <span>Confirm Registration</span>
                 }
-              </app-button-helm>
+              </button>
             </div>
           </form>
         </div>
@@ -375,149 +618,130 @@
 
     <!-- Registration Details Modal -->
     @if (showRegistrationDetails() && selectedRegistration(); as registration) {
-      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-        <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl border-2 border-border/50 bg-card shadow-2xl">
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true">
+        <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-card rounded-xl shadow-xl">
           <!-- Modal Header -->
-          <div class="flex items-center justify-between border-b border-border/50 bg-primary/10 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20">
-                <span class="text-2xl">📋</span>
-              </div>
-              <div>
-                <h2 class="text-2xl font-bold">Registration Details</h2>
-                <p class="text-sm text-muted-foreground">ID: {{ registration.id }}</p>
-              </div>
+          <div class="sticky top-0 px-6 py-5 border-b border-border bg-card flex items-center justify-between">
+            <div>
+              <h2 class="text-xl font-semibold text-foreground">Registration Details</h2>
+              <p class="text-sm text-muted-foreground mt-1">Reference ID: {{ registration.id }}</p>
             </div>
             <button
               type="button"
               (click)="closeRegistrationDetails()"
-              class="rounded-lg p-2 hover:bg-muted transition-colors"
+              class="p-2 hover:bg-muted rounded-lg transition-colors"
+              aria-label="Close"
             >
-              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
           <!-- Modal Body -->
-          <div class="px-6 py-6 space-y-6">
+          <div class="p-6 space-y-6">
             <!-- School Information -->
-            <div class="rounded-xl border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-5">
-              <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                <span class="text-xl">🏫</span>
+            <section class="bg-muted/30 rounded-lg p-5">
+              <h3 class="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
                 School Information
               </h3>
-              <div class="grid grid-cols-1 gap-4">
+              <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">School Name</label>
-                  <p class="text-base font-medium mt-1">{{ registration.school_name || 'N/A' }}</p>
+                  <dt class="text-sm text-muted-foreground">School Name</dt>
+                  <dd class="text-base font-medium text-foreground mt-1">{{ registration.school_name || 'N/A' }}</dd>
                 </div>
                 <div>
-                  <label class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">School ID</label>
-                  <p class="text-base font-medium mt-1">{{ registration.school_id }}</p>
+                  <dt class="text-sm text-muted-foreground">Member No.</dt>
+                  <dd class="text-base font-medium text-foreground mt-1">{{ registration.school_member_no || registration.school_id }}</dd>
                 </div>
-              </div>
-            </div>
+              </dl>
+            </section>
 
-            <!-- Attendance Information -->
-            <div class="rounded-xl border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-5">
-              <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                <span class="text-xl">👥</span>
-                Attendance Information
+            <!-- Attendance Details -->
+            <section class="bg-muted/30 rounded-lg p-5">
+              <h3 class="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Attendance Details
               </h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Number of Attendees</label>
-                  <p class="text-2xl font-bold text-primary mt-1">{{ registration.number_of_attendees || 0 }}</p>
+                  <dt class="text-sm text-muted-foreground">Number of Attendees</dt>
+                  <dd class="text-2xl font-bold text-primary mt-1">{{ registration.number_of_attendees || 0 }}</dd>
                 </div>
                 <div>
-                  <label class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Registration Date</label>
-                  <p class="text-base font-medium mt-1">{{ registration.registration_date | date:'full' }}</p>
+                  <dt class="text-sm text-muted-foreground">Registration Date</dt>
+                  <dd class="text-base font-medium text-foreground mt-1">{{ registration.registration_date | date:'MMMM d, y' }}</dd>
                 </div>
-              </div>
-            </div>
+              </dl>
+            </section>
 
             <!-- Payment Information -->
-            <div class="rounded-xl border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-5">
-              <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                <span class="text-xl">💳</span>
+            <section class="bg-muted/30 rounded-lg p-5">
+              <h3 class="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
                 Payment Information
               </h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Payment Status</label>
-                  <div class="mt-2">
+                  <dt class="text-sm text-muted-foreground">Payment Status</dt>
+                  <dd class="mt-2">
                     <app-badge
-                      [variant]="registration.payment_status === 'paid' ? 'success' : registration.payment_status === 'pending' ? 'outline' : registration.payment_status === 'confirmed' ? 'success' : 'destructive'"
-                      class="text-base"
+                      [variant]="registration.payment_status === 'paid' || registration.payment_status === 'confirmed' ? 'success' : registration.payment_status === 'pending' ? 'outline' : 'destructive'"
                     >
-                      {{ registration.payment_status }}
+                      {{ registration.payment_status | uppercase }}
                     </app-badge>
-                  </div>
+                  </dd>
                 </div>
 
                 @if (registration.payment_method) {
                   <div>
-                    <label class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Payment Method</label>
-                    <p class="text-base font-medium mt-1">{{ registration.payment_method }}</p>
+                    <dt class="text-sm text-muted-foreground">Payment Method</dt>
+                    <dd class="text-base font-medium text-foreground mt-1">{{ registration.payment_method }}</dd>
                   </div>
                 }
 
                 @if (registration.payment_phone) {
                   <div>
-                    <label class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Payment Phone</label>
-                    <p class="text-base font-medium mt-1">{{ registration.payment_phone }}</p>
+                    <dt class="text-sm text-muted-foreground">Payment Phone</dt>
+                    <dd class="text-base font-medium text-foreground mt-1">{{ registration.payment_phone }}</dd>
                   </div>
                 }
 
                 @if (registration.payment_reference) {
-                  <div class="md:col-span-2">
-                    <label class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Payment Reference</label>
-                    <div class="mt-2 flex items-center gap-2 bg-muted/50 p-3 rounded-lg border border-border/50">
-                      <p class="text-sm font-mono flex-1">{{ registration.payment_reference }}</p>
+                  <div class="sm:col-span-2">
+                    <dt class="text-sm text-muted-foreground mb-2">Payment Reference</dt>
+                    <dd class="flex items-center gap-3 bg-background p-3 rounded-lg border border-border">
+                      <span class="text-base font-mono text-foreground flex-1">{{ registration.payment_reference }}</span>
                       <button
                         type="button"
                         (click)="copyToClipboard(registration.payment_reference!)"
-                        class="px-3 py-1.5 bg-primary hover:bg-primary/90 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm hover:shadow transition-all"
-                        title="Copy reference"
+                        class="flex-shrink-0 px-4 py-2 text-sm font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
                       >
-                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
                         Copy
                       </button>
-                    </div>
+                    </dd>
                   </div>
                 }
-              </div>
-            </div>
-
-            <!-- Additional Information -->
-            @if (registration.registered_by) {
-              <div class="rounded-xl border-2 border-border/50 bg-linear-to-br from-card to-muted/20 p-5">
-                <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                  <span class="text-xl">ℹ️</span>
-                  Additional Information
-                </h3>
-                <div class="grid grid-cols-1 gap-4">
-                  <div>
-                    <label class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Registered By (User ID)</label>
-                    <p class="text-base font-medium mt-1">{{ registration.registered_by }}</p>
-                  </div>
-                </div>
-              </div>
-            }
+              </dl>
+            </section>
           </div>
 
           <!-- Modal Footer -->
-          <div class="flex items-center justify-end gap-3 border-t border-border/50 bg-muted/30 px-6 py-4">
-            <app-button-helm
+          <div class="sticky bottom-0 px-6 py-4 border-t border-border bg-card">
+            <button
               type="button"
-              variant="outline"
               (click)="closeRegistrationDetails()"
+              class="w-full px-6 py-3 text-base font-semibold border-2 border-border rounded-lg hover:bg-muted transition-colors"
             >
               Close
-            </app-button-helm>
+            </button>
           </div>
         </div>
       </div>

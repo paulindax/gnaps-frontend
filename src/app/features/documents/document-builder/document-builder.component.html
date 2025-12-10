@@ -7,7 +7,9 @@
         <div class="px-6 py-6 sm:px-8">
           <div class="flex items-center gap-4">
             <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40 ring-2 ring-rose-200 dark:ring-rose-800">
-              <span class="text-2xl">{{ isEditing() ? '✏️' : '📝' }}</span>
+              <svg class="h-7 w-7 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+              </svg>
             </div>
             <div>
               <h1 class="text-2xl font-bold text-rose-900 dark:text-rose-100 lg:text-3xl tracking-tight">
@@ -28,7 +30,10 @@
         <!-- Document Settings -->
         <div class="rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm">
           <h2 class="mb-5 text-lg font-bold flex items-center gap-2">
-            <span class="text-xl">⚙️</span>
+            <svg class="h-5 w-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
             Document Settings
           </h2>
 
@@ -101,14 +106,19 @@
         <div class="rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm">
           <div class="mb-5 flex items-center justify-between">
             <h2 class="text-lg font-bold flex items-center gap-2">
-              <span class="text-xl">📋</span>
+              <svg class="h-5 w-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+              </svg>
               Fields ({{ fields().length }})
             </h2>
             <button
               (click)="addField()"
-              class="inline-flex items-center gap-2 rounded-xl border-2 border-rose-600 hover:border-rose-700 bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 text-base font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 shadow-sm hover:shadow-md transition-all"
+              class="inline-flex items-center gap-2 rounded-xl border-2 border-rose-600 hover:border-rose-700 bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 px-4 py-2 text-base font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 shadow-sm hover:shadow-md transition-all"
             >
-              ➕ Add Field
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+              Add Field
             </button>
           </div>
 
@@ -170,7 +180,9 @@
             } @empty {
               <div class="text-center py-12">
                 <div class="flex h-16 w-16 items-center justify-center rounded-full bg-muted/30 mx-auto mb-3">
-                  <span class="text-3xl opacity-50">📋</span>
+                  <svg class="h-8 w-8 text-muted-foreground/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                  </svg>
                 </div>
                 <p class="text-base font-medium text-muted-foreground">No fields added yet</p>
                 <p class="text-sm text-muted-foreground mt-1">Click "Add Field" to get started</p>
@@ -187,7 +199,13 @@
           <div class="rounded-2xl border-2 border-rose-200/50 dark:border-rose-900/30 bg-linear-to-br from-rose-50/30 via-card to-card dark:from-rose-950/10 dark:via-card dark:to-card p-6 shadow-sm">
             <div class="mb-6 flex items-center justify-between">
               <h2 class="text-xl font-bold flex items-center gap-2">
-                <span class="text-2xl">{{ selectedField() ? '✏️' : '➕' }}</span>
+                <svg class="h-6 w-6 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  @if (selectedField()) {
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  } @else {
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                  }
+                </svg>
                 {{ selectedField() ? 'Edit Field' : 'Add New Field' }}
               </h2>
               <button
@@ -295,7 +313,10 @@
                   (click)="saveField()"
                   class="inline-flex items-center gap-2 rounded-xl border-2 border-rose-600 hover:border-rose-700 bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 text-base font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 shadow-sm hover:shadow-md transition-all"
                 >
-                  💾 Save Field
+                  <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  Save Field
                 </button>
                 <button
                   (click)="closeFieldEditor()"
@@ -310,7 +331,10 @@
           <!-- Preview -->
           <div class="rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm">
             <h2 class="mb-6 text-xl font-bold flex items-center gap-2">
-              <span class="text-2xl">👁️</span>
+              <svg class="h-6 w-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
               Document Preview
             </h2>
 
@@ -389,14 +413,20 @@
                       @case ('file') {
                         <div class="border-2 border-dashed border-border/50 rounded-xl p-6 text-center text-base text-muted-foreground bg-muted/20"
                              [style.width.px]="field.width">
-                          📎 Click to upload or drag and drop
+                          <svg class="h-6 w-6 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                          </svg>
+                          Click to upload or drag and drop
                         </div>
                       }
                       @case ('signature') {
                         <div class="border-2 border-border/50 rounded-xl p-6 text-center text-base text-muted-foreground bg-muted/20"
                              [style.width.px]="field.width"
                              [style.height.px]="field.height || 100">
-                          ✍️ Signature area
+                          <svg class="h-6 w-6 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                          </svg>
+                          Signature area
                         </div>
                       }
                     }
@@ -406,7 +436,9 @@
             } @else {
               <div class="flex flex-col items-center justify-center py-20 text-center">
                 <div class="flex h-20 w-20 items-center justify-center rounded-full bg-muted/30 mb-4">
-                  <span class="text-5xl opacity-50">📄</span>
+                  <svg class="h-10 w-10 text-muted-foreground/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
                 </div>
                 <p class="text-xl font-bold text-foreground mb-2">No fields to preview</p>
                 <p class="text-base text-muted-foreground">Add fields to see them here</p>
@@ -433,7 +465,14 @@
             {{ isEditing() ? 'Updating...' : 'Creating...' }}
           </span>
         } @else {
-          <span>{{ isEditing() ? '💾 Update Document' : '➕ Create Document' }}</span>
+          <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            @if (isEditing()) {
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            } @else {
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            }
+          </svg>
+          <span>{{ isEditing() ? 'Update Document' : 'Create Document' }}</span>
         }
       </button>
       <button

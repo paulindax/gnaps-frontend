@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { LayoutService } from '../../../services/layout.service';
 import { BreadcrumbService } from '../../../services/breadcrumb.service';
+import { ActivityTrackerService } from '../../../services/activity-tracker.service';
 import { ButtonHelmComponent } from '../../../../shared/ui/button-helm/button-helm.component';
 import { SheetComponent } from '../../../../shared/ui/sheet/sheet.component';
 import { NavItem } from '../../../models/nav-item.model';
@@ -26,6 +27,7 @@ export class HeaderComponent {
   private router = inject(Router);
   layoutService = inject(LayoutService);
   breadcrumbService = inject(BreadcrumbService);
+  // activityTracker = inject(ActivityTrackerService);
 
   user = this.authService.currentUserSignal;
   breadcrumbs = this.breadcrumbService.breadcrumbs;
@@ -40,12 +42,15 @@ export class HeaderComponent {
     const map: Record<string, string> = {
       system_admin: 'System Admin',
       national_admin: 'National Admin',
-      regional_admin: 'Regional Admin',
+      region_admin: 'Regional Admin',
       zone_admin: 'Zone Admin',
-      school_user: 'School User'
+      school_admin: 'School User'
     };
     return map[role || ''] || 'User';
   });
+
+  // Check if user is system admin (for activity tracker access)
+  isSystemAdmin = computed(() => this.authService.userRole() === 'system_admin');
 
   // Navigation items for mobile
   navItems = computed(() => {
@@ -119,14 +124,14 @@ export class HeaderComponent {
 
   private getNavItems(): NavItem[] {
     return [
-      { label: 'Dashboard', route: '/dashboard', icon: '📊', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin', 'school_user'] },
-      { label: 'Schools', route: '/schools', icon: '🏫', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin'] },
-      { label: 'Payments', route: '/payments', icon: '💳', roles: ['school_user'] },
-      { label: 'News', route: '/news', icon: '📰', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin', 'school_user'] },
-      { label: 'Events', route: '/events', icon: '📅', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin', 'school_user'] },
-      { label: 'Documents', route: '/documents', icon: '📄', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin', 'school_user'] },
-      { label: 'Finance', route: '/finance', icon: '💰', roles: ['system_admin', 'national_admin'] },
-      { label: 'Settings', route: '/settings', icon: '⚙️', roles: ['system_admin', 'national_admin', 'regional_admin', 'zone_admin'] }
+      { label: 'Dashboard', route: '/dashboard', icon: '📊', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin', 'school_admin'] },
+      { label: 'Schools', route: '/schools', icon: '🏫', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin'] },
+      { label: 'Payments', route: '/payments', icon: '💳', roles: ['school_admin'] },
+      { label: 'News', route: '/news', icon: '📰', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin', 'school_admin'] },
+      { label: 'Events', route: '/events', icon: '📅', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin', 'school_admin'] },
+      { label: 'Documents', route: '/documents', icon: '📄', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin', 'school_admin'] },
+      { label: 'Finance', route: '/finance', icon: '💰', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin'] },
+      { label: 'Settings', route: '/settings', icon: '⚙️', roles: ['system_admin', 'national_admin', 'region_admin', 'zone_admin'] }
     ];
   }
 }

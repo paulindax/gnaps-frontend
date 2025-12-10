@@ -1,7 +1,10 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { News } from '../../../core/models';
+import { MediaService } from '../../../core/services/media.service';
+
+const DEFAULT_NEWS_IMAGE = 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&auto=format&fit=crop&q=60';
 
 @Component({
   selector: 'app-news-card',
@@ -10,6 +13,8 @@ import { News } from '../../../core/models';
   templateUrl: './news-card.component.html'
 })
 export class NewsCardComponent {
+  private mediaService = inject(MediaService);
+
   // Input for news data
   news = input.required<News>();
 
@@ -43,6 +48,6 @@ export class NewsCardComponent {
 
   getImageUrl(): string {
     const newsItem = this.news();
-    return newsItem.image_url || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&auto=format&fit=crop&q=60';
+    return this.mediaService.getImageUrl(newsItem.image_url, DEFAULT_NEWS_IMAGE);
   }
 }

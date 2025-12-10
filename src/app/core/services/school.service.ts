@@ -25,6 +25,7 @@ export interface SchoolsQueryParams {
   member_no?: string;
   email?: string;
   mobile_no?: string;
+  school_group_id?: number;
   page?: number;
   limit?: number;
 }
@@ -87,5 +88,13 @@ export class SchoolService {
    */
   getSchoolsByZone(zoneId: number, page: number = 1, limit: number = 10): Observable<PaginatedResponse<School>> {
     return this.getSchools({ zone_id: zoneId, page, limit });
+  }
+
+  /**
+   * Gets the next available member number for a zone
+   * Backend endpoint: GET /api/schools/next_member_no?zone_id=zoneId
+   */
+  getNextMemberNo(zoneId: number): Observable<{ member_no: string }> {
+    return this.apiService.get<{ member_no: string }>('/schools/next_member_no', { params: { zone_id: zoneId } });
   }
 }

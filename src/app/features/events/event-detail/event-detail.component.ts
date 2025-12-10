@@ -1,14 +1,15 @@
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EventService } from '../../../core/services/event.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { MediaService } from '../../../core/services/media.service';
 import { Event, EventRegistration } from '../../../core/models';
-import { ButtonHelmComponent } from '../../../shared/ui/button-helm/button-helm.component';
 import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
 import { InputHelmComponent } from '../../../shared/ui/input-helm/input-helm.component';
 import { FlashMessageService } from '../../../core/services/flash-message.service';
+import { DataExportComponent, ExportConfig } from '../../../shared/ui/data-export/data-export.component';
 
 @Component({
   selector: 'app-event-detail',
@@ -16,15 +17,16 @@ import { FlashMessageService } from '../../../core/services/flash-message.servic
   imports: [
     CommonModule,
     FormsModule,
-    ButtonHelmComponent,
     BadgeComponent,
-    InputHelmComponent
+    InputHelmComponent,
+    DataExportComponent
   ],
   templateUrl: './event-detail.component.html'
 })
 export class EventDetailComponent implements OnInit {
   private eventService = inject(EventService);
   private authService = inject(AuthService);
+  private mediaService = inject(MediaService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private flashMessage = inject(FlashMessageService);
@@ -34,6 +36,30 @@ export class EventDetailComponent implements OnInit {
   isLoading = signal(false);
   showRegistrationForm = signal(false);
   isRegistering = signal(false);
+
+  // Pagination for registrations
+  registrationPage = signal(1);
+  registrationPageSize = signal(10);
+
+  // Computed paginated registrations
+  paginatedRegistrations = computed(() => {
+    const all = this.registrations();
+    const page = this.registrationPage();
+    const size = this.registrationPageSize();
+    const start = (page - 1) * size;
+    return all.slice(start, start + size);
+  });
+
+  totalRegistrationPages = computed(() => {
+    const total = this.registrations().length;
+    const size = this.registrationPageSize();
+    return Math.ceil(total / size);
+  });
+
+  // Total attendees across all registrations
+  totalAttendees = computed(() => {
+    return this.registrations().reduce((sum, reg) => sum + (reg.number_of_attendees || 0), 0);
+  });
 
   registrationData = signal<Partial<EventRegistration>>({
     number_of_attendees: 1
@@ -46,12 +72,12 @@ export class EventDetailComponent implements OnInit {
 
   canManageEvents = () => {
     const userRole = this.role();
-    return userRole === 'system_admin' || userRole === 'national_admin' || userRole === 'regional_admin';
+    return userRole === 'system_admin' || userRole === 'national_admin' || userRole === 'region_admin';
   };
 
   canRegister = () => {
     const userRole = this.role();
-    return userRole === 'school_user';
+    return userRole === 'school_admin';
   };
 
   ngOnInit(): void {
@@ -81,7 +107,8 @@ export class EventDetailComponent implements OnInit {
   }
 
   loadRegistrations(eventId: number): void {
-    this.eventService.getEventRegistrations(eventId).subscribe({
+    // Fetch all registrations for client-side pagination (limit=1000)
+    this.eventService.getEventRegistrations(eventId, { page: 1, limit: 1000 }).subscribe({
       next: (response) => {
         this.registrations.set(response.data);
       },
@@ -210,4 +237,79 @@ export class EventDetailComponent implements OnInit {
       this.flashMessage.success('Copied to clipboard!');
     });
   }
+
+  // Get full image URL with backend base
+  getImageUrl(imageUrl?: string): string {
+    return this.mediaService.getImageUrl(imageUrl);
+  }
+
+  // Pagination methods
+  nextRegistrationPage(): void {
+    if (this.registrationPage() < this.totalRegistrationPages()) {
+      this.registrationPage.update(p => p + 1);
+    }
+  }
+
+  previousRegistrationPage(): void {
+    if (this.registrationPage() > 1) {
+      this.registrationPage.update(p => p - 1);
+    }
+  }
+
+  goToRegistrationPage(page: number): void {
+    if (page >= 1 && page <= this.totalRegistrationPages()) {
+      this.registrationPage.set(page);
+    }
+  }
+
+  getPageNumbers(): number[] {
+    const total = this.totalRegistrationPages();
+    const current = this.registrationPage();
+    const pages: number[] = [];
+
+    // Show max 5 page numbers
+    let start = Math.max(1, current - 2);
+    let end = Math.min(total, start + 4);
+
+    if (end - start < 4) {
+      start = Math.max(1, end - 4);
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  }
+
+  // Helper for pagination display - calculates the end index for "Showing X - Y of Z"
+  getRegistrationEndIndex(): number {
+    return Math.min(this.registrationPage() * this.registrationPageSize(), this.registrations().length);
+  }
+
+  // Export configuration for registrations
+  registrationExportConfig = computed<ExportConfig>(() => {
+    const event = this.event();
+    return {
+      title: `Event Registrations - ${event?.title || 'Event'}`,
+      filename: `event-registrations-${event?.id || 'export'}`,
+      summaryLine: `Total Registrations: ${this.registrations().length} | Total Attendees: ${this.totalAttendees()}`,
+      columns: [
+        { key: 'school_name', header: 'School Name' },
+        { key: 'number_of_attendees', header: 'Attendees' },
+        {
+          key: 'registration_date',
+          header: 'Registration Date',
+          formatter: (value: string) => value ? new Date(value).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'
+        },
+        {
+          key: 'payment_status',
+          header: 'Payment Status',
+          formatter: (value: string) => value ? value.toUpperCase() : 'N/A'
+        },
+        { key: 'payment_reference', header: 'Payment Reference' },
+        { key: 'payment_phone', header: 'Payment Phone' }
+      ]
+    };
+  });
 }

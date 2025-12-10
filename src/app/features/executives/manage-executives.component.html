@@ -24,54 +24,60 @@
 
   <!-- Stats Cards -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <!-- National Admins Card -->
-    <div class="group relative rounded-lg border border-border bg-card px-4 py-3 shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md hover:border-rose-200 dark:hover:border-rose-800">
-      <div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500 transition-all duration-200 group-hover:w-1.5"></div>
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-xs font-medium text-muted-foreground">National Admins</p>
-          <p class="text-2xl font-bold tracking-tight text-foreground">{{ nationalAdminCount() }}</p>
-        </div>
-        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
-          </svg>
+    <!-- National Admins Card - Only visible to system_admin and national_admin -->
+    @if (canSeeNationalAdminStats()) {
+      <div class="group relative rounded-lg border border-border bg-card px-4 py-3 shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md hover:border-rose-200 dark:hover:border-rose-800">
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500 transition-all duration-200 group-hover:w-1.5"></div>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-muted-foreground">National Admins</p>
+            <p class="text-2xl font-bold tracking-tight text-foreground">{{ nationalAdminCount() }}</p>
+          </div>
+          <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
+            </svg>
+          </div>
         </div>
       </div>
-    </div>
+    }
 
-    <!-- Regional Admins Card -->
-    <div class="group relative rounded-lg border border-border bg-card px-4 py-3 shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md hover:border-rose-200 dark:hover:border-rose-800">
-      <div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500 transition-all duration-200 group-hover:w-1.5"></div>
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-xs font-medium text-muted-foreground">Regional Admins</p>
-          <p class="text-2xl font-bold tracking-tight text-foreground">{{ regionalAdminCount() }}</p>
-        </div>
-        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
-          </svg>
+    <!-- Regional Admins Card - Only visible to system_admin, national_admin, and region_admin -->
+    @if (canSeeRegionalAdminStats()) {
+      <div class="group relative rounded-lg border border-border bg-card px-4 py-3 shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md hover:border-rose-200 dark:hover:border-rose-800">
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500 transition-all duration-200 group-hover:w-1.5"></div>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-muted-foreground">Regional Admins</p>
+            <p class="text-2xl font-bold tracking-tight text-foreground">{{ regionalAdminCount() }}</p>
+          </div>
+          <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+            </svg>
+          </div>
         </div>
       </div>
-    </div>
+    }
 
-    <!-- Zonal Admins Card -->
-    <div class="group relative rounded-lg border border-border bg-card px-4 py-3 shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md hover:border-rose-200 dark:hover:border-rose-800">
-      <div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500 transition-all duration-200 group-hover:w-1.5"></div>
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-xs font-medium text-muted-foreground">Zonal Admins</p>
-          <p class="text-2xl font-bold tracking-tight text-foreground">{{ zonalAdminCount() }}</p>
-        </div>
-        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
+    <!-- Zonal Admins Card - Visible to all admin roles -->
+    @if (canSeeZonalAdminStats()) {
+      <div class="group relative rounded-lg border border-border bg-card px-4 py-3 shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md hover:border-rose-200 dark:hover:border-rose-800">
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500 transition-all duration-200 group-hover:w-1.5"></div>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-muted-foreground">Zonal Admins</p>
+            <p class="text-2xl font-bold tracking-tight text-foreground">{{ zonalAdminCount() }}</p>
+          </div>
+          <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </div>
         </div>
       </div>
-    </div>
+    }
   </div>
 
   <!-- Filters & Search Section -->
@@ -587,7 +593,7 @@
               </div>
               <div>
                 <label class="block text-base font-semibold text-foreground mb-3">
-                  Last Name <span class="text-red-500">*</span>
+                  Last Name
                 </label>
                 <input
                   type="text"
@@ -611,7 +617,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label class="block text-base font-semibold text-foreground mb-3">
-                  Email Address <span class="text-red-500">*</span>
+                  Email Address
                 </label>
                 <input
                   type="email"

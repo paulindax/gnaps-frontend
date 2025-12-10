@@ -1,4 +1,4 @@
-import { Component, Input, signal, contentChildren, AfterContentInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, contentChildren, AfterContentInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { cn } from '../../../../lib/utils';
 
@@ -18,8 +18,18 @@ export class TabComponent {
   @Input() label = '';
   @Input() value = '';
   @Input() icon = '';
+  @Output() tabActivated = new EventEmitter<void>();
 
   isActive = signal(false);
+
+  activate(): void {
+    this.isActive.set(true);
+    this.tabActivated.emit();
+  }
+
+  deactivate(): void {
+    this.isActive.set(false);
+  }
 }
 
 @Component({
@@ -46,7 +56,11 @@ export class TabsHelmComponent implements AfterContentInit {
   selectTab(value: string): void {
     this.activeTab.set(value);
     this.tabs().forEach(tab => {
-      tab.isActive.set(tab.value === value);
+      if (tab.value === value) {
+        tab.activate();
+      } else {
+        tab.deactivate();
+      }
     });
   }
 

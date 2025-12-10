@@ -13,7 +13,7 @@
           </svg>
         </button>
         <div>
-          <h1 class="text-3xl font-bold tracking-tight lg:text-4xl bg-linear-to-r from-rose-600 via-rose-500 to-rose-400 bg-clip-text text-transparent dark:from-rose-400 dark:via-rose-300 dark:to-rose-200">
+          <h1 class="text-3xl font-bold tracking-tight lg:text-4xl bg-linear-to-r from-rose-600 via-rose-500 to-rose-400 bg-clip-text text-transparent dark:from-rose-400 dark:via-blue-300 dark:to-rose-200">
             {{ isEditing() ? 'Edit Event' : 'Create New Event' }}
           </h1>
           <p class="mt-2 text-base text-muted-foreground lg:text-lg">
@@ -25,9 +25,9 @@
 
     <!-- Registration Link (shown when editing) with Rose Theme -->
     @if (isEditing() && eventData().registration_code) {
-      <div class="rounded-2xl border-2 border-rose-200/60 dark:border-rose-900/40 bg-linear-to-br from-rose-50/80 via-rose-100/40 to-rose-50/80 dark:from-rose-950/30 dark:via-rose-900/15 dark:to-rose-950/30 p-6 shadow-md mb-6">
+      <div class="rounded-2xl border-2 border-rose-200/60 dark:border-rose-900/40 bg-linear-to-br from-blue-50/80 via-rose-100/40 to-rose-50/80 dark:from-blue-950/30 dark:via-rose-900/15 dark:to-rose-950/30 p-6 shadow-md mb-6">
         <h2 class="text-lg font-bold mb-4 flex items-center gap-3 text-rose-900 dark:text-rose-100 lg:text-xl">
-          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40 ring-2 ring-rose-200 dark:ring-rose-800">
+          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40 ring-2 ring-blue-200 dark:ring-blue-800">
             <span class="text-xl">🔗</span>
           </div>
           Public Registration Link
@@ -74,7 +74,7 @@
       <!-- Basic Information Card with Rose Theme -->
       <div class="rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-shadow">
         <h2 class="text-xl font-bold mb-6 flex items-center gap-3 lg:text-2xl">
-          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40 ring-2 ring-rose-200 dark:ring-rose-800">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40 ring-2 ring-blue-200 dark:ring-blue-800">
             <span class="text-2xl">📝</span>
           </div>
           Basic Information
@@ -130,7 +130,7 @@
       <!-- Date & Time Card with Rose Theme -->
       <div class="rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-shadow">
         <h2 class="text-xl font-bold mb-6 flex items-center gap-3 lg:text-2xl">
-          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40 ring-2 ring-rose-200 dark:ring-rose-800">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40 ring-2 ring-blue-200 dark:ring-blue-800">
             <span class="text-2xl">📅</span>
           </div>
           Date & Time
@@ -181,7 +181,7 @@
       <!-- Location Card with Rose Theme -->
       <div class="rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-shadow">
         <h2 class="text-xl font-bold mb-6 flex items-center gap-3 lg:text-2xl">
-          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40 ring-2 ring-rose-200 dark:ring-rose-800">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40 ring-2 ring-blue-200 dark:ring-blue-800">
             <span class="text-2xl">📍</span>
           </div>
           Location Details
@@ -219,7 +219,7 @@
       <!-- Registration & Pricing Card with Rose Theme -->
       <div class="rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-shadow">
         <h2 class="text-xl font-bold mb-6 flex items-center gap-3 lg:text-2xl">
-          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40 ring-2 ring-rose-200 dark:ring-rose-800">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40 ring-2 ring-blue-200 dark:ring-blue-800">
             <span class="text-2xl">💳</span>
           </div>
           Registration & Pricing
@@ -277,13 +277,34 @@
               />
             </div>
           }
+
+          <!-- Associated Bill (optional) -->
+          <div>
+            <label class="text-sm font-semibold">Associated Bill</label>
+            <p class="text-xs text-muted-foreground mb-2">Link this event to a bill to check school billing status during registration</p>
+            <app-select-helm
+              [selectedValue]="billIdDisplay()"
+              (selectionChange)="updateField('bill_id', $event)"
+              [options]="billOptions()"
+              placeholder="Select a bill (optional)"
+              class="mt-2 w-full"
+            />
+            @if (eventData().bill_id) {
+              <p class="mt-2 text-xs text-muted-foreground flex items-center gap-1">
+                <svg class="w-4 h-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Schools must have this bill to register for the event
+              </p>
+            }
+          </div>
         </div>
       </div>
 
       <!-- Event Image Card with Rose Theme -->
       <div class="rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-shadow">
         <h2 class="text-xl font-bold mb-6 flex items-center gap-3 lg:text-2xl">
-          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40 ring-2 ring-rose-200 dark:ring-rose-800">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/40 ring-2 ring-blue-200 dark:ring-blue-800">
             <span class="text-2xl">🖼️</span>
           </div>
           Event Image

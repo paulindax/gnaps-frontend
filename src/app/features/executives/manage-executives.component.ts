@@ -92,6 +92,24 @@ export class ManageExecutivesComponent implements OnInit {
     return userRole === 'system_admin' || userRole === 'national_admin';
   });
 
+  // Computed: check if user can see national admin stats
+  canSeeNationalAdminStats = computed(() => {
+    const userRole = this.role();
+    return userRole === 'system_admin' || userRole === 'national_admin';
+  });
+
+  // Computed: check if user can see regional admin stats
+  canSeeRegionalAdminStats = computed(() => {
+    const userRole = this.role();
+    return userRole === 'system_admin' || userRole === 'national_admin' || userRole === 'region_admin';
+  });
+
+  // Computed: check if user can see zonal admin stats (all admin roles can see this)
+  canSeeZonalAdminStats = computed(() => {
+    const userRole = this.role();
+    return userRole === 'system_admin' || userRole === 'national_admin' || userRole === 'region_admin' || userRole === 'zone_admin';
+  });
+
   // Computed: counts by role
   nationalAdminCount = computed(() =>
     this.executives().filter(e => e.role === 'national_admin').length
@@ -120,7 +138,7 @@ export class ManageExecutivesComponent implements OnInit {
   // Computed: form validation
   isFormValid = computed(() => {
     const data = this.formData();
-    const basicValid = !!data.first_name && !!data.last_name && !!data.email && !!data.role;
+    const basicValid = !!data.first_name && !!data.role;
 
     if (data.role === 'region_admin') {
       return basicValid && !!data.region_id;

@@ -1,32 +1,6 @@
-<!-- Enhanced Professional Dashboard --><div class="min-h-screen bg-linear-to-br from-background via-background to-muted/30">
+<!-- Professional Dashboard with Rose Brand Theme -->
+<div class="min-h-screen bg-linear-to-br from-background via-background to-muted/30">
   <div class="w-full px-4 py-6 sm:px-6 lg:px-8">
-
-    <!-- Enhanced Welcome Banner with Rose Gradient -->
-    <!-- @if (role(); as userRole) {
-      <div class="mb-6 lg:mb-8">
-        <div class="overflow-hidden rounded-2xl border-2 border-rose-200/50 dark:border-rose-900/30 bg-linear-to-br from-rose-50 via-rose-100/50 to-rose-50 dark:from-rose-950/40 dark:via-rose-900/20 dark:to-rose-950/40 shadow-xl">
-          <div class="px-6 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
-            <div class="flex items-center gap-4 mb-4">
-              <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-muted">
-                <span class="text-3xl">👋</span>
-              </div>
-              <div>
-                <h1 class="text-3xl font-bold text-foreground lg:text-4xl tracking-tight">Welcome Back!</h1>
-                <p class="mt-1 text-lg text-muted-foreground lg:text-xl font-medium">
-                  {{ getRoleDisplayName(userRole) }}
-                </p>
-              </div>
-            </div>
-            <p class="text-base text-rose-600 dark:text-rose-400 flex items-center gap-2">
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-              </svg>
-              {{ getCurrentDate() }}
-            </p>
-          </div>
-        </div>
-      </div>
-    } -->
 
     <!-- Dynamic Dashboard Based on Role -->
     @if (role(); as userRole) {
@@ -38,24 +12,27 @@
           @case ('national_admin') {
             <ng-container *ngTemplateOutlet="nationalView" />
           }
-          @case ('regional_admin') {
+          @case ('region_admin') {
             <ng-container *ngTemplateOutlet="regionalView" />
           }
           @case ('zone_admin') {
             <ng-container *ngTemplateOutlet="zoneView" />
           }
-          @case ('school_user') {
+          @case ('school_admin') {
             <ng-container *ngTemplateOutlet="schoolView" />
           }
         }
       </div>
     }
 
-    <!-- Enhanced Association News -->
+    <!-- Association News Section -->
     <div class="mt-8">
       <div class="mb-6 flex items-center justify-between">
-        <h2 class="text-2xl font-bold tracking-tight lg:text-3xl bg-linear-to-r from-foreground to-foreground/70 bg-clip-text">
-          <span class="mr-2">📰</span>Latest News
+        <h2 class="text-2xl font-bold tracking-tight lg:text-3xl flex items-center gap-3">
+          <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+          </svg>
+          <span>Latest News</span>
         </h2>
         <app-button-helm routerLink="/news" variant="outline" size="sm" class="shadow-sm hover:shadow-md transition-shadow">
           View All →
@@ -65,25 +42,29 @@
       @if (newsLoading()) {
         <div class="flex items-center justify-center py-16 rounded-2xl border-2 border-border/50 bg-card">
           <div class="text-center">
-            <div class="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+            <div class="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-rose-600 border-t-transparent"></div>
             <p class="mt-4 text-muted-foreground">Loading news...</p>
           </div>
         </div>
       } @else if (newsError()) {
         <div class="rounded-2xl border-2 border-red-200 dark:border-red-900/30 bg-red-50 dark:bg-red-900/10 p-8 text-center">
           <div class="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20 mx-auto mb-4">
-            <span class="text-4xl">⚠️</span>
+            <svg class="h-8 w-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
           </div>
           <p class="text-red-600 dark:text-red-400 font-medium">Failed to load news. Please try again later.</p>
         </div>
       } @else if (recentNews().length > 0) {
         <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           @for (item of recentNews(); track item.id) {
-            <article class="group overflow-hidden rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 shadow-sm transition-all hover:shadow-md">
+            <article class="group overflow-hidden rounded-2xl border-2 border-border/50 bg-card shadow-sm transition-all hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50">
               <div class="p-6">
                 <div class="mb-4 flex items-start gap-3">
                   <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-                    <span class="text-2xl">📰</span>
+                    <svg class="h-6 w-6 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                    </svg>
                   </div>
                   <div class="flex-1 min-w-0">
                     <h3 class="text-lg font-bold line-clamp-2">
@@ -101,7 +82,7 @@
                     </svg>
                     {{ item.created_at | date: 'MMM d, y' }}
                   </time>
-                  <a [routerLink]="['/news']" class="text-sm font-semibold text-primary hover:text-primary/80 transition-colors">
+                  <a [routerLink]="['/news/', item.id]" class="text-sm font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-500 dark:hover:text-rose-400 transition-colors">
                     Read more →
                   </a>
                 </div>
@@ -112,24 +93,146 @@
       } @else {
         <div class="rounded-2xl border-2 border-border/50 bg-card p-12 text-center">
           <div class="flex h-20 w-20 items-center justify-center rounded-full bg-muted/30 mx-auto mb-4">
-            <span class="text-5xl opacity-50">📰</span>
+            <svg class="h-10 w-10 text-muted-foreground opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+            </svg>
           </div>
           <p class="text-muted-foreground font-medium">No news available at the moment.</p>
         </div>
       }
     </div>
 
-    <!-- Enhanced Quick Actions -->
+    <!-- Upcoming Events Section -->
+    <div class="mt-8">
+      <div class="mb-6 flex items-center justify-between">
+        <h2 class="text-2xl font-bold tracking-tight lg:text-3xl flex items-center gap-3">
+          <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          <span>Upcoming Events</span>
+        </h2>
+        <app-button-helm routerLink="/events" variant="outline" size="sm" class="shadow-sm hover:shadow-md transition-shadow">
+          View All Events →
+        </app-button-helm>
+      </div>
+
+      @if (eventsLoading()) {
+        <div class="flex items-center justify-center py-16 rounded-2xl border-2 border-border/50 bg-card">
+          <div class="text-center">
+            <div class="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-rose-600 border-t-transparent"></div>
+            <p class="mt-4 text-muted-foreground">Loading events...</p>
+          </div>
+        </div>
+      } @else if (eventsError()) {
+        <div class="rounded-2xl border-2 border-red-200 dark:border-red-900/30 bg-red-50 dark:bg-red-900/10 p-8 text-center">
+          <div class="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20 mx-auto mb-4">
+            <svg class="h-8 w-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+          </div>
+          <p class="text-red-600 dark:text-red-400 font-medium">Failed to load events. Please try again later.</p>
+        </div>
+      } @else if (upcomingEvents().length > 0) {
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          @for (event of upcomingEvents(); track event.id) {
+            <article class="group overflow-hidden rounded-2xl border-2 border-border/50 bg-card shadow-sm transition-all hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50">
+              <!-- Calendar Date Header -->
+              <div class="bg-rose-600 dark:bg-rose-700 p-4 text-center text-white relative">
+                <div class="text-4xl font-bold leading-none">{{ getEventDay(event.start_date) }}</div>
+                <div class="text-sm font-medium uppercase tracking-wider mt-1">{{ getEventMonth(event.start_date) }}</div>
+                <div class="text-xs opacity-80">{{ getEventYear(event.start_date) }}</div>
+                <!-- Time Status Badge -->
+                <div class="absolute top-2 right-2">
+                  @if (getDaysUntilEvent(event.start_date) === 0) {
+                    <span class="inline-flex items-center rounded-full bg-white/20 px-2 py-0.5 text-xs font-semibold backdrop-blur-sm">
+                      Today
+                    </span>
+                  } @else if (getDaysUntilEvent(event.start_date) === 1) {
+                    <span class="inline-flex items-center rounded-full bg-white/20 px-2 py-0.5 text-xs font-semibold backdrop-blur-sm">
+                      Tomorrow
+                    </span>
+                  } @else if (getDaysUntilEvent(event.start_date) <= 7) {
+                    <span class="inline-flex items-center rounded-full bg-amber-500/90 px-2 py-0.5 text-xs font-semibold">
+                      {{ getDaysUntilEvent(event.start_date) }} days
+                    </span>
+                  }
+                </div>
+              </div>
+
+              <!-- Event Details -->
+              <div class="p-5">
+                <h3 class="text-lg font-bold line-clamp-2 mb-2 group-hover:text-rose-600 dark:group-hover:text-rose-500 transition-colors">
+                  {{ event.title }}
+                </h3>
+
+                <!-- Location -->
+                @if (event.venue || event.location) {
+                  <div class="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                    <svg class="h-4 w-4 shrink-0 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span class="truncate">{{ event.venue || event.location }}</span>
+                  </div>
+                }
+
+                <!-- Event Type Badge -->
+                <div class="flex items-center gap-2 mb-4">
+                  @if (event.is_paid) {
+                    <span class="inline-flex items-center rounded-full bg-amber-100 dark:bg-amber-900/30 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:text-amber-400">
+                      <svg class="h-3.5 w-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                      Paid Event
+                    </span>
+                  } @else {
+                    <span class="inline-flex items-center rounded-full bg-green-100 dark:bg-green-900/30 px-2.5 py-1 text-xs font-semibold text-green-700 dark:text-green-400">
+                      <svg class="h-3.5 w-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                      Free Event
+                    </span>
+                  }
+                </div>
+
+                <!-- View Details Link -->
+                <a [routerLink]="['/events', event.id]" class="inline-flex items-center text-sm font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-500 dark:hover:text-rose-400 transition-colors">
+                  View Details
+                  <svg class="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="rounded-2xl border-2 border-border/50 bg-card p-12 text-center">
+          <div class="flex h-20 w-20 items-center justify-center rounded-full bg-muted/30 mx-auto mb-4">
+            <svg class="h-10 w-10 text-muted-foreground opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <p class="text-muted-foreground font-medium">No upcoming events scheduled.</p>
+          <p class="text-sm text-muted-foreground mt-1">Check back soon for new events.</p>
+        </div>
+      }
+    </div>
+
+    <!-- Quick Actions Section -->
     <div class="mt-8">
       <div class="mb-6">
-        <h2 class="text-2xl font-bold tracking-tight lg:text-3xl bg-linear-to-r from-foreground to-foreground/70 bg-clip-text">
-          <span class="mr-2">⚡</span>Quick Actions
+        <h2 class="text-2xl font-bold tracking-tight lg:text-3xl flex items-center gap-3">
+          <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          <span>Quick Actions</span>
         </h2>
         <p class="mt-2 text-sm text-muted-foreground">Common tasks and shortcuts</p>
       </div>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        @if (role() === 'system_admin' || role() === 'national_admin' || role() === 'regional_admin' || role() === 'zone_admin') {
-          <a routerLink="/schools" class="group flex items-center gap-4 rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-5 shadow-sm transition-all hover:shadow-md">
+        @if (role() === 'system_admin' || role() === 'national_admin' || role() === 'region_admin' || role() === 'zone_admin') {
+          <a routerLink="/schools" class="group flex items-center gap-4 rounded-2xl border-2 border-border/50 bg-card p-5 shadow-sm transition-all hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50">
             <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
               <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
@@ -141,10 +244,10 @@
             </div>
           </a>
         }
-        @if (role() === 'school_user') {
-          <a routerLink="/payments" class="group flex items-center gap-4 rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-green-500/5 p-5 shadow-sm transition-all hover:shadow-md">
-            <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-colors">
-              <svg class="h-7 w-7 text-green-600 dark:text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        @if (role() === 'school_admin') {
+          <a routerLink="/payments" class="group flex items-center gap-4 rounded-2xl border-2 border-border/50 bg-card p-5 shadow-sm transition-all hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50">
+            <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+              <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
               </svg>
             </div>
@@ -154,7 +257,7 @@
             </div>
           </a>
         }
-        <a routerLink="/news" class="group flex items-center gap-4 rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-5 shadow-sm transition-all hover:shadow-md">
+        <a routerLink="/news" class="group flex items-center gap-4 rounded-2xl border-2 border-border/50 bg-card p-5 shadow-sm transition-all hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50">
           <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
             <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
@@ -165,7 +268,7 @@
             <span class="text-xs text-muted-foreground">Latest updates</span>
           </div>
         </a>
-        <a routerLink="/events" class="group flex items-center gap-4 rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-5 shadow-sm transition-all hover:shadow-md">
+        <a routerLink="/events" class="group flex items-center gap-4 rounded-2xl border-2 border-border/50 bg-card p-5 shadow-sm transition-all hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50">
           <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
             <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -177,7 +280,7 @@
           </div>
         </a>
         @if (role() === 'system_admin' || role() === 'national_admin') {
-          <a routerLink="/settings" class="group flex items-center gap-4 rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-5 shadow-sm transition-all hover:shadow-md">
+          <a routerLink="/settings" class="group flex items-center gap-4 rounded-2xl border-2 border-border/50 bg-card p-5 shadow-sm transition-all hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50">
             <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
               <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
@@ -195,61 +298,73 @@
   </div>
 </div>
 
-<!-- Role-Based Templates with Enhanced Professional Cards -->
+<!-- Role-Based Templates with Consistent Rose Brand Theme -->
 <ng-template #systemAdminView>
   <div class="space-y-6">
-    <h2 class="text-2xl font-bold tracking-tight lg:text-3xl bg-linear-to-r from-foreground to-foreground/70 bg-clip-text">
-      <span class="mr-2">📊</span>System Overview
+    <h2 class="text-2xl font-bold tracking-tight lg:text-3xl flex items-center gap-3">
+      <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+      </svg>
+      <span>System Overview</span>
     </h2>
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <!-- Regions Card -->
-      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50 transition-all">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Regions</p>
-            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_regions || 0 }}</h3>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-500">{{ stats()?.total_regions || 0 }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-            <span class="text-3xl">🗺️</span>
+            <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
           </div>
         </div>
       </div>
 
       <!-- Zones Card -->
-      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50 transition-all">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Zones</p>
-            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_zones || 0 }}</h3>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-500">{{ stats()?.total_zones || 0 }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-            <span class="text-3xl">📍</span>
+            <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
           </div>
         </div>
       </div>
 
       <!-- Schools Card -->
-      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50 transition-all">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Schools</p>
-            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_schools || 0 }}</h3>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-500">{{ stats()?.total_schools || 0 }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-            <span class="text-3xl">🏫</span>
+            <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+            </svg>
           </div>
         </div>
       </div>
 
       <!-- Executives Card -->
-      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50 transition-all">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Executives</p>
-            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_executives || 0 }}</h3>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-500">{{ stats()?.total_executives || 0 }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-            <span class="text-3xl">👥</span>
+            <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
           </div>
         </div>
       </div>
@@ -259,58 +374,70 @@
 
 <ng-template #nationalView>
   <div class="space-y-6">
-    <h2 class="text-2xl font-bold tracking-tight lg:text-3xl bg-linear-to-r from-foreground to-foreground/70 bg-clip-text">
-      <span class="mr-2">🇬🇭</span>National Overview
+    <h2 class="text-2xl font-bold tracking-tight lg:text-3xl flex items-center gap-3">
+      <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
+      </svg>
+      <span>National Overview</span>
     </h2>
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <!-- Regions Card -->
-      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50 transition-all">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Regions</p>
-            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_regions || 0 }}</h3>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-500">{{ stats()?.total_regions || 0 }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-            <span class="text-3xl">🗺️</span>
+            <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
           </div>
         </div>
       </div>
 
       <!-- Zones Card -->
-      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50 transition-all">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Zones</p>
-            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_zones || 0 }}</h3>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-500">{{ stats()?.total_zones || 0 }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-            <span class="text-3xl">📍</span>
+            <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
           </div>
         </div>
       </div>
 
       <!-- Schools Card -->
-      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50 transition-all">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Schools</p>
-            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_schools || 0 }}</h3>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-500">{{ stats()?.total_schools || 0 }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-            <span class="text-3xl">🏫</span>
+            <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+            </svg>
           </div>
         </div>
       </div>
 
-      <!-- Payments Card -->
-      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-green-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+      <!-- Recent Payments Card - Green for success/money -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md hover:border-green-200 dark:hover:border-green-900/50 transition-all">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Recent Payments</p>
             <h3 class="mt-2 text-4xl font-bold text-green-600 dark:text-green-500">{{ stats()?.recent_payments || 0 }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-colors">
-            <span class="text-3xl">💳</span>
+            <svg class="h-7 w-7 text-green-600 dark:text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+            </svg>
           </div>
         </div>
       </div>
@@ -320,45 +447,55 @@
 
 <ng-template #regionalView>
   <div class="space-y-6">
-    <h2 class="text-2xl font-bold tracking-tight lg:text-3xl bg-linear-to-r from-foreground to-foreground/70 bg-clip-text">
-      <span class="mr-2">🏛️</span>Regional Overview
+    <h2 class="text-2xl font-bold tracking-tight lg:text-3xl flex items-center gap-3">
+      <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
+      </svg>
+      <span>Regional Overview</span>
     </h2>
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <!-- Total Zones Card -->
-      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50 transition-all">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Zones</p>
-            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_zones || 0 }}</h3>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-500">{{ stats()?.total_zones || 0 }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-            <span class="text-3xl">📍</span>
+            <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
           </div>
         </div>
       </div>
 
       <!-- Total Schools Card -->
-      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50 transition-all">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Schools</p>
-            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_schools || 0 }}</h3>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-500">{{ stats()?.total_schools || 0 }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-            <span class="text-3xl">🏫</span>
+            <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+            </svg>
           </div>
         </div>
       </div>
 
-      <!-- Pending Bills Card (Warning state) -->
-      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-amber-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+      <!-- Pending Bills Card - Amber for warning -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md hover:border-amber-200 dark:hover:border-amber-900/50 transition-all">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Pending Bills</p>
             <h3 class="mt-2 text-4xl font-bold text-amber-600 dark:text-amber-500">{{ stats()?.pending_bills || 0 }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/10 group-hover:bg-amber-500/20 transition-colors">
-            <span class="text-3xl">💰</span>
+            <svg class="h-7 w-7 text-amber-600 dark:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
           </div>
         </div>
       </div>
@@ -368,32 +505,39 @@
 
 <ng-template #zoneView>
   <div class="space-y-6">
-    <h2 class="text-2xl font-bold tracking-tight lg:text-3xl bg-linear-to-r from-foreground to-foreground/70 bg-clip-text">
-      <span class="mr-2">🎯</span>Zone Overview
+    <h2 class="text-2xl font-bold tracking-tight lg:text-3xl flex items-center gap-3">
+      <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+      </svg>
+      <span>Zone Overview</span>
     </h2>
     <div class="grid gap-4 sm:grid-cols-2 lg:gap-6">
       <!-- Total Schools Card -->
-      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md hover:border-rose-200 dark:hover:border-rose-900/50 transition-all">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Schools</p>
-            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ stats()?.total_schools || 0 }}</h3>
+            <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-500">{{ stats()?.total_schools || 0 }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-            <span class="text-3xl">🏫</span>
+            <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+            </svg>
           </div>
         </div>
       </div>
 
-      <!-- Active Schools Card -->
-      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-green-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+      <!-- Active Schools Card - Green for active/success -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md hover:border-green-200 dark:hover:border-green-900/50 transition-all">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Active Schools</p>
             <h3 class="mt-2 text-4xl font-bold text-green-600 dark:text-green-500">{{ stats()?.pending_bills || 0 }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-colors">
-            <span class="text-3xl">✅</span>
+            <svg class="h-7 w-7 text-green-600 dark:text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
           </div>
         </div>
       </div>
@@ -403,32 +547,39 @@
 
 <ng-template #schoolView>
   <div class="space-y-6">
-    <h2 class="text-2xl font-bold tracking-tight lg:text-3xl bg-linear-to-r from-foreground to-foreground/70 bg-clip-text">
-      <span class="mr-2">🏫</span>School Overview
+    <h2 class="text-2xl font-bold tracking-tight lg:text-3xl flex items-center gap-3">
+      <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+      </svg>
+      <span>School Overview</span>
     </h2>
     <div class="grid gap-4 sm:grid-cols-2 lg:gap-6">
-      <!-- Total Paid Card -->
-      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-green-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+      <!-- Total Paid Card - Green for money/success -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md hover:border-green-200 dark:hover:border-green-900/50 transition-all">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Paid</p>
             <h3 class="mt-2 text-4xl font-bold text-green-600 dark:text-green-500">{{ (stats()?.total_payments || 0) | currency }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-colors">
-            <span class="text-3xl">✅</span>
+            <svg class="h-7 w-7 text-green-600 dark:text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
           </div>
         </div>
       </div>
 
-      <!-- Outstanding Card -->
-      <div class="group rounded-2xl border-2 border-border/50 bg-linear-to-br from-card via-card to-red-500/5 p-6 shadow-sm hover:shadow-md transition-all">
+      <!-- Outstanding Card - Red for warning/debt -->
+      <div class="group rounded-2xl border-2 border-border/50 bg-card p-6 shadow-sm hover:shadow-md hover:border-red-200 dark:hover:border-red-900/50 transition-all">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Outstanding</p>
             <h3 class="mt-2 text-4xl font-bold text-red-600 dark:text-red-500">{{ (stats()?.outstanding_amount || 0) | currency }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-colors">
-            <span class="text-3xl">⚠️</span>
+            <svg class="h-7 w-7 text-red-600 dark:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
           </div>
         </div>
       </div>

@@ -30,7 +30,7 @@ export class EventService {
 
   // Get all events with pagination and filters
   getEvents(params?: EventsQueryParams): Observable<PaginatedResponse<Event>> {
-    return this.apiService.get<PaginatedResponse<Event>>('/events/list', params as any);
+    return this.apiService.get<PaginatedResponse<Event>>('/events/list', { params: params as any });
   }
 
   // Get single event by ID
@@ -55,7 +55,7 @@ export class EventService {
 
   // Get event registrations
   getEventRegistrations(eventId: number, params?: any): Observable<PaginatedResponse<EventRegistration>> {
-    return this.apiService.get<PaginatedResponse<EventRegistration>>(`/events/${eventId}/registrations`, params);
+    return this.apiService.get<PaginatedResponse<EventRegistration>>(`/events/${eventId}/registrations`, { params });
   }
 
   // Register school for event
@@ -70,7 +70,7 @@ export class EventService {
 
   // Get my registrations (for schools)
   getMyRegistrations(params?: any): Observable<PaginatedResponse<EventRegistration>> {
-    return this.apiService.get<PaginatedResponse<EventRegistration>>('/event-registrations/my', params);
+    return this.apiService.get<PaginatedResponse<EventRegistration>>('/event-registrations/my', { params });
   }
 
   // Update payment status

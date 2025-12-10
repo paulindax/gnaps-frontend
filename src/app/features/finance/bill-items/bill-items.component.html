@@ -75,7 +75,9 @@
         <!-- Empty State -->
         <div class="flex flex-col items-center justify-center p-12">
           <div class="flex h-20 w-20 items-center justify-center rounded-full bg-muted/30 mb-4">
-            <span class="text-5xl opacity-50">📄</span>
+            <svg class="h-10 w-10 text-muted-foreground/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
           </div>
           <h3 class="text-xl font-bold text-foreground mb-2">No items found</h3>
           <p class="text-base text-muted-foreground mb-6">Add items to this bill to get started</p>
@@ -119,13 +121,15 @@
                   <td class="px-6 py-5">
                     <div class="flex items-center gap-3">
                       <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                        <span class="text-xl">📄</span>
+                        <svg class="h-5 w-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
                       </div>
                       <div class="font-bold text-base">{{ item.bill_particular?.name || '-' }}</div>
                     </div>
                   </td>
                   <td class="px-6 py-5">
-                    <div class="text-sm font-semibold text-green-600 dark:text-green-400">GH₵ {{ item.amount.toFixed(2) || '0.00' }}</div>
+                    <div class="text-sm font-semibold text-rose-600 dark:text-rose-400">GH₵ {{ item.amount.toFixed(2) || '0.00' }}</div>
                   </td>
                   <td class="px-6 py-5">
                     <div class="text-sm text-muted-foreground whitespace-pre-line">

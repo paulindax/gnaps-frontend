@@ -48,7 +48,7 @@ export class ZonesComponent implements OnInit {
 
   canEdit = () => {
     const userRole = this.role();
-    return userRole === 'system_admin' || userRole === 'national_admin' || userRole === 'regional_admin';
+    return userRole === 'system_admin' || userRole === 'national_admin' || userRole === 'region_admin';
   };
 
   ngOnInit(): void {

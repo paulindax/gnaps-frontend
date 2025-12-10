@@ -5,7 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { News, NewsComment } from '../../../core/models';
 import { NewsService } from '../../../core/services/news.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { MediaService } from '../../../core/services/media.service';
 import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
+
+const DEFAULT_NEWS_IMAGE = 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1600&auto=format&fit=crop&q=80';
 
 @Component({
   selector: 'app-news-detail',
@@ -16,6 +19,7 @@ import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confir
 export class NewsDetailComponent implements OnInit {
   private newsService = inject(NewsService);
   private authService = inject(AuthService);
+  private mediaService = inject(MediaService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -41,7 +45,7 @@ export class NewsDetailComponent implements OnInit {
 
   canEdit = () => {
     const userRole = this.role();
-    return userRole !== 'school_user' && userRole !== null;
+    return userRole !== 'school_admin' && userRole !== null;
   };
 
   ngOnInit(): void {
@@ -208,6 +212,6 @@ export class NewsDetailComponent implements OnInit {
 
   getImageUrl(): string {
     const newsItem = this.news();
-    return newsItem?.image_url || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1600&auto=format&fit=crop&q=80';
+    return this.mediaService.getImageUrl(newsItem?.image_url, DEFAULT_NEWS_IMAGE);
   }
 }

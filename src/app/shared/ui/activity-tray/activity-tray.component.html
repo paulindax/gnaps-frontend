@@ -1,0 +1,270 @@
+<!-- Activity Tray Overlay -->
+@if (activityTracker.isOpen()) {
+  <!-- Backdrop -->
+  <div
+    class="backdrop fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity duration-300"
+    (click)="onBackdropClick($event)"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Tray Panel -->
+  <aside
+    class="fixed right-0 top-0 z-50 h-full w-full max-w-md transform overflow-hidden bg-card shadow-2xl transition-transform duration-300 ease-out border-l border-border"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="activity-tray-title"
+  >
+    <!-- Header -->
+    <div class="sticky top-0 z-10 border-b border-border bg-card/95 backdrop-blur-sm">
+      <div class="flex items-center justify-between px-6 py-4">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+            <svg class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h2 id="activity-tray-title" class="text-lg font-semibold text-foreground">
+              {{ activityTracker.isSystemAdmin() ? 'All Activity' : 'Activity' }}
+            </h2>
+            <p class="text-xs text-muted-foreground">
+              {{ activityTracker.isSystemAdmin() ? 'All users\' recent actions' : 'Your recent actions' }}
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Refresh button (system admin only) -->
+          @if (activityTracker.isSystemAdmin()) {
+            <button
+              (click)="refreshActivities()"
+              class="rounded-lg p-2 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+              title="Refresh"
+              [disabled]="activityTracker.isLoading()"
+            >
+              <svg
+                class="h-5 w-5"
+                [class.animate-spin]="activityTracker.isLoading()"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
+          }
+          @if (activityTracker.activities().length > 0) {
+            <button
+              (click)="clearAllActivities()"
+              class="rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+              title="Clear all"
+            >
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          }
+          <button
+            (click)="activityTracker.closeTray()"
+            class="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+            aria-label="Close activity tray"
+          >
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Activity count badge / User filter indicator -->
+      <div class="px-6 pb-3 flex items-center gap-2 flex-wrap">
+        @if (activityTracker.filteredUser()) {
+          <!-- User filter active -->
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-600">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            {{ activityTracker.filteredUser()?.username }}
+          </span>
+          <button
+            (click)="clearUserFilter()"
+            class="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+          >
+            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Clear filter
+          </button>
+        } @else if (activityTracker.recentCount() > 0) {
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+            <span class="h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
+            {{ activityTracker.recentCount() }} activities in the last 24h
+          </span>
+        }
+        @if (activityTracker.isSystemAdmin() && activityTracker.totalCount() > 0) {
+          <span class="text-xs text-muted-foreground">
+            ({{ activityTracker.totalCount() }} total)
+          </span>
+        }
+      </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    @if (activityTracker.isLoading()) {
+      <div class="absolute inset-0 z-20 flex items-center justify-center bg-card/80 backdrop-blur-sm">
+        <div class="flex flex-col items-center gap-3">
+          <div class="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+          <p class="text-sm text-muted-foreground">Loading activities...</p>
+        </div>
+      </div>
+    }
+
+    <!-- Activity List -->
+    <div class="h-[calc(100vh-140px)] overflow-y-auto overscroll-contain">
+      @if (activityTracker.groupedActivities().length > 0) {
+        <div class="divide-y divide-border">
+          @for (group of activityTracker.groupedActivities(); track group.label) {
+            <div class="py-2">
+              <!-- Group Header -->
+              <div class="sticky top-0 z-10 bg-muted/50 backdrop-blur-sm px-6 py-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {{ group.label }}
+                </span>
+              </div>
+
+              <!-- Activities -->
+              <div class="space-y-1 px-3 py-2">
+                @for (activity of group.activities; track activity.id) {
+                  <div
+                    [class]="activity.url ? 'cursor-pointer hover:bg-muted/80' : ''"
+                    (click)="navigateToActivity(activity)"
+                    class="group flex items-start gap-3 rounded-xl p-3 transition-all duration-200"
+                  >
+                    <!-- Icon -->
+                    <div
+                      [class]="getIconColor(activity.type)"
+                      class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-current/10 transition-transform group-hover:scale-110"
+                    >
+                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="getIconPath(activity.type)" />
+                      </svg>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="min-w-0 flex-1">
+                      <div class="flex items-start justify-between gap-2">
+                        <div class="flex-1 min-w-0">
+                          <p class="text-sm font-medium text-foreground leading-tight">
+                            {{ activity.title }}
+                          </p>
+                          <!-- User info (for system admin viewing all activities) -->
+                          @if (activityTracker.isSystemAdmin() && activity.username) {
+                            <button
+                              (click)="viewUserActivities($event, activity)"
+                              class="flex items-center gap-1.5 mt-1 hover:bg-primary/10 rounded-full px-1.5 py-0.5 -ml-1.5 transition-colors cursor-pointer"
+                              title="View all activities by {{ activity.username }}"
+                            >
+                              <div class="flex h-5 w-5 items-center justify-center rounded-full bg-primary/20 text-[10px] font-bold text-primary">
+                                {{ getUserInitials(activity.username) }}
+                              </div>
+                              <span class="text-xs text-muted-foreground hover:text-primary">{{ activity.username }}</span>
+                              @if (activity.role) {
+                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                                  {{ formatRole(activity.role) }}
+                                </span>
+                              }
+                              <svg class="h-3 w-3 text-muted-foreground/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                              </svg>
+                            </button>
+                          }
+                        </div>
+                        <span
+                          class="shrink-0 text-xs text-muted-foreground"
+                          [title]="formatFullTime(activity.timestamp)"
+                        >
+                          {{ formatTime(activity.timestamp) }}
+                        </span>
+                      </div>
+                      @if (activity.description) {
+                        <p class="mt-0.5 text-xs text-muted-foreground truncate">
+                          {{ activity.description }}
+                        </p>
+                      }
+                      <!-- API call details -->
+                      @if (activity.type === 'api_call' && activity.method) {
+                        <div class="mt-1 flex items-center gap-2">
+                          <span
+                            class="text-[10px] px-1.5 py-0.5 rounded font-mono"
+                            [ngClass]="{
+                              'bg-green-500/10 text-green-600': activity.method === 'GET',
+                              'bg-blue-500/10 text-blue-600': activity.method === 'POST',
+                              'bg-amber-500/10 text-amber-600': activity.method === 'PUT',
+                              'bg-red-500/10 text-red-600': activity.method === 'DELETE'
+                            }"
+                          >
+                            {{ activity.method }}
+                          </span>
+                          @if (activity.status_code) {
+                            <span
+                              class="text-[10px] px-1.5 py-0.5 rounded"
+                              [ngClass]="{
+                                'bg-green-500/10 text-green-600': activity.status_code >= 200 && activity.status_code < 300,
+                                'bg-amber-500/10 text-amber-600': activity.status_code >= 300 && activity.status_code < 400,
+                                'bg-red-500/10 text-red-600': activity.status_code >= 400
+                              }"
+                            >
+                              {{ activity.status_code }}
+                            </span>
+                          }
+                          @if (activity.endpoint) {
+                            <span class="text-[10px] text-muted-foreground truncate font-mono">
+                              {{ activity.endpoint }}
+                            </span>
+                          }
+                        </div>
+                      }
+                      @if (activity.url) {
+                        <div class="mt-1 flex items-center gap-1 text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                          <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                          </svg>
+                          <span>Click to open</span>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      } @else if (!activityTracker.isLoading()) {
+        <!-- Empty State -->
+        <div class="flex flex-col items-center justify-center h-full px-6 text-center">
+          <div class="flex h-20 w-20 items-center justify-center rounded-full bg-muted/50 mb-4">
+            <svg class="h-10 w-10 text-muted-foreground/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-foreground mb-1">No activity yet</h3>
+          <p class="text-sm text-muted-foreground max-w-[200px]">
+            {{ activityTracker.isSystemAdmin() ? 'User activities will appear here as they use the app.' : 'Your recent actions will appear here as you use the app.' }}
+          </p>
+        </div>
+      }
+    </div>
+
+    <!-- Footer -->
+    <div class="absolute bottom-0 left-0 right-0 border-t border-border bg-card/95 backdrop-blur-sm px-6 py-3">
+      <p class="text-center text-xs text-muted-foreground">
+        @if (activityTracker.isSystemAdmin()) {
+          Viewing all users' activity from the server
+        } @else {
+          Activity is stored locally on this device
+        }
+      </p>
+    </div>
+  </aside>
+}

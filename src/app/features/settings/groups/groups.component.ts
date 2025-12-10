@@ -41,7 +41,7 @@ export class GroupsComponent implements OnInit {
 
   canEdit = () => {
     const userRole = this.role();
-    return userRole !== 'school_user';
+    return userRole !== 'school_admin';
   };
 
   ngOnInit(): void {

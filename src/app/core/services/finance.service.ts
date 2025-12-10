@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { FinanceAccount, BillParticular, Bill, BillItem, BillAssignment } from '../models';
+import { FinanceAccount, BillParticular, Bill, BillItem, BillAssignment, SchoolBill, SchoolPaymentRequest, PaymentStatusResponse } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -137,4 +137,59 @@ export class FinanceService {
   deleteBillAssignment(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/bills/delete-assignment/${id}`);
   }
+
+  // School Bills
+  getSchoolBills(schoolId: number): Observable<{ data: SchoolBill[] }> {
+    return this.http.get<{ data: SchoolBill[] }>(`${this.baseUrl}/school-bills/list`, {
+      params: { school_id: schoolId.toString() }
+    });
+  }
+
+  getSchoolBillBalance(schoolBillId: number): Observable<{ balance: number; bill_name?: string }> {
+    return this.http.get<{ balance: number; bill_name?: string }>(`${this.baseUrl}/school-bills/balance/${schoolBillId}`);
+  }
+
+  // School Payments
+  recordSchoolPayment(payment: SchoolPaymentRequest): Observable<{ message: string; payment_method?: string; data?: any }> {
+    return this.http.post<{ message: string; payment_method?: string; data?: any }>(`${this.baseUrl}/school-payments/record`, payment);
+  }
+
+  checkPaymentStatus(paymentTransactionId: number): Observable<PaymentStatusResponse> {
+    return this.http.get<PaymentStatusResponse>(`${this.baseUrl}/school-payments/status/${paymentTransactionId}`);
+  }
+
+  // Payment History
+  getSchoolPaymentHistory(schoolId: number, page: number = 1, limit: number = 20): Observable<{
+    data: PaymentHistoryItem[];
+    total: number;
+    page: number;
+    limit: number;
+  }> {
+    return this.http.get<{
+      data: PaymentHistoryItem[];
+      total: number;
+      page: number;
+      limit: number;
+    }>(`${this.baseUrl}/school-bills/payment-history`, {
+      params: {
+        school_id: schoolId.toString(),
+        page: page.toString(),
+        limit: limit.toString()
+      }
+    });
+  }
+}
+
+export interface PaymentHistoryItem {
+  id: number;
+  title: string;
+  description: string;
+  amount: number;
+  transaction_date: string;
+  payment_mode: string;
+  mode_info: string;
+  receipt_no: string;
+  reference_no: string;
+  finance_type: string;
+  created_at: string;
 }

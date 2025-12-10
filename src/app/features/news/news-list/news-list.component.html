@@ -7,8 +7,10 @@
         <div class="px-6 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
           <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-center gap-4">
-              <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-muted">
-                <span class="text-3xl">📰</span>
+              <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/30">
+                <svg class="h-8 w-8 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                </svg>
               </div>
               <div>
                 <h1 class="text-3xl font-bold text-foreground lg:text-4xl tracking-tight">News Portal</h1>
@@ -44,7 +46,7 @@
       </div>
     </div>
 
-    <!-- Statistics Cards Grid with Rose Theme -->
+    <!-- Statistics Cards Grid with Amber Theme -->
     <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:mb-8">
       <!-- Total News Card -->
       <div class="group rounded-2xl border-2 border-border/50 bg-gradient-to-br from-card via-card to-rose-500/5 p-6 shadow-sm hover:shadow-lg transition-all">
@@ -54,7 +56,9 @@
             <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ totalItems() }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-            <span class="text-3xl">📰</span>
+            <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+            </svg>
           </div>
         </div>
       </div>
@@ -67,7 +71,9 @@
             <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ featuredNews().length }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-            <span class="text-3xl">⭐</span>
+            <svg class="h-7 w-7 text-rose-500" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
           </div>
         </div>
       </div>
@@ -80,7 +86,9 @@
             <h3 class="mt-2 text-4xl font-bold text-rose-600 dark:text-rose-400">{{ currentPage() }}/{{ totalPages() }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-            <span class="text-3xl">📄</span>
+            <svg class="h-7 w-7 text-rose-600 dark:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
           </div>
         </div>
       </div>
@@ -91,9 +99,11 @@
       <section class="mb-8">
         <div class="mb-6 flex items-center gap-3">
           <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            <span class="text-2xl">⭐</span>
+            <svg class="h-6 w-6 text-rose-500" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
           </div>
-          <h2 class="text-2xl font-bold tracking-tight lg:text-3xl bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+          <h2 class="text-2xl font-bold tracking-tight lg:text-3xl">
             Featured News
           </h2>
         </div>
@@ -118,7 +128,7 @@
                       {{ item.category }}
                     </span>
                   }
-                  <svg class="h-5 w-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                  <svg class="h-5 w-5 text-rose-500" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 </div>
@@ -197,7 +207,9 @@
         <!-- Empty State -->
         <div class="flex flex-col items-center justify-center p-12">
           <div class="flex h-20 w-20 items-center justify-center rounded-full bg-muted/30 mb-4">
-            <span class="text-5xl opacity-50">📰</span>
+            <svg class="h-10 w-10 text-muted-foreground opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+            </svg>
           </div>
           <h3 class="text-xl font-bold text-foreground mb-2">No news found</h3>
           <p class="text-base text-muted-foreground mb-6">
@@ -233,7 +245,7 @@
                       </span>
                     }
                     @if (item.featured) {
-                      <svg class="h-5 w-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                      <svg class="h-5 w-5 text-rose-500" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
                     }

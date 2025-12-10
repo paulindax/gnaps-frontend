@@ -46,19 +46,27 @@
           @if (!isLast) {
             <a
               [routerLink]="crumb.url"
-              class="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-primary transition-colors dark:text-gray-400 dark:hover:text-primary"
+              class="group flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-primary transition-colors dark:text-gray-400 dark:hover:text-primary"
             >
-              @if (crumb.icon) {
+              @if (crumb.iconPath) {
+                <svg class="h-4 w-4 text-gray-400 group-hover:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="crumb.iconPath" />
+                </svg>
+              } @else if (crumb.icon) {
                 <span class="text-base">{{ crumb.icon }}</span>
               }
               <span>{{ crumb.label }}</span>
             </a>
-            <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg class="h-4 w-4 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
           } @else {
             <span class="flex items-center gap-1.5 text-sm font-semibold text-gray-900 dark:text-gray-100">
-              @if (crumb.icon) {
+              @if (crumb.iconPath) {
+                <svg class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="crumb.iconPath" />
+                </svg>
+              } @else if (crumb.icon) {
                 <span class="text-base">{{ crumb.icon }}</span>
               }
               <span>{{ crumb.label }}</span>
@@ -73,18 +81,25 @@
 
     <!-- User Profile & Actions -->
     <div class="flex items-center gap-3 sm:gap-4">
-      <!-- Notification Bell (Future-Ready) -->
-      <button
-        class="hidden md:flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative"
-        aria-label="Notifications"
-        title="Notifications (Coming Soon)"
-      >
-        <!-- <svg class="h-5 w-5 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-        </svg> -->
-        <!-- Future: Notification badge -->
-        <!-- <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-gray-900"></span> -->
-      </button>
+      <!-- Activity Logs Button (System Admin Only) -->
+      @if (isSystemAdmin()) {
+        <a
+          [routerLink]="['/activity-logs']"
+          class="hidden md:flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative group"
+          aria-label="Activity logs"
+          title="View activity logs"
+        >
+          <svg class="h-5 w-5 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <!-- Activity count badge -->
+          <!-- @if (activityTracker.recentCount() > 0) {
+            <span class="absolute -top-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white ring-2 ring-white dark:ring-gray-900">
+              {{ activityTracker.recentCount() > 99 ? '99+' : activityTracker.recentCount() }}
+            </span>
+          } -->
+        </a>
+      }
 
       <!-- Theme Toggle -->
       <app-theme-toggle />
@@ -104,7 +119,7 @@
             </p>
           </div>
 
-          <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 ring-2 ring-primary/20 sm:h-14 sm:w-14 shadow-sm">
+          <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-primary to-primary/80 ring-2 ring-primary/20 sm:h-14 sm:w-14 shadow-sm">
             <span class="text-lg font-bold text-white sm:text-xl">
               {{ user()?.first_name?.[0] }}{{ user()?.last_name?.[0] }}
             </span>
@@ -218,3 +233,4 @@
     </div>
   </div>
 </app-sheet>
+

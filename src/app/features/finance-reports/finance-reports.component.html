@@ -1,0 +1,447 @@
+<div class="min-h-screen bg-linear-to-br from-background via-background to-muted/30">
+  <div class="w-full px-4 py-6 sm:px-6 lg:px-8">
+    <!-- Page Header -->
+    <div class="mb-6 lg:mb-8">
+      <div class="overflow-hidden rounded-2xl border-2 border-border/50 bg-card shadow-sm">
+        <div class="px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-8">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex items-center gap-4">
+              <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/30">
+                <svg class="h-8 w-8 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+              </div>
+              <div>
+                <h1 class="text-3xl font-bold text-foreground lg:text-4xl tracking-tight">
+                  Finance Reports
+                </h1>
+                <p class="mt-2 text-base text-muted-foreground lg:text-lg">
+                  View and analyze mobile money payments and financial transactions
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    @if (activeTab() === 'momo' && momoStats()) {
+      <div class="grid grid-cols-2 gap-4 mb-6 lg:grid-cols-4">
+        <div class="rounded-xl border border-border/50 bg-card p-4 shadow-sm">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
+              <svg class="h-5 w-5 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm text-muted-foreground">Total Payments</p>
+              <p class="text-2xl font-bold text-foreground">{{ momoStats()?.total || 0 }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-xl border border-border/50 bg-card p-4 shadow-sm">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-rose-100 dark:bg-rose-900/30">
+              <svg class="h-5 w-5 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm text-muted-foreground">Successful</p>
+              <p class="text-2xl font-bold text-rose-600 dark:text-rose-400">{{ momoStats()?.successful || 0 }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-xl border border-border/50 bg-card p-4 shadow-sm">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-100 dark:bg-yellow-900/30">
+              <svg class="h-5 w-5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm text-muted-foreground">Pending</p>
+              <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{{ momoStats()?.pending || 0 }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-xl border border-border/50 bg-card p-4 shadow-sm">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-rose-100 dark:bg-rose-900/30">
+              <svg class="h-5 w-5 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm text-muted-foreground">Total Amount</p>
+              <p class="text-2xl font-bold text-rose-600 dark:text-rose-400">{{ formatCurrency(momoStats()?.total_amount) }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (activeTab() === 'transactions' && transactionsStats()) {
+      <div class="grid grid-cols-1 gap-4 mb-6 lg:grid-cols-3">
+        <div class="rounded-xl border border-border/50 bg-card p-4 shadow-sm">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
+              <svg class="h-5 w-5 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm text-muted-foreground">Total Transactions</p>
+              <p class="text-2xl font-bold text-foreground">{{ transactionsStats()?.total || 0 }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-xl border border-border/50 bg-card p-4 shadow-sm">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-rose-100 dark:bg-rose-900/30">
+              <svg class="h-5 w-5 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm text-muted-foreground">Total Income</p>
+              <p class="text-2xl font-bold text-rose-600 dark:text-rose-400">{{ formatCurrency(transactionsStats()?.total_income) }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-xl border border-border/50 bg-card p-4 shadow-sm">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100 dark:bg-red-900/30">
+              <svg class="h-5 w-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm text-muted-foreground">Total Expense</p>
+              <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ formatCurrency(transactionsStats()?.total_expense) }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Tabs with Emerald Theme -->
+    <div class="rounded-2xl border-2 border-border/50 bg-card shadow-sm overflow-hidden">
+      <!-- Tab Navigation -->
+      <div class="border-b-2 border-border/50 bg-muted/30">
+        <nav class="flex -mb-px overflow-x-auto px-2">
+          <button
+            (click)="setActiveTab('momo')"
+            [class.border-rose-600]="activeTab() === 'momo'"
+            [class.text-rose-600]="activeTab() === 'momo'"
+            [class.dark:text-rose-400]="activeTab() === 'momo'"
+            [class.bg-background/80]="activeTab() === 'momo'"
+            [class.border-transparent]="activeTab() !== 'momo'"
+            [class.text-muted-foreground]="activeTab() !== 'momo'"
+            [class.hover:text-foreground]="activeTab() !== 'momo'"
+            [class.hover:bg-muted/50]="activeTab() !== 'momo'"
+            class="flex items-center gap-2 px-6 py-4 border-b-2 font-semibold text-base whitespace-nowrap transition-all"
+          >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+            </svg>
+            MoMo Payments
+          </button>
+          <button
+            (click)="setActiveTab('transactions')"
+            [class.border-rose-600]="activeTab() === 'transactions'"
+            [class.text-rose-600]="activeTab() === 'transactions'"
+            [class.dark:text-rose-400]="activeTab() === 'transactions'"
+            [class.bg-background/80]="activeTab() === 'transactions'"
+            [class.border-transparent]="activeTab() !== 'transactions'"
+            [class.text-muted-foreground]="activeTab() !== 'transactions'"
+            [class.hover:text-foreground]="activeTab() !== 'transactions'"
+            [class.hover:bg-muted/50]="activeTab() !== 'transactions'"
+            class="flex items-center gap-2 px-6 py-4 border-b-2 font-semibold text-base whitespace-nowrap transition-all"
+          >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+            </svg>
+            Finance Transactions
+          </button>
+        </nav>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="p-6 sm:p-8">
+        <!-- MoMo Payments Tab -->
+        @if (activeTab() === 'momo') {
+          <!-- Export Dropdown -->
+          <div class="mb-4 flex flex-wrap items-center justify-end">
+            <app-data-export
+              [data]="momoPayments()"
+              [config]="momoExportConfig()"
+            />
+          </div>
+
+          <!-- Filters -->
+          <div class="mb-6 p-4 rounded-xl bg-muted/30 border border-border/50">
+            <div class="flex flex-wrap items-end gap-4">
+              <div class="flex-1 min-w-[180px]">
+                <label class="block text-sm font-medium text-muted-foreground mb-1">Status</label>
+                <ng-select
+                  [ngModel]="momoStatusFilter"
+                  (ngModelChange)="momoStatusFilter = $event"
+                  [items]="statusOptions"
+                  bindLabel="label"
+                  bindValue="value"
+                  [clearable]="true"
+                  placeholder="All Statuses"
+                  class="custom-ng-select"
+                  [ngModelOptions]="{standalone: true}"
+                >
+                </ng-select>
+              </div>
+              <div class="flex-1 min-w-[180px]">
+                <label class="block text-sm font-medium text-muted-foreground mb-1">Network</label>
+                <ng-select
+                  [ngModel]="momoNetworkFilter"
+                  (ngModelChange)="momoNetworkFilter = $event"
+                  [items]="networkOptions"
+                  bindLabel="label"
+                  bindValue="value"
+                  [clearable]="true"
+                  placeholder="All Networks"
+                  class="custom-ng-select"
+                  [ngModelOptions]="{standalone: true}"
+                >
+                </ng-select>
+              </div>
+              <div class="flex-1 min-w-[150px]">
+                <label class="block text-sm font-medium text-muted-foreground mb-1">From Date</label>
+                <input type="date" [ngModel]="momoFromDate" (ngModelChange)="momoFromDate = $event" [ngModelOptions]="{standalone: true}" class="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
+              </div>
+              <div class="flex-1 min-w-[150px]">
+                <label class="block text-sm font-medium text-muted-foreground mb-1">To Date</label>
+                <input type="date" [ngModel]="momoToDate" (ngModelChange)="momoToDate = $event" [ngModelOptions]="{standalone: true}" class="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
+              </div>
+              <div class="flex gap-2">
+                <button (click)="applyMomoFilters()" class="px-4 py-2.5 rounded-lg bg-rose-600 text-white font-medium hover:bg-rose-700 transition-colors">
+                  Apply
+                </button>
+                <button (click)="clearMomoFilters()" class="px-4 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium hover:bg-muted transition-colors">
+                  Clear
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="overflow-x-auto rounded-xl border border-border/50">
+            <table class="w-full">
+              <thead class="bg-muted/50">
+                <tr>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">ID</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">School</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Fee Name</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Amount</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Network</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Phone</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Status</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Date</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border/50">
+                @if (momoLoading()) {
+                  <tr>
+                    <td colspan="8" class="px-4 py-8 text-center">
+                      <div class="flex items-center justify-center gap-2">
+                        <svg class="animate-spin h-5 w-5 text-rose-600" fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="text-muted-foreground">Loading payments...</span>
+                      </div>
+                    </td>
+                  </tr>
+                } @else if (momoPayments().length === 0) {
+                  <tr>
+                    <td colspan="8" class="px-4 py-8 text-center text-muted-foreground">
+                      No payments found
+                    </td>
+                  </tr>
+                } @else {
+                  @for (payment of momoPayments(); track payment.id) {
+                    <tr class="hover:bg-muted/30 transition-colors">
+                      <td class="px-4 py-3 text-sm text-foreground font-medium">#{{ payment.id }}</td>
+                      <td class="px-4 py-3 text-sm text-foreground">{{ payment.school_name || 'N/A' }}</td>
+                      <td class="px-4 py-3 text-sm text-foreground">{{ payment.fee_name || 'N/A' }}</td>
+                      <td class="px-4 py-3 text-sm text-foreground font-semibold">{{ formatCurrency(payment.amount) }}</td>
+                      <td class="px-4 py-3 text-sm">
+                        <span [class]="getNetworkBadgeClass(payment.momo_network)">{{ payment.momo_network || 'N/A' }}</span>
+                      </td>
+                      <td class="px-4 py-3 text-sm text-muted-foreground">{{ payment.momo_number || 'N/A' }}</td>
+                      <td class="px-4 py-3 text-sm">
+                        <span [class]="getStatusBadgeClass(payment.status)">{{ payment.status || 'N/A' }}</span>
+                      </td>
+                      <td class="px-4 py-3 text-sm text-muted-foreground">{{ payment.created_at | date:'MMM d, y HH:mm' }}</td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          @if (momoTotal() > momoLimit()) {
+            <div class="mt-4 flex items-center justify-between">
+              <p class="text-sm text-muted-foreground">
+                Showing {{ (momoPage() - 1) * momoLimit() + 1 }} to {{ momoPage() * momoLimit() > momoTotal() ? momoTotal() : momoPage() * momoLimit() }} of {{ momoTotal() }} results
+              </p>
+              <div class="flex items-center gap-2">
+                <button
+                  (click)="goToMomoPage(momoPage() - 1)"
+                  [disabled]="momoPage() === 1"
+                  class="px-3 py-1.5 rounded-lg border border-border bg-background text-sm font-medium hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Previous
+                </button>
+                <span class="text-sm text-muted-foreground">Page {{ momoPage() }} of {{ momoTotalPages() }}</span>
+                <button
+                  (click)="goToMomoPage(momoPage() + 1)"
+                  [disabled]="momoPage() >= momoTotalPages()"
+                  class="px-3 py-1.5 rounded-lg border border-border bg-background text-sm font-medium hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          }
+        }
+
+        <!-- Finance Transactions Tab -->
+        @if (activeTab() === 'transactions') {
+          <!-- Export Dropdown -->
+          <div class="mb-4 flex flex-wrap items-center justify-end">
+            <app-data-export
+              [data]="financeTransactions()"
+              [config]="transactionsExportConfig()"
+            />
+          </div>
+
+          <!-- Filters -->
+          <div class="mb-6 p-4 rounded-xl bg-muted/30 border border-border/50">
+            <div class="flex flex-wrap items-end gap-4">
+              <div class="flex-1 min-w-[180px]">
+                <label class="block text-sm font-medium text-muted-foreground mb-1">Type</label>
+                <ng-select
+                  [ngModel]="transactionsTypeFilter"
+                  (ngModelChange)="transactionsTypeFilter = $event"
+                  [items]="transactionTypeOptions"
+                  bindLabel="label"
+                  bindValue="value"
+                  [clearable]="true"
+                  placeholder="All Types"
+                  class="custom-ng-select"
+                  [ngModelOptions]="{standalone: true}"
+                >
+                </ng-select>
+              </div>
+              <div class="flex-1 min-w-[150px]">
+                <label class="block text-sm font-medium text-muted-foreground mb-1">From Date</label>
+                <input type="date" [ngModel]="transactionsFromDate" (ngModelChange)="transactionsFromDate = $event" [ngModelOptions]="{standalone: true}" class="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
+              </div>
+              <div class="flex-1 min-w-[150px]">
+                <label class="block text-sm font-medium text-muted-foreground mb-1">To Date</label>
+                <input type="date" [ngModel]="transactionsToDate" (ngModelChange)="transactionsToDate = $event" [ngModelOptions]="{standalone: true}" class="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
+              </div>
+              <div class="flex gap-2">
+                <button (click)="applyTransactionsFilters()" class="px-4 py-2.5 rounded-lg bg-rose-600 text-white font-medium hover:bg-rose-700 transition-colors">
+                  Apply
+                </button>
+                <button (click)="clearTransactionsFilters()" class="px-4 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium hover:bg-muted transition-colors">
+                  Clear
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="overflow-x-auto rounded-xl border border-border/50">
+            <table class="w-full">
+              <thead class="bg-muted/50">
+                <tr>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">ID</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Title</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">School</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Account</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Amount</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Receipt/Voucher</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Payment Mode</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Date</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border/50">
+                @if (transactionsLoading()) {
+                  <tr>
+                    <td colspan="8" class="px-4 py-8 text-center">
+                      <div class="flex items-center justify-center gap-2">
+                        <svg class="animate-spin h-5 w-5 text-rose-600" fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="text-muted-foreground">Loading transactions...</span>
+                      </div>
+                    </td>
+                  </tr>
+                } @else if (financeTransactions().length === 0) {
+                  <tr>
+                    <td colspan="8" class="px-4 py-8 text-center text-muted-foreground">
+                      No transactions found
+                    </td>
+                  </tr>
+                } @else {
+                  @for (transaction of financeTransactions(); track transaction.id) {
+                    <tr class="hover:bg-muted/30 transition-colors">
+                      <td class="px-4 py-3 text-sm text-foreground font-medium">#{{ transaction.id }}</td>
+                      <td class="px-4 py-3 text-sm text-foreground">{{ transaction.title || 'N/A' }}</td>
+                      <td class="px-4 py-3 text-sm text-foreground">{{ transaction.school_name || 'N/A' }}</td>
+                      <td class="px-4 py-3 text-sm text-muted-foreground">{{ transaction.finance_account_name || 'N/A' }}</td>
+                      <td class="px-4 py-3 text-sm text-foreground font-semibold">{{ formatCurrency(transaction.amount) }}</td>
+                      <td class="px-4 py-3 text-sm text-muted-foreground">{{ transaction.receipt_no || transaction.voucher_no || 'N/A' }}</td>
+                      <td class="px-4 py-3 text-sm text-muted-foreground">{{ transaction.payment_mode || 'N/A' }}</td>
+                      <td class="px-4 py-3 text-sm text-muted-foreground">{{ transaction.transaction_date | date:'MMM d, y' }}</td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          @if (transactionsTotal() > transactionsLimit()) {
+            <div class="mt-4 flex items-center justify-between">
+              <p class="text-sm text-muted-foreground">
+                Showing {{ (transactionsPage() - 1) * transactionsLimit() + 1 }} to {{ transactionsPage() * transactionsLimit() > transactionsTotal() ? transactionsTotal() : transactionsPage() * transactionsLimit() }} of {{ transactionsTotal() }} results
+              </p>
+              <div class="flex items-center gap-2">
+                <button
+                  (click)="goToTransactionsPage(transactionsPage() - 1)"
+                  [disabled]="transactionsPage() === 1"
+                  class="px-3 py-1.5 rounded-lg border border-border bg-background text-sm font-medium hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Previous
+                </button>
+                <span class="text-sm text-muted-foreground">Page {{ transactionsPage() }} of {{ transactionsTotalPages() }}</span>
+                <button
+                  (click)="goToTransactionsPage(transactionsPage() + 1)"
+                  [disabled]="transactionsPage() >= transactionsTotalPages()"
+                  class="px-3 py-1.5 rounded-lg border border-border bg-background text-sm font-medium hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>

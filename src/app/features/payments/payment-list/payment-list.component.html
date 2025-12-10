@@ -21,7 +21,9 @@
             <h3 class="mt-2 text-4xl font-bold text-primary">{{ statistics().total }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
-            <span class="text-3xl">💳</span>
+            <svg class="h-7 w-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+            </svg>
           </div>
         </div>
         <div class="pt-4 border-t-2 border-border/50">
@@ -38,7 +40,9 @@
             <h3 class="mt-2 text-4xl font-bold text-green-600 dark:text-green-500">{{ statistics().completed }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-colors">
-            <span class="text-3xl">✅</span>
+            <svg class="h-7 w-7 text-green-600 dark:text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
           </div>
         </div>
         <div class="pt-4 border-t-2 border-border/50">
@@ -55,7 +59,9 @@
             <h3 class="mt-2 text-4xl font-bold text-amber-600 dark:text-amber-500">{{ statistics().pending }}</h3>
           </div>
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/10 group-hover:bg-amber-500/20 transition-colors">
-            <span class="text-3xl">⏳</span>
+            <svg class="h-7 w-7 text-amber-600 dark:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
           </div>
         </div>
         <div class="pt-4 border-t-2 border-border/50">
@@ -70,7 +76,9 @@
       <!-- Section Header -->
       <div class="mb-6 flex items-center gap-3 border-b-2 border-border/50 pb-6">
         <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/10">
-          <span class="text-2xl">📋</span>
+          <svg class="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+          </svg>
         </div>
         <div>
           <h2 class="text-xl font-bold">Payment History</h2>
@@ -125,7 +133,9 @@
                             (click)="makePayment(payment.id)"
                             class="shadow-sm hover:shadow-md transition-shadow"
                           >
-                            <span class="mr-1">💰</span>
+                            <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
                             Pay Now
                           </app-button-helm>
                         }
@@ -136,7 +146,9 @@
                             (click)="downloadCertificate(payment.id)"
                             class="shadow-sm hover:shadow-md transition-shadow"
                           >
-                            <span class="mr-1">📄</span>
+                            <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
                             Certificate
                           </app-button-helm>
                         }
@@ -148,7 +160,11 @@
                 <tr>
                   <td colspan="5" class="px-6 py-12 text-center">
                     <div class="flex flex-col items-center">
-                      <span class="text-6xl opacity-20 mb-4">💳</span>
+                      <div class="flex h-20 w-20 items-center justify-center rounded-full bg-muted/50 mb-4">
+                        <svg class="h-10 w-10 text-muted-foreground/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                        </svg>
+                      </div>
                       <p class="text-lg font-medium text-muted-foreground">No payments found</p>
                       <p class="mt-2 text-sm text-muted-foreground">Your payment history will appear here</p>
                     </div>
@@ -195,7 +211,9 @@
                     (click)="makePayment(payment.id)"
                     class="w-full shadow-sm hover:shadow-md transition-shadow"
                   >
-                    <span class="mr-2">💰</span>
+                    <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                     Pay Now - {{ payment.amount | currency }}
                   </app-button-helm>
                 }
@@ -206,7 +224,9 @@
                     (click)="downloadCertificate(payment.id)"
                     class="w-full shadow-sm hover:shadow-md transition-shadow"
                   >
-                    <span class="mr-2">📄</span>
+                    <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
                     Download Certificate
                   </app-button-helm>
                 }
@@ -215,8 +235,12 @@
           } @else {
             <div class="flex h-64 items-center justify-center rounded-xl border-2 border-dashed border-border/50 bg-muted/20">
               <div class="text-center">
-                <span class="text-6xl opacity-20">💳</span>
-                <p class="mt-4 text-lg font-medium text-muted-foreground">No payments found</p>
+                <div class="flex h-20 w-20 mx-auto items-center justify-center rounded-full bg-muted/50 mb-4">
+                  <svg class="h-10 w-10 text-muted-foreground/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                  </svg>
+                </div>
+                <p class="text-lg font-medium text-muted-foreground">No payments found</p>
                 <p class="mt-2 text-base text-muted-foreground">Your payment history will appear here</p>
               </div>
             </div>
@@ -229,7 +253,9 @@
     <div class="mt-6 rounded-2xl border-2 border-dashed border-border/50 bg-muted/20 p-6">
       <div class="flex items-start gap-4">
         <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10">
-          <span class="text-2xl">💡</span>
+          <svg class="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
         </div>
         <div>
           <h3 class="text-lg font-bold mb-2">Need Help?</h3>

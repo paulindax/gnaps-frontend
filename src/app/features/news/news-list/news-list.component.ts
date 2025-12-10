@@ -5,7 +5,10 @@ import { Router } from '@angular/router';
 import { News } from '../../../core/models';
 import { NewsService } from '../../../core/services/news.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { MediaService } from '../../../core/services/media.service';
 import { ButtonHelmComponent } from '../../../shared/ui/button-helm/button-helm.component';
+
+const DEFAULT_NEWS_IMAGE = 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&auto=format&fit=crop&q=80';
 
 @Component({
   selector: 'app-news-list',
@@ -16,6 +19,7 @@ import { ButtonHelmComponent } from '../../../shared/ui/button-helm/button-helm.
 export class NewsListComponent implements OnInit {
   private newsService = inject(NewsService);
   private authService = inject(AuthService);
+  private mediaService = inject(MediaService);
   private router = inject(Router);
 
   protected readonly Math = Math;
@@ -39,7 +43,7 @@ export class NewsListComponent implements OnInit {
 
   canManageNews = () => {
     const userRole = this.role();
-    return userRole !== 'school_user' && userRole !== null;
+    return userRole !== 'school_admin' && userRole !== null;
   };
 
   ngOnInit(): void {
@@ -117,7 +121,7 @@ export class NewsListComponent implements OnInit {
   }
 
   getImageUrl(news: News): string {
-    return news.image_url || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&auto=format&fit=crop&q=80';
+    return this.mediaService.getImageUrl(news.image_url, DEFAULT_NEWS_IMAGE);
   }
 
   formatDate(dateString: string): string {

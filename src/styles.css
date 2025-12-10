@@ -39,8 +39,8 @@
   --destructive-foreground: oklch(0.98 0 0);
 
   /* Borders and inputs (Higher contrast for 30+ users) */
-  --border: oklch(0.60 0 0); /* Darker borders for better visibility */
-  --input: oklch(0.90 0 0);
+  --border: oklch(0.70 0 0); /* Darker borders for better visibility */
+  --input: oklch(0.70 0 0); /* Same as border for visible input borders */
 
   /* Focus ring - Rose */
   --ring: oklch(0.55 0.26 12);
@@ -61,7 +61,7 @@
   --sidebar-primary-foreground: oklch(0.98 0 0);
   --sidebar-accent: oklch(0.96 0 0);
   --sidebar-accent-foreground: oklch(0.09 0 0);
-  --sidebar-border: oklch(0.60 0 0); /* Darker borders for better visibility */
+  --sidebar-border: oklch(0.70 0 0); /* Darker borders for better visibility */
   --sidebar-ring: oklch(0.55 0.26 12);
 }
 
@@ -99,8 +99,8 @@
   --destructive-foreground: oklch(0.98 0 0);
 
   /* Borders and inputs */
-  --border: oklch(0.52 0 0); /* Gray-500 borders in dark mode */
-  --input: oklch(0.27 0 0);
+  --border: oklch(0.62 0 0); /* Gray-500 borders in dark mode */
+  --input: oklch(0.62 0 0); /* Same as border for visible input borders */
 
   /* Focus ring - Rose */
   --ring: oklch(0.65 0.28 12); /* Brighter red rose */
@@ -119,7 +119,7 @@
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.17 0 0);
   --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(0.52 0 0); /* Gray-500 borders in dark mode */
+  --sidebar-border: oklch(0.62 0 0); /* Gray-500 borders in dark mode */
   --sidebar-ring: oklch(0.65 0.28 12); /* Brighter red rose */
 }
 
@@ -316,21 +316,21 @@
 .ng-select .ng-select-container {
   min-height: 52px !important;
   height: auto;
-  border: 2px solid hsl(var(--border));
+  border: 2px solid var(--border) !important;
   border-radius: calc(var(--radius) - 2px);
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
+  background-color: var(--background) !important;
+  color: var(--foreground);
   font-size: 1.125rem;
   box-sizing: border-box;
 }
 
 .ng-select .ng-select-container:hover {
-  border-color: hsl(var(--primary));
+  border-color: var(--primary) !important;
 }
 
 .ng-select.ng-select-focused .ng-select-container {
-  border-color: hsl(var(--primary));
-  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.2);
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
   outline: none;
 }
 
@@ -364,12 +364,12 @@
 }
 
 .ng-select .ng-value-container .ng-placeholder {
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   opacity: 0.7;
 }
 
 .ng-select .ng-value-container .ng-value {
-  color: hsl(var(--foreground));
+  color: var(--foreground);
 }
 
 .ng-select .ng-arrow-wrapper {
@@ -377,19 +377,19 @@
 }
 
 .ng-select .ng-arrow {
-  border-color: hsl(var(--foreground)) transparent transparent;
+  border-color: var(--foreground) transparent transparent;
   border-style: solid;
   border-width: 6px 6px 2.5px;
 }
 
 .ng-select.ng-select-opened .ng-arrow {
-  border-color: transparent transparent hsl(var(--foreground));
+  border-color: transparent transparent var(--foreground);
   border-width: 0 6px 6px;
 }
 
 .ng-dropdown-panel {
-  background-color: hsl(var(--popover));
-  border: 2px solid hsl(var(--border));
+  background-color: var(--popover) !important;
+  border: 2px solid var(--border) !important;
   border-radius: calc(var(--radius) - 2px);
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   margin-top: 4px;
@@ -402,30 +402,30 @@
 .ng-dropdown-panel .ng-option {
   padding: 0.875rem 1rem;
   font-size: 1.125rem;
-  color: hsl(var(--foreground));
-  background-color: hsl(var(--popover));
+  color: var(--foreground);
+  background-color: var(--popover);
   min-height: 52px;
   display: flex;
   align-items: center;
 }
 
 .ng-dropdown-panel .ng-option:hover {
-  background-color: hsl(var(--accent));
-  color: hsl(var(--accent-foreground));
+  background-color: var(--accent);
+  color: var(--accent-foreground);
 }
 
 .ng-dropdown-panel .ng-option.ng-option-selected {
-  background-color: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
+  background-color: var(--primary);
+  color: var(--primary-foreground);
 }
 
 .ng-dropdown-panel .ng-option.ng-option-selected:hover {
-  background-color: hsl(var(--primary) / 0.9);
+  background-color: color-mix(in srgb, var(--primary) 90%, transparent);
 }
 
 .ng-dropdown-panel .ng-option.ng-option-marked {
-  background-color: hsl(var(--accent));
-  color: hsl(var(--accent-foreground));
+  background-color: var(--accent);
+  color: var(--accent-foreground);
 }
 
 .ng-dropdown-panel .ng-option.ng-option-disabled {
@@ -439,40 +439,52 @@
 }
 
 .ng-select .ng-clear-wrapper .ng-clear {
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   font-size: 1.25rem;
   line-height: 1;
 }
 
 .ng-select .ng-clear-wrapper:hover .ng-clear {
-  color: hsl(var(--destructive));
+  color: var(--destructive);
 }
 
 /* Dark mode adjustments */
 .dark .ng-select .ng-select-container {
-  background-color: hsl(var(--background));
-  border-color: hsl(var(--border));
+  background-color: var(--background) !important;
+  border-color: var(--border) !important;
 }
 
 .dark .ng-dropdown-panel {
-  background-color: hsl(var(--popover));
-  border-color: hsl(var(--border));
+  background-color: var(--popover) !important;
+  border-color: var(--border) !important;
 }
 
 .dark .ng-dropdown-panel .ng-option {
-  background-color: hsl(var(--popover));
-  color: hsl(var(--popover-foreground));
+  background-color: var(--popover);
+  color: var(--popover-foreground);
 }
 
 .dark .ng-dropdown-panel .ng-option:hover {
-  background-color: hsl(var(--accent));
+  background-color: var(--accent);
 }
 
 /* Loading spinner */
 .ng-select .ng-spinner-loader {
-  border-color: hsl(var(--primary)) transparent transparent;
+  border-color: var(--primary) transparent transparent;
   border-style: solid;
   border-width: 2px;
+}
+
+/* Disabled state styling */
+.ng-select.ng-select-disabled .ng-select-container {
+  background-color: var(--muted) !important;
+  border-color: var(--border) !important;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.ng-select.ng-select-disabled .ng-value-container .ng-placeholder {
+  color: var(--muted-foreground);
 }
 
 /* Custom Checkbox Styles */
@@ -615,4 +627,213 @@ input[type="checkbox"]:disabled:hover {
   padding: 1rem 1.25rem;
   min-height: 56px;
   font-size: 1.125rem;
+}
+
+/* Modal ng-select styles - explicit styling for modal forms */
+.modal-ng-select.ng-select .ng-select-container {
+  min-height: 52px !important;
+  height: auto !important;
+  border: 2px solid #9ca3af !important;
+  border-radius: 8px !important;
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+}
+
+.modal-ng-select.ng-select .ng-select-container:hover {
+  border-color: #6b7280 !important;
+}
+
+.modal-ng-select.ng-select.ng-select-focused .ng-select-container {
+  border-color: #e11d48 !important;
+  box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.1) !important;
+}
+
+.modal-ng-select.ng-select .ng-value-container {
+  padding: 8px 12px !important;
+}
+
+.modal-ng-select.ng-select .ng-value-container .ng-placeholder {
+  color: #9ca3af !important;
+  font-size: 16px !important;
+}
+
+.modal-ng-select.ng-select .ng-value-container .ng-value {
+  font-size: 16px !important;
+  color: #1f2937 !important;
+}
+
+.modal-ng-select.ng-select .ng-value-container .ng-input > input {
+  font-size: 16px !important;
+  color: #1f2937 !important;
+}
+
+.modal-ng-select.ng-select.ng-select-disabled .ng-select-container {
+  background-color: #f3f4f6 !important;
+  cursor: not-allowed !important;
+}
+
+.modal-ng-select.ng-select .ng-arrow-wrapper {
+  padding-right: 8px !important;
+}
+
+.modal-ng-select.ng-select .ng-arrow {
+  border-color: #6b7280 transparent transparent !important;
+}
+
+.modal-ng-select + .ng-dropdown-panel {
+  border: 2px solid #9ca3af !important;
+  border-radius: 8px !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.modal-ng-select + .ng-dropdown-panel .ng-option {
+  padding: 12px 16px !important;
+  font-size: 16px !important;
+  color: #1f2937 !important;
+}
+
+.modal-ng-select + .ng-dropdown-panel .ng-option.ng-option-marked {
+  background-color: #fce7f3 !important;
+  color: #be123c !important;
+}
+
+.modal-ng-select + .ng-dropdown-panel .ng-option.ng-option-selected {
+  background-color: #e11d48 !important;
+  color: #ffffff !important;
+}
+
+/* ============================================
+   Custom Scrollbar Styles - Ultra Sleek Red Rose
+   ============================================ */
+
+/* Firefox scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(225, 29, 72, 0.4) transparent;
+}
+
+/* WebKit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(225, 29, 72, 0.4);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(225, 29, 72, 0.65);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: rgba(225, 29, 72, 0.85);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Ultra-thin scrollbar variant */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+/* Hidden scrollbar that appears on hover */
+.scrollbar-hidden {
+  scrollbar-width: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.scrollbar-hidden:hover {
+  scrollbar-width: thin;
+}
+
+.scrollbar-hidden:hover::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+  display: block;
+}
+
+/* Subtle scrollbar for sidebar and navigation */
+.scrollbar-subtle::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+.scrollbar-subtle::-webkit-scrollbar-thumb {
+  background: rgba(225, 29, 72, 0.3);
+  border-radius: 2px;
+}
+
+.scrollbar-subtle::-webkit-scrollbar-thumb:hover {
+  background: rgba(225, 29, 72, 0.55);
+}
+
+/* Dark mode scrollbar adjustments */
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(225, 29, 72, 0.35);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(225, 29, 72, 0.6);
+}
+
+.dark ::-webkit-scrollbar-thumb:active {
+  background: rgba(225, 29, 72, 0.8);
+}
+
+/* Firefox scrollbar colors for dark mode */
+.dark * {
+  scrollbar-color: rgba(225, 29, 72, 0.4) transparent;
+}
+
+/* Modal scrollbars */
+.modal-content::-webkit-scrollbar,
+[class*="modal"]::-webkit-scrollbar {
+  width: 3px;
+}
+
+/* Dropdown/select scrollbars */
+.ng-dropdown-panel-items::-webkit-scrollbar,
+select::-webkit-scrollbar {
+  width: 3px;
+}
+
+.ng-dropdown-panel-items::-webkit-scrollbar-thumb,
+select::-webkit-scrollbar-thumb {
+  background: rgba(225, 29, 72, 0.4);
+  border-radius: 3px;
+}
+
+.ng-dropdown-panel-items::-webkit-scrollbar-thumb:hover,
+select::-webkit-scrollbar-thumb:hover {
+  background: rgba(225, 29, 72, 0.65);
+}
+
+/* Textarea scrollbars */
+textarea::-webkit-scrollbar {
+  width: 3px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background: rgba(225, 29, 72, 0.4);
+  border-radius: 3px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(225, 29, 72, 0.65);
 }

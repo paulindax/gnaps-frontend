@@ -152,7 +152,7 @@ export class NewsFormComponent implements OnInit {
 
   canSelectZones(): boolean {
     const userRole = this.role();
-    return userRole === 'system_admin' || userRole === 'national_admin' || userRole === 'regional_admin';
+    return userRole === 'system_admin' || userRole === 'national_admin' || userRole === 'region_admin';
   }
 
   canSelectGroups(): boolean {
@@ -162,7 +162,7 @@ export class NewsFormComponent implements OnInit {
 
   canSelectSchools(): boolean {
     const userRole = this.role();
-    return userRole !== 'school_user';
+    return userRole !== 'school_admin';
   }
 
   onRegionToggle(regionId: number): void {

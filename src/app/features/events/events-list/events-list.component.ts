@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { EventService } from '../../../core/services/event.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { MediaService } from '../../../core/services/media.service';
 import { Event } from '../../../core/models';
 import { ButtonHelmComponent } from '../../../shared/ui/button-helm/button-helm.component';
 import { InputHelmComponent } from '../../../shared/ui/input-helm/input-helm.component';
@@ -26,6 +27,7 @@ import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
 export class EventsListComponent implements OnInit {
   private eventService = inject(EventService);
   private authService = inject(AuthService);
+  private mediaService = inject(MediaService);
   private router = inject(Router);
 
   // Signals
@@ -88,7 +90,7 @@ export class EventsListComponent implements OnInit {
 
   canManageEvents = () => {
     const userRole = this.role();
-    return userRole === 'system_admin' || userRole === 'national_admin' || userRole === 'regional_admin';
+    return userRole === 'system_admin' || userRole === 'national_admin' || userRole === 'region_admin';
   };
 
   ngOnInit(): void {
@@ -232,5 +234,10 @@ export class EventsListComponent implements OnInit {
       default:
         return 'default';
     }
+  }
+
+  // Get full image URL with backend base
+  getImageUrl(imageUrl?: string): string {
+    return this.mediaService.getImageUrl(imageUrl);
   }
 }
