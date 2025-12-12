@@ -1,5 +1,5 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 import { DocumentService } from '../../../core/services/document.service';
 import { Document } from '../../../core/models';
@@ -10,7 +10,7 @@ import { FlashMessageService } from '../../../core/services/flash-message.servic
 @Component({
   selector: 'app-document-vault',
   standalone: true,
-  imports: [CommonModule, ConfirmDialogComponent],
+  imports: [ConfirmDialogComponent],
   templateUrl: './document-vault.component.html',
   styleUrls: ['./document-vault.component.css']
 })

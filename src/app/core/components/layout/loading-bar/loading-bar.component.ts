@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { LoadingService } from '../../../services/loading.service';
 
 @Component({
   selector: 'app-loading-bar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './loading-bar.component.html',
   styleUrls: ['./loading-bar.component.css']
 })

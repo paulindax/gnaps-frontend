@@ -1,5 +1,5 @@
 import { Component, signal, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { AuthService } from '../../core/services/auth.service';
 import { RegionsComponent } from './regions/regions.component';
 import { ZonesComponent } from './zones/zones.component';
@@ -11,7 +11,7 @@ type TabType = 'regions' | 'zones' | 'positions' | 'groups';
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, RegionsComponent, ZonesComponent, PositionsComponent, GroupsComponent],
+  imports: [RegionsComponent, ZonesComponent, PositionsComponent, GroupsComponent],
   templateUrl: './settings.component.html'
 })
 export class SettingsComponent {

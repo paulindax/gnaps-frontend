@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, inject, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FinanceService } from '../../../core/services/finance.service';
@@ -9,7 +9,7 @@ import { BillParticular, FinanceAccount } from '../../../core/models';
 @Component({
   selector: 'app-bill-particulars',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule],
+  imports: [FormsModule, NgSelectModule],
   templateUrl: './bill-particulars.component.html'
 })
 export class BillParticularsComponent implements OnInit {

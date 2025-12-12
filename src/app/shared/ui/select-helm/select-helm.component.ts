@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, forwardRef, booleanAttribute, signal, computed, ViewChild, ElementRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { cn } from '../../../../lib/utils';
 
@@ -12,7 +12,7 @@ export interface SelectOption {
 @Component({
   selector: 'app-select-helm',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './select-helm.component.html',
   providers: [{
     provide: NG_VALUE_ACCESSOR,

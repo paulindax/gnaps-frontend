@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { FinanceAccountComponent } from './finance-account/finance-account.component';
@@ -9,7 +9,7 @@ import { ManageBillComponent } from './manage-bill/manage-bill.component';
 @Component({
   selector: 'app-finance',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, FinanceAccountComponent, BillParticularsComponent, ManageBillComponent],
+  imports: [RouterOutlet, FinanceAccountComponent, BillParticularsComponent, ManageBillComponent],
   templateUrl: './finance.component.html'
 })
 export class FinanceComponent implements OnInit {

@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -39,7 +39,7 @@ interface PaginatedResponse {
 @Component({
   selector: 'app-activity-logs',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './activity-logs.component.html'
 })
 export class ActivityLogsComponent implements OnInit {

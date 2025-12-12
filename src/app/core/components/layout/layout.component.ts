@@ -1,6 +1,6 @@
 // src/app/core/components/layout/layout.component.ts
 import { Component, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
 import { SideNavComponent } from './side-nav/side-nav.component';
@@ -11,7 +11,7 @@ import { cn } from '../../../../lib/utils';
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, SideNavComponent],
+  imports: [RouterOutlet, HeaderComponent, SideNavComponent],
   templateUrl: './layout.component.html'
 })
 export class LayoutComponent {

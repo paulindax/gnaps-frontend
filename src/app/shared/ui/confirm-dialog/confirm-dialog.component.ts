@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 /**
  * Reusable confirmation dialog component
@@ -39,7 +39,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-confirm-dialog',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './confirm-dialog.component.html'
 })
 export class ConfirmDialogComponent {

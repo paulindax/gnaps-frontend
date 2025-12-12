@@ -1,5 +1,5 @@
 import { Component, input, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
@@ -22,7 +22,7 @@ export interface ExportConfig {
 @Component({
   selector: 'app-data-export',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './data-export.component.html'
 })
 export class DataExportComponent {

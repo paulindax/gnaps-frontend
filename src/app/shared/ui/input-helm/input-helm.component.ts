@@ -1,12 +1,12 @@
 import { Component, Input, forwardRef, booleanAttribute } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { cn } from '../../../../lib/utils';
 
 @Component({
   selector: 'app-input-helm',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './input-helm.component.html',
   providers: [{
     provide: NG_VALUE_ACCESSOR,

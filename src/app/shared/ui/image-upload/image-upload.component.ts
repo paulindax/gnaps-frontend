@@ -1,5 +1,5 @@
 import { Component, signal, input, output, inject, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { MediaService } from '../../../core/services/media.service';
 import { ButtonHelmComponent } from '../button-helm/button-helm.component';
@@ -62,7 +62,7 @@ interface MediaTypeConfig {
 @Component({
   selector: 'app-image-upload',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonHelmComponent],
+  imports: [FormsModule, ButtonHelmComponent],
   template: `
     <div class="space-y-4">
       <!-- Preview Section -->

@@ -1,0 +1,106 @@
+<div class="news-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-title">News</h1>
+  </div>
+
+  <!-- News List -->
+  @if (loading()) {
+    <div class="skeleton-list">
+      <div class="skeleton-featured"></div>
+      @for (i of [1, 2, 3]; track i) {
+        <div class="skeleton-card">
+          <div class="skeleton-thumb"></div>
+          <div class="skeleton-content">
+            <div class="skeleton-title"></div>
+            <div class="skeleton-excerpt"></div>
+          </div>
+        </div>
+      }
+    </div>
+  } @else if (news().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path fill-rule="evenodd" d="M4.125 3C3.089 3 2.25 3.84 2.25 4.875V18a3 3 0 003 3h15a3 3 0 01-3-3V4.875C17.25 3.839 16.41 3 15.375 3H4.125zM12 9.75a.75.75 0 000 1.5h1.5a.75.75 0 000-1.5H12zm-.75-2.25a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5H12a.75.75 0 01-.75-.75zM6 12.75a.75.75 0 000 1.5h7.5a.75.75 0 000-1.5H6zm-.75 3.75a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5H6a.75.75 0 01-.75-.75zM6 6.75a.75.75 0 00-.75.75v3c0 .414.336.75.75.75h3a.75.75 0 00.75-.75v-3A.75.75 0 009 6.75H6z" clip-rule="evenodd" />
+          <path d="M18.75 6.75h1.875c.621 0 1.125.504 1.125 1.125V18a1.5 1.5 0 01-3 0V6.75z" />
+        </svg>
+      </div>
+      <h3 class="empty-title">No news yet</h3>
+      <p class="empty-text">Check back later for updates</p>
+    </div>
+  } @else {
+    <div class="news-list">
+      @for (article of news(); track article.id; let i = $index) {
+        <!-- Featured Article (First One) -->
+        @if (i === 0) {
+          <a [routerLink]="['/m/news', article.id]" class="featured-card">
+            <div class="featured-image">
+              @if (article.image_url) {
+                <img [src]="getImageUrl(article.image_url)" [alt]="article.title">
+              } @else {
+                <div class="featured-placeholder">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.125 3C3.089 3 2.25 3.84 2.25 4.875V18a3 3 0 003 3h15a3 3 0 01-3-3V4.875C17.25 3.839 16.41 3 15.375 3H4.125zM12 9.75a.75.75 0 000 1.5h1.5a.75.75 0 000-1.5H12zm-.75-2.25a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5H12a.75.75 0 01-.75-.75zM6 12.75a.75.75 0 000 1.5h7.5a.75.75 0 000-1.5H6zm-.75 3.75a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5H6a.75.75 0 01-.75-.75zM6 6.75a.75.75 0 00-.75.75v3c0 .414.336.75.75.75h3a.75.75 0 00.75-.75v-3A.75.75 0 009 6.75H6z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              }
+              <div class="featured-overlay"></div>
+              <div class="featured-content">
+                <span class="featured-badge">Featured</span>
+                <h2 class="featured-title">{{ article.title }}</h2>
+              </div>
+            </div>
+            <div class="featured-meta">
+              <p class="featured-excerpt">{{ getExcerpt(article.content) }}</p>
+              <div class="featured-footer">
+                <span class="featured-date">{{ formatDate(article.published_at || article.created_at) }}</span>
+                <span class="read-more">
+                  Read More
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z" clip-rule="evenodd" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </a>
+        } @else {
+          <!-- Regular Articles -->
+          <a [routerLink]="['/m/news', article.id]" class="news-card">
+            <div class="news-thumb">
+              @if (article.image_url) {
+                <img [src]="getImageUrl(article.image_url)" [alt]="article.title">
+              } @else {
+                <div class="thumb-placeholder">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.125 3C3.089 3 2.25 3.84 2.25 4.875V18a3 3 0 003 3h15a3 3 0 01-3-3V4.875C17.25 3.839 16.41 3 15.375 3H4.125z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              }
+            </div>
+            <div class="news-content">
+              <h3 class="news-title">{{ article.title }}</h3>
+              <p class="news-excerpt">{{ getExcerpt(article.content) }}</p>
+              <span class="news-date">{{ formatDate(article.published_at || article.created_at) }}</span>
+            </div>
+          </a>
+        }
+      }
+    </div>
+
+    <!-- Load More -->
+    @if (hasMore()) {
+      <button (click)="loadMore()" [disabled]="loadingMore()" class="load-more-btn">
+        @if (loadingMore()) {
+          <svg class="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="spinner-track" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="spinner-head" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Loading...
+        } @else {
+          Load More News
+        }
+      </button>
+    }
+  }
+</div>

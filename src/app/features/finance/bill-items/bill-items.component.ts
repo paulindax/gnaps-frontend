@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, signal, inject, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -14,7 +14,7 @@ import { Bill, BillItem, BillParticular, BillAssignment, Region, Zone, Group, Sc
 @Component({
   selector: 'app-bill-items',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule],
+  imports: [FormsModule, NgSelectModule],
   templateUrl: './bill-items.component.html'
 })
 export class BillItemsComponent implements OnInit {

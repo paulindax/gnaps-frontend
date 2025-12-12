@@ -1,5 +1,5 @@
 import { Component, signal, inject, OnInit, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EventService } from '../../../core/services/event.service';
@@ -13,11 +13,10 @@ import { FlashMessageService } from '../../../core/services/flash-message.servic
   selector: 'app-event-form',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     SelectHelmComponent,
     ImageUploadComponent
-  ],
+],
   templateUrl: './event-form.component.html'
 })
 export class EventFormComponent implements OnInit {

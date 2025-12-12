@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, inject, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { FinanceService } from '../../../core/services/finance.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -10,7 +10,7 @@ import { DropdownMenuComponent, DropdownMenuItem } from '../../../shared/compone
 @Component({
   selector: 'app-manage-bill',
   standalone: true,
-  imports: [CommonModule, FormsModule, BillItemsComponent, DropdownMenuComponent],
+  imports: [FormsModule, BillItemsComponent, DropdownMenuComponent],
   templateUrl: './manage-bill.component.html'
 })
 export class ManageBillComponent implements OnInit {

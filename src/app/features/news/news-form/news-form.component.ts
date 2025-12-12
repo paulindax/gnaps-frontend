@@ -1,5 +1,5 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -14,7 +14,7 @@ import { ImageUploadComponent } from '../../../shared/ui/image-upload/image-uplo
 @Component({
   selector: 'app-news-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule, ImageUploadComponent],
+  imports: [FormsModule, NgSelectModule, ImageUploadComponent],
   templateUrl: './news-form.component.html'
 })
 export class NewsFormComponent implements OnInit {

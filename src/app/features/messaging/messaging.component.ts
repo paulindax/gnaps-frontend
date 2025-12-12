@@ -1,5 +1,5 @@
 import { Component, signal, inject, OnInit, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MessagingService } from '../../core/services/messaging.service';
@@ -31,7 +31,7 @@ interface SchoolWithRegion extends School {
 @Component({
   selector: 'app-messaging',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule],
+  imports: [FormsModule, NgSelectModule],
   templateUrl: './messaging.component.html'
 })
 export class MessagingComponent implements OnInit {

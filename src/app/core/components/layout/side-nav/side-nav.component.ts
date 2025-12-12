@@ -1,6 +1,6 @@
 // src/app/core/components/layout/side-nav.component.ts
 import { Component, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { NavItem } from '../../../models/nav-item.model';
 import { LayoutService } from '../../../services/layout.service';
 import { AuthService } from '../../../services/auth.service';
@@ -16,7 +16,7 @@ interface NavSection {
 @Component({
   selector: 'app-side-nav',
   standalone: true,
-  imports: [CommonModule, NavItemComponent, ButtonHelmComponent],
+  imports: [NavItemComponent, ButtonHelmComponent],
   templateUrl: './side-nav.component.html'
 })
 export class SideNavComponent {

@@ -1,0 +1,56 @@
+<div class="more-page">
+  <!-- User Profile Card -->
+  <div class="profile-card">
+    <div class="profile-avatar">{{ userInitials }}</div>
+    <div class="profile-info">
+      <h2 class="profile-name">{{ authService.currentUserSignal()?.first_name }} {{ authService.currentUserSignal()?.last_name }}</h2>
+      <p class="profile-role">{{ roleDisplay }}</p>
+      <p class="profile-email">{{ authService.currentUserSignal()?.email }}</p>
+    </div>
+  </div>
+
+  <!-- Menu Sections -->
+  @for (section of visibleSections; track section.title) {
+    <div class="menu-section">
+      <h3 class="section-title">{{ section.title }}</h3>
+      <div class="menu-card">
+        @for (item of section.items; track item.label; let last = $last) {
+          @if (item.route) {
+            <a [routerLink]="item.route" class="menu-item" [class.no-border]="last">
+              <div class="menu-icon" [innerHTML]="item.icon"></div>
+              <div class="menu-content">
+                <p class="menu-label">{{ item.label }}</p>
+                <p class="menu-desc">{{ item.description }}</p>
+              </div>
+              <svg class="menu-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z" clip-rule="evenodd" />
+              </svg>
+            </a>
+          } @else {
+            <button (click)="handleAction(item.action!)" class="menu-item" [class.no-border]="last">
+              <div class="menu-icon" [innerHTML]="item.icon"></div>
+              <div class="menu-content">
+                <p class="menu-label">{{ item.label }}</p>
+                <p class="menu-desc">{{ item.description }}</p>
+              </div>
+              @if (item.action === 'toggle-theme') {
+                <span class="theme-badge">{{ themeService.appliedTheme() === 'dark' ? 'Dark' : 'Light' }}</span>
+              }
+            </button>
+          }
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Logout Button -->
+  <button (click)="logout()" class="logout-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M7.5 3.75A1.5 1.5 0 006 5.25v13.5a1.5 1.5 0 001.5 1.5h6a1.5 1.5 0 001.5-1.5V15a.75.75 0 011.5 0v3.75a3 3 0 01-3 3h-6a3 3 0 01-3-3V5.25a3 3 0 013-3h6a3 3 0 013 3V9A.75.75 0 0115 9V5.25a1.5 1.5 0 00-1.5-1.5h-6zm10.72 4.72a.75.75 0 011.06 0l3 3a.75.75 0 010 1.06l-3 3a.75.75 0 11-1.06-1.06l1.72-1.72H9a.75.75 0 010-1.5h10.94l-1.72-1.72a.75.75 0 010-1.06z" clip-rule="evenodd" />
+    </svg>
+    Sign Out
+  </button>
+
+  <!-- App Version -->
+  <p class="version">GNAPS Mobile v1.0.0</p>
+</div>

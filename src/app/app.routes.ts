@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { loginGuard } from './core/guards/login.guard';
 import { roleGuard } from './core/guards/role.guard';
+import { mobileRedirectGuard } from './core/guards/mobile-redirect.guard';
 import { LayoutComponent } from './core/components/layout/layout.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
@@ -26,15 +27,22 @@ import { FinanceReportsComponent } from './features/finance-reports/finance-repo
 import { MessagingComponent } from './features/messaging/messaging.component';
 import { ActivityLogsComponent } from './features/activity-logs/activity-logs.component';
 import { SchoolRegistrationComponent } from './features/auth/school-registration/school-registration.component';
+import { mobileRoutes } from './mobile/mobile.routes';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [loginGuard] },
+
+  // Mobile routes (prefix: /m)
+  {
+    path: 'm',
+    children: mobileRoutes
+  },
   { path: 'join', component: SchoolRegistrationComponent }, // Public route for new school registration
   { path: 'event-register/:code', component: EventRegisterPublicComponent }, // Public route, no auth required
-  { 
+  {
     path: '',
     component: LayoutComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard, mobileRedirectGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
       {

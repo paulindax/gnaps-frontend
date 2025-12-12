@@ -20,6 +20,7 @@ export interface SchoolResponse {
 
 export interface SchoolsQueryParams {
   [key: string]: string | number | boolean | undefined;
+  region_id?: number;
   zone_id?: number;
   name?: string;
   member_no?: string;

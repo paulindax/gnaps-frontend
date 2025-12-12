@@ -1,3 +1,5 @@
+<!-- Only show chat on desktop -->
+@if (!deviceService.shouldShowMobileView()) {
 <!-- Floating Chat Button -->
 <button
   (click)="toggleChat()"
@@ -167,4 +169,5 @@
       </p>
     </div>
   </div>
+}
 }

@@ -1,5 +1,5 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { News } from '../../../core/models';
@@ -13,7 +13,7 @@ const DEFAULT_NEWS_IMAGE = 'https://images.unsplash.com/photo-1585829365295-ab7c
 @Component({
   selector: 'app-news-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonHelmComponent],
+  imports: [FormsModule, ButtonHelmComponent],
   templateUrl: './news-list.component.html'
 })
 export class NewsListComponent implements OnInit {

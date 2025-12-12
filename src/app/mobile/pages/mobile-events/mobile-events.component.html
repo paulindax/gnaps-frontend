@@ -1,0 +1,130 @@
+<div class="events-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-title">Events</h1>
+  </div>
+
+  <!-- Filter Pills -->
+  <div class="filter-scroll">
+    <div class="filter-container">
+      @for (filter of filters; track filter.value) {
+        <button
+          (click)="setFilter(filter.value)"
+          class="filter-pill"
+          [class.active]="activeFilter() === filter.value"
+        >
+          {{ filter.label }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Events List -->
+  @if (loading()) {
+    <div class="skeleton-list">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="skeleton-event">
+          <div class="skeleton-image"></div>
+          <div class="skeleton-content">
+            <div class="skeleton-title"></div>
+            <div class="skeleton-meta"></div>
+          </div>
+        </div>
+      }
+    </div>
+  } @else if (events().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12.75 12.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM7.5 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM8.25 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM9.75 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM10.5 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM12.75 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM14.25 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM15 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM16.5 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM15 12.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM16.5 13.5a.75.75 0 100-1.5.75.75 0 000 1.5z" />
+          <path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zm13.5 9a1.5 1.5 0 00-1.5-1.5H5.25a1.5 1.5 0 00-1.5 1.5v7.5a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-7.5z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <h3 class="empty-title">No events found</h3>
+      <p class="empty-text">
+        {{ activeFilter() === 'upcoming' ? 'No upcoming events scheduled' : 'No events in this category' }}
+      </p>
+    </div>
+  } @else {
+    <div class="events-list">
+      @for (event of events(); track event.id) {
+        <a [routerLink]="['/m/events', event.id]" class="event-card">
+          <!-- Event Image/Banner -->
+          <div class="event-visual">
+            @if (event.image_url) {
+              <img [src]="getImageUrl(event.image_url)" [alt]="event.title" class="event-image">
+            } @else {
+              <div class="event-placeholder">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zm13.5 9a1.5 1.5 0 00-1.5-1.5H5.25a1.5 1.5 0 00-1.5 1.5v7.5a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-7.5z" clip-rule="evenodd" />
+                </svg>
+              </div>
+            }
+
+            <!-- Date Badge -->
+            <div class="date-badge">
+              <span class="date-day">{{ getEventDay(event.start_date) }}</span>
+              <span class="date-month">{{ getEventMonth(event.start_date) }}</span>
+            </div>
+
+            <!-- Today Badge -->
+            @if (isToday(event.start_date)) {
+              <div class="today-badge">TODAY</div>
+            }
+          </div>
+
+          <!-- Event Content -->
+          <div class="event-content">
+            <h3 class="event-title">{{ event.title }}</h3>
+
+            <div class="event-meta">
+              @if (event.location) {
+                <div class="meta-item">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                  </svg>
+                  <span>{{ event.location }}</span>
+                </div>
+              }
+              @if (event.start_time) {
+                <div class="meta-item">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clip-rule="evenodd" />
+                  </svg>
+                  <span>{{ formatTime(event.start_time) }}</span>
+                </div>
+              }
+            </div>
+
+            <!-- Tags -->
+            <div class="event-tags">
+              @if (event.is_paid) {
+                <span class="tag tag-paid">Paid</span>
+              } @else {
+                <span class="tag tag-free">Free</span>
+              }
+              @if (getDaysUntil(event.start_date) > 0 && getDaysUntil(event.start_date) <= 7) {
+                <span class="tag tag-soon">{{ getDaysUntil(event.start_date) }}d left</span>
+              }
+            </div>
+          </div>
+        </a>
+      }
+    </div>
+
+    <!-- Load More -->
+    @if (hasMore()) {
+      <button (click)="loadMore()" [disabled]="loadingMore()" class="load-more-btn">
+        @if (loadingMore()) {
+          <svg class="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="spinner-track" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="spinner-head" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Loading...
+        } @else {
+          Load More Events
+        }
+      </button>
+    }
+  }
+</div>

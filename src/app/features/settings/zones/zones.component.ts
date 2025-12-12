@@ -1,5 +1,5 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { SettingsService } from '../../../core/services/settings.service';
@@ -9,7 +9,7 @@ import { Zone, Region } from '../../../core/models';
 @Component({
   selector: 'app-zones',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule],
+  imports: [FormsModule, NgSelectModule],
   templateUrl: './zones.component.html'
 })
 export class ZonesComponent implements OnInit {

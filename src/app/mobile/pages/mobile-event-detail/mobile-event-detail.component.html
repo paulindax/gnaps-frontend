@@ -1,0 +1,141 @@
+    <div class="event-detail-page">
+      <!-- Back Button -->
+      <button (click)="goBack()" class="back-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path fill-rule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clip-rule="evenodd" />
+        </svg>
+        Back
+      </button>
+
+      @if (loading()) {
+        <div class="skeleton-container">
+          <div class="skeleton-banner"></div>
+          <div class="skeleton-content">
+            <div class="skeleton-date-card">
+              <div class="skeleton-date-box"></div>
+              <div class="skeleton-title-area">
+                <div class="skeleton-title"></div>
+                <div class="skeleton-subtitle"></div>
+              </div>
+            </div>
+            <div class="skeleton-details">
+              <div class="skeleton-detail-row"></div>
+              <div class="skeleton-detail-row"></div>
+              <div class="skeleton-detail-row"></div>
+            </div>
+            <div class="skeleton-description">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line short"></div>
+            </div>
+          </div>
+        </div>
+      } @else if (event()) {
+        <!-- Event Banner -->
+        <div class="banner-container">
+          @if (event()?.image_url) {
+            <img [src]="getImageUrl(event()!.image_url)" [alt]="event()!.title" class="banner-image">
+          } @else {
+            <div class="banner-placeholder">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.75 12.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM7.5 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM8.25 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM9.75 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM10.5 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM12.75 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM14.25 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM15 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM16.5 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM15 12.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM16.5 13.5a.75.75 0 100-1.5.75.75 0 000 1.5z" />
+                <path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zm13.5 9a1.5 1.5 0 00-1.5-1.5H5.25a1.5 1.5 0 00-1.5 1.5v7.5a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-7.5z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          }
+          <div class="banner-overlay"></div>
+        </div>
+
+        <!-- Event Content -->
+        <div class="content-area">
+          <!-- Date Card -->
+          <div class="date-card">
+            <div class="date-box">
+              <span class="date-day">{{ getEventDay(event()!.start_date) }}</span>
+              <span class="date-month">{{ getEventMonth(event()!.start_date) }}</span>
+            </div>
+            <div class="title-area">
+              <h1 class="event-title">{{ event()!.title }}</h1>
+              @if (isToday()) {
+                <span class="today-badge">Happening Today!</span>
+              }
+            </div>
+          </div>
+
+          <!-- Event Details Card -->
+          <div class="details-card">
+            <h2 class="section-title">Event Details</h2>
+
+            @if (event()?.location) {
+              <div class="detail-row">
+                <div class="detail-icon location">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="detail-content">
+                  <span class="detail-label">Location</span>
+                  <span class="detail-value">{{ event()!.location }}</span>
+                </div>
+              </div>
+            }
+
+            @if (event()?.start_time) {
+              <div class="detail-row">
+                <div class="detail-icon time">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="detail-content">
+                  <span class="detail-label">Time</span>
+                  <span class="detail-value">{{ formatTime(event()!.start_time) }}</span>
+                </div>
+              </div>
+            }
+
+            <div class="detail-row no-border">
+              <div class="detail-icon" [class.paid]="event()?.is_paid" [class.free]="!event()?.is_paid">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M10.464 8.746c.227-.18.497-.311.786-.394v2.795a2.252 2.252 0 01-.786-.393c-.394-.313-.546-.681-.546-1.004 0-.323.152-.691.546-1.004zM12.75 15.662v-2.824c.347.085.664.228.921.421.427.32.579.686.579.991 0 .305-.152.671-.579.991a2.534 2.534 0 01-.921.42z" />
+                  <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v.816a3.836 3.836 0 00-1.72.756c-.712.566-1.112 1.35-1.112 2.178 0 .829.4 1.612 1.113 2.178.502.4 1.102.647 1.719.756v2.978a2.536 2.536 0 01-.921-.421l-.879-.66a.75.75 0 00-.9 1.2l.879.66c.533.4 1.169.645 1.821.75V18a.75.75 0 001.5 0v-.81a4.124 4.124 0 001.821-.749c.745-.559 1.179-1.344 1.179-2.191 0-.847-.434-1.632-1.179-2.191a4.122 4.122 0 00-1.821-.75V8.354c.29.082.559.213.786.393l.415.33a.75.75 0 00.933-1.175l-.415-.33a3.836 3.836 0 00-1.719-.755V6z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Entry Fee</span>
+                <span class="detail-value">{{ event()?.is_paid ? 'GHS ' + (event()?.fee || '0.00') : 'Free Entry' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          @if (event()?.description) {
+            <div class="description-card">
+              <h2 class="section-title">About This Event</h2>
+              <div class="description-content" [innerHTML]="event()!.description"></div>
+            </div>
+          }
+
+          <!-- Register Button -->
+          @if (event()?.registration_link || event()?.registration_code) {
+            <button (click)="register()" class="register-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z" />
+              </svg>
+              Register for Event
+            </button>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 00-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 01-.189-.866c0-.298.059-.605.189-.866zm-4.34 7.964a.75.75 0 01-1.061-1.06 5.236 5.236 0 013.73-1.538 5.236 5.236 0 013.695 1.538.75.75 0 11-1.061 1.06 3.736 3.736 0 00-2.639-1.098 3.736 3.736 0 00-2.664 1.098z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="empty-title">Event not found</h3>
+          <p class="empty-text">This event may have been removed or is no longer available</p>
+          <button (click)="goBack()" class="empty-btn">Go Back</button>
+        </div>
+      }
+    </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, inject, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FinanceService } from '../../../core/services/finance.service';
@@ -9,7 +9,7 @@ import { FinanceAccount } from '../../../core/models';
 @Component({
   selector: 'app-finance-account',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule],
+  imports: [FormsModule, NgSelectModule],
   templateUrl: './finance-account.component.html'
 })
 export class FinanceAccountComponent implements OnInit {

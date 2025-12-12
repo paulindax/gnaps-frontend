@@ -2,6 +2,7 @@ import { Component, inject, signal, ElementRef, ViewChild, AfterViewChecked } fr
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Adesua360Service, ChatMessage } from '../../../core/services/adesua360.service';
+import { DeviceService } from '../../../core/services/device.service';
 
 @Component({
   selector: 'app-adesua360-chat',
@@ -14,6 +15,7 @@ export class Adesua360ChatComponent implements AfterViewChecked {
   @ViewChild('messageInput') private messageInput!: ElementRef;
 
   protected readonly chatService = inject(Adesua360Service);
+  protected readonly deviceService = inject(DeviceService);
 
   messageText = signal('');
   showSuggestions = signal(true);

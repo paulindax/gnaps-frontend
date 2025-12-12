@@ -1,0 +1,116 @@
+<div class="dashboard">
+  <!-- Greeting -->
+  <!-- <div class="greeting">
+    <span class="greeting-text">{{ getGreeting() }},</span>
+    <h1 class="user-name">{{ authService.currentUserSignal()?.first_name || 'User' }}</h1>
+  </div> -->
+
+  <!-- Stats -->
+  @if (stats().length > 0) {
+    <div class="stats-grid">
+      @for (stat of stats(); track stat.label) {
+        <div class="stat-card">
+          <span class="stat-value">{{ stat.value }}</span>
+          <span class="stat-label">{{ stat.label }}</span>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Upcoming Events -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">Upcoming Events</h2>
+      <a routerLink="/m/events" class="see-all">See all</a>
+    </div>
+
+    @if (eventsLoading()) {
+      <div class="skeleton-list">
+        @for (i of [1, 2]; track i) {
+          <div class="skeleton-card"></div>
+        }
+      </div>
+    } @else if (upcomingEvents().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.75 12.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM7.5 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM8.25 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM9.75 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM10.5 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM12.75 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM14.25 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM15 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM16.5 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM15 12.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM16.5 13.5a.75.75 0 100-1.5.75.75 0 000 1.5z" />
+            <path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zm13.5 9a1.5 1.5 0 00-1.5-1.5H5.25a1.5 1.5 0 00-1.5 1.5v7.5a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-7.5z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <p class="empty-text">No upcoming events</p>
+      </div>
+    } @else {
+      <div class="events-list">
+        @for (event of upcomingEvents(); track event.id) {
+          <a [routerLink]="['/m/events', event.id]" class="event-card">
+            <div class="event-date">
+              <span class="event-day">{{ getEventDay(event.start_date) }}</span>
+              <span class="event-month">{{ getEventMonth(event.start_date) }}</span>
+            </div>
+            <div class="event-info">
+              <h3 class="event-title">{{ event.title }}</h3>
+              <p class="event-location">{{ event.location || 'Location TBD' }}</p>
+              @if (getDaysUntil(event.start_date) === 0) {
+                <span class="event-badge today">Today</span>
+              } @else if (getDaysUntil(event.start_date) <= 3) {
+                <span class="event-badge soon">In {{ getDaysUntil(event.start_date) }} days</span>
+              }
+            </div>
+            <svg class="chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z" clip-rule="evenodd" />
+            </svg>
+          </a>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Latest News -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">Latest News</h2>
+      <a routerLink="/m/news" class="see-all">See all</a>
+    </div>
+
+    @if (newsLoading()) {
+      <div class="skeleton-list">
+        @for (i of [1, 2]; track i) {
+          <div class="skeleton-card tall"></div>
+        }
+      </div>
+    } @else if (latestNews().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" d="M4.125 3C3.089 3 2.25 3.84 2.25 4.875V18a3 3 0 003 3h15a3 3 0 01-3-3V4.875C17.25 3.839 16.41 3 15.375 3H4.125zM12 9.75a.75.75 0 000 1.5h1.5a.75.75 0 000-1.5H12zm-.75-2.25a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5H12a.75.75 0 01-.75-.75zM6 12.75a.75.75 0 000 1.5h7.5a.75.75 0 000-1.5H6zm-.75 3.75a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5H6a.75.75 0 01-.75-.75zM6 6.75a.75.75 0 00-.75.75v3c0 .414.336.75.75.75h3a.75.75 0 00.75-.75v-3A.75.75 0 009 6.75H6z" clip-rule="evenodd" />
+            <path d="M18.75 6.75h1.875c.621 0 1.125.504 1.125 1.125V18a1.5 1.5 0 01-3 0V6.75z" />
+          </svg>
+        </div>
+        <p class="empty-text">No news yet</p>
+      </div>
+    } @else {
+      <div class="news-list">
+        @for (article of latestNews(); track article.id) {
+          <a [routerLink]="['/m/news', article.id]" class="news-card">
+            @if (article.image_url) {
+              <div class="news-image">
+                <img [src]="getImageUrl(article.image_url)" [alt]="article.title">
+              </div>
+            } @else {
+              <div class="news-image placeholder">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clip-rule="evenodd" />
+                </svg>
+              </div>
+            }
+            <div class="news-content">
+              <h3 class="news-title">{{ article.title }}</h3>
+              <p class="news-date">{{ formatDate(article.published_at || article.created_at) }}</p>
+            </div>
+          </a>
+        }
+      </div>
+    }
+  </section>
+</div>

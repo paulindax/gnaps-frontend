@@ -1,5 +1,5 @@
 import { Component, Input, output, booleanAttribute } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../../../lib/utils';
 
@@ -34,7 +34,7 @@ export type ButtonVariants = VariantProps<typeof buttonVariants>;
 @Component({
   selector: 'app-button-helm',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './button-helm.component.html'
 })
 export class ButtonHelmComponent {

@@ -288,8 +288,9 @@ export class SchoolListComponent implements OnInit {
       page: this.currentPage(),
       limit: this.pageLimit(),
       ...(this.searchQuery() && { name: this.searchQuery() }),
-      ...(this.selectedZone() && { zone_id: this.selectedZone() }),
-      ...(this.selectedGroup() && { school_group_id: this.selectedGroup() })
+      ...(this.selectedRegion() && this.selectedRegion() !== '' && { region_id: this.selectedRegion() }),
+      ...(this.selectedZone() && this.selectedZone() !== '' && { zone_id: this.selectedZone() }),
+      ...(this.selectedGroup() && this.selectedGroup() !== '' && { school_group_id: this.selectedGroup() })
     };
 
     this.schoolService.getSchools(params).subscribe({

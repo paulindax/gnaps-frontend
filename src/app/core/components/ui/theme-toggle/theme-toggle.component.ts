@@ -1,12 +1,12 @@
 // src/app/core/components/ui/theme-toggle.component.ts
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ThemeService } from '../../../services/theme.service';
 
 @Component({
   selector: 'app-theme-toggle',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './theme-toggle.component.html',
   styleUrls: ['./theme-toggle.component.css']
 })

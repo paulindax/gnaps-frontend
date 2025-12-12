@@ -1,13 +1,13 @@
 // src/app/shared/ui/sheet.component.ts
 import { Component, Input, Output, EventEmitter, booleanAttribute } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ButtonHelmComponent } from '../button-helm/button-helm.component';
 import { cn } from '../../../../lib/utils';
 
 @Component({
   selector: 'app-sheet',
   standalone: true,
-  imports: [CommonModule, ButtonHelmComponent],
+  imports: [ButtonHelmComponent],
   templateUrl: './sheet.component.html'
 })
 export class SheetComponent {

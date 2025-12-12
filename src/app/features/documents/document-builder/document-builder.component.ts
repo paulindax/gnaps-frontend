@@ -1,5 +1,5 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -11,7 +11,7 @@ import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confir
 @Component({
   selector: 'app-document-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule, ConfirmDialogComponent],
+  imports: [FormsModule, NgSelectModule, ConfirmDialogComponent],
   templateUrl: './document-builder.component.html',
   styleUrls: ['./document-builder.component.css']
 })

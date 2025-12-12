@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, AfterViewInit, ElementRef, ViewChild, OnChanges, SimpleChanges, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 export interface DropdownMenuItem {
   title?: string;
@@ -14,7 +14,7 @@ export interface DropdownMenuItem {
 @Component({
   selector: 'app-dropdown-menu',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './dropdown-menu.component.html',
   styles: [`
     .dropdown-menu.dropup {

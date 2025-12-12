@@ -1,11 +1,11 @@
 import { Component, Input, Output, EventEmitter, signal, contentChildren, AfterContentInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { cn } from '../../../../lib/utils';
 
 @Component({
   selector: 'app-tab',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     @if (isActive()) {
       <div class="animate-in fade-in slide-in-from-bottom-3 duration-500 ease-out">
@@ -35,7 +35,7 @@ export class TabComponent {
 @Component({
   selector: 'app-tabs-helm',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './tabs-helm.component.html'
 })
 export class TabsHelmComponent implements AfterContentInit {

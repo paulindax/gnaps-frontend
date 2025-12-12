@@ -1,6 +1,6 @@
 // src/app/core/components/layout/nav-item.component.ts
 import { Component, EventEmitter, Input, Output, computed, inject, signal } from '@angular/core';
-import { CommonModule} from '@angular/common';
+
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LayoutService } from '../../../services/layout.service';
 import { NavItem } from '../../../models/nav-item.model';
@@ -9,7 +9,7 @@ import { cn } from '../../../../../lib/utils';
 @Component({
   selector: 'app-nav-item',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './nav-item.component.html'
 })
 export class NavItemComponent {

@@ -1,12 +1,12 @@
 import { Component, inject, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FlashMessageService, FlashMessage } from '../../../core/services/flash-message.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-flash-message',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './flash-message.component.html',
   styleUrl: './flash-message.component.css',
   animations: [
